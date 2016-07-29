@@ -23,7 +23,7 @@ set(CORE_SOURCES
         heuristic_cache.cc
         heuristic.cc
         int_packer.cc
-	    mutex_group.cc
+        mutex_group.cc
         operator_cost.cc
         option_parser.h
         option_parser_util.h
@@ -504,10 +504,22 @@ fast_downward_plugin(
     HELP "Plugin containing the base for symbolic search"
     SOURCES
         symbolic/sym_variables.cc
+        symbolic/opt_order.cc
         symbolic/sym_util.cc
         symbolic/sym_enums.cc
         symbolic/sym_transition.cc
         symbolic/sym_bucket.cc
+        symbolic/sym_controller.cc
+        symbolic/sym_solution.cc
+        symbolic/sym_exploration.cc
+        symbolic/sym_astar.cc
+        symbolic/sym_astar_open.cc
+        symbolic/sym_astar_closed.cc
+        symbolic/sym_heuristic.cc
+        symbolic/sym_estimate.cc
+        symbolic/sym_bdexp.cc
+        symbolic/sym_params_search.cc
+
     DEPENDENCY_ONLY 
 )
 
@@ -518,6 +530,9 @@ fast_downward_plugin(
         symbolic/sym_manager.cc
         symbolic/sym_abstraction.cc
         symbolic/sym_pdb.cc
+	symbolic/spmas_heuristic.cc
+	symbolic/sym_hnode.cc
+	symbolic/sym_ph.cc
 
     
     DEPENDS SYMBOLIC

@@ -6,12 +6,39 @@
 #include <string>
 #include "sym_util.h"
 
+#include "../options/options.h"
+#include "../options/option_parser.h"
+#include "../globals.h"
+#include "opt_order.h"
+
 using namespace std;
+using options::Options;
 
 namespace symbolic {
 
+    SymVariables::SymVariables(const Options & opts) : 
+	cudd_init_nodes(opts.get<long>("cudd_init_nodes")), 
+	cudd_init_cache_size(opts.get<long>("cudd_init_cache_size")), 
+	cudd_init_available_memory(opts.get<long>("cudd_init_available_memory")), 
+	gamer_ordering(opts.get<bool>("gamer_ordering")) {
+
+	vector <int> var_order; 
+	if(gamer_ordering) {
+	    InfluenceGraph::compute_gamer_ordering(var_order);
+	}else{
+            for(size_t i = 0; i < g_variable_domain.size(); ++i) {
+		var_order.push_back(i);
+	    }
+	}
+	cout << "Sym variable order: ";
+	for (int v : var_order) cout << v << " ";
+	cout << endl;
+
+	init(var_order);
+}
+
 //Constructor that makes use of global variables to initialize the symbolic_search structures
-void SymVariables::init(const vector <int> & v_order, const SymParams & params){
+void SymVariables::init(const vector <int> & v_order){
   cout << "Initializing Symbolic Variables" << endl;
   var_order = vector<int>(v_order);
   int num_fd_vars = var_order.size();
@@ -49,13 +76,13 @@ void SymVariables::init(const vector <int> & v_order, const SymParams & params){
 
   //Initialize manager
   cout << "Initialize Symbolic Manager(" << _numBDDVars << ", "
-       << params.cudd_init_nodes/_numBDDVars << ", "
-       << params.cudd_init_cache_size << ", "
-       << params.cudd_init_available_memory << ")" << endl;
+       << cudd_init_nodes/_numBDDVars << ", "
+       << cudd_init_cache_size << ", "
+       << cudd_init_available_memory << ")" << endl;
   _manager = unique_ptr<Cudd> (new Cudd(_numBDDVars, 0,
-					params.cudd_init_nodes/_numBDDVars,
-					params.cudd_init_cache_size,
-					params.cudd_init_available_memory));
+					cudd_init_nodes/_numBDDVars,
+					cudd_init_cache_size,
+					cudd_init_available_memory));
 
   /*  auto exceptionError = [this] (string message)
     {
@@ -243,38 +270,23 @@ void SymVariables::print() {
 }
 
 
-SymParams::SymParams(const options::Options & opts) : 
-  variable_ordering(VariableOrderType(opts.get_enum("var_order"))), 
-  cudd_init_nodes(opts.get<long>("cudd_init_nodes")), 
-  cudd_init_cache_size(opts.get<long>("cudd_init_cache_size")), 
-  cudd_init_available_memory(opts.get<long>("cudd_init_available_memory")) {
 
-}
-
-SymParams::SymParams() : 
-    variable_ordering(REVERSE_LEVEL), 
-    cudd_init_nodes(16000000L), 
-    cudd_init_cache_size(16000000L), 
-    cudd_init_available_memory(0L){
-}
-
-void SymParams::print_options() const{
+void SymVariables::print_options() const{
     cout << "CUDD Init: nodes=" << cudd_init_nodes << 
 	" cache=" << cudd_init_cache_size << 
-	" max_memory=" << cudd_init_available_memory << endl;
-
-    //TODO: Print variable ordering
+	" max_memory=" << cudd_init_available_memory <<
+	" ordering: " << (gamer_ordering ? "gamer" : "fd") << endl;
 }
 
-void SymParams::add_options_to_parser(options::OptionParser &parser){
+void SymVariables::add_options_to_parser(options::OptionParser &parser){
 
-    const std::vector<std::string> VariableOrderValues {
-	"CG_GOAL_LEVEL", "CG_GOAL_RANDOM",
-	    "GOAL_CG_LEVEL", "RANDOM",
-	    "LEVEL", "REVERSE_LEVEL"};
+    // const std::vector<std::string> VariableOrderValues {
+    // 	"CG_GOAL_LEVEL", "CG_GOAL_RANDOM",
+    // 	    "GOAL_CG_LEVEL", "RANDOM",
+    // 	    "LEVEL", "REVERSE_LEVEL"};
 
-    parser.add_enum_option("var_order", VariableOrderValues,
-			   "variable ordering for the symbolic manager", "REVERSE_LEVEL");
+    // parser.add_enum_option("var_order", VariableOrderValues,
+    // 			   "variable ordering for the symbolic manager", "REVERSE_LEVEL");
 
 
     parser.add_option<long> ("cudd_init_nodes", "Initial number of nodes in the cudd manager.",

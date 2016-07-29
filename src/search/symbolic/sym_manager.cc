@@ -14,6 +14,7 @@
 #include "../utils/timer.h"
 #include "../options/options.h"
 #include "../options/option_parser.h"
+#include "../abstract_task.h"
 
 using namespace std;
 

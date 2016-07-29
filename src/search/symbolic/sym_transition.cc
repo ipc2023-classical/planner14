@@ -1,4 +1,8 @@
 #include "sym_transition.h"
+
+#include <algorithm> 
+#include <cassert> 
+
 #include "../debug.h"
 #include "sym_abstraction.h"
 #include "sym_manager.h"

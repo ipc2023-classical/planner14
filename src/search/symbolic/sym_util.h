@@ -13,6 +13,7 @@
 #include <map> 
 #include "../utils/timer.h"
 
+
 namespace symbolic {
 
 template <class T> 

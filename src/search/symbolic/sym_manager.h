@@ -101,7 +101,7 @@ class SymManager{
   void init(){
     init_mutex(g_mutex_groups);
     init_transitions();
-    init_simulation();
+    //init_simulation();
   }
 
   //Be careful of calling init_mutex and init_transitions before actually calling filter_mutex or image

@@ -16,10 +16,10 @@
 #include <string> 
 #include <map> 
 
-#include "../options/options.h"
-#include "../options/option_parser.h"
-
-#include "../variable_order_finder.h"
+namespace options {
+    class Options;
+    class OptionParser;
+}
 
 namespace symbolic {
 
@@ -31,23 +31,16 @@ namespace symbolic {
 struct BDDError{};
 extern void exceptionError(std::string message);
 
-class SymParams{
-public:
-    // Var order used by the algorithm. 
-    VariableOrderType variable_ordering; 
-    //Parameters to initialize the CUDD manager
-    long cudd_init_nodes; //Number of initial nodes
-    long cudd_init_cache_size; //Initial cache size
-    long cudd_init_available_memory; //Maximum available memory (bytes)
-
-    SymParams();
-    SymParams(const options::Options & opts);
-    static void add_options_to_parser(options::OptionParser &parser);
-    void print_options() const ;
-};
-
-
 class SymVariables{
+
+    // Var order used by the algorithm. 
+    //const VariableOrderType variable_ordering; 
+    //Parameters to initialize the CUDD manager
+    const long cudd_init_nodes; //Number of initial nodes
+    const long cudd_init_cache_size; //Initial cache size
+    const long cudd_init_available_memory; //Maximum available memory (bytes)
+    const bool gamer_ordering;
+
   std::unique_ptr<Cudd> _manager; //_manager associated with this symbolic search
   
   int numBDDVars; //Number of binary variables (just one set, the total number is numBDDVars*3
@@ -68,8 +61,10 @@ class SymVariables{
   //Avoid allocating memory during heuristic evaluation
   std::vector <int> binState; 
 
+  void init(const std::vector <int> & v_order);
+  
  public:
-  void init(const std::vector <int> & v_order, const SymParams & params);
+  SymVariables(const options::Options & opts);
 
   //State getStateFrom(const BDD & bdd) const;
   BDD getStateBDD(const GlobalState & state) const ;
@@ -226,6 +221,10 @@ class SymVariables{
     }
     return h;
   }
+
+  static void add_options_to_parser(options::OptionParser &parser);
+
+  void print_options() const ;
 
 
  private:
