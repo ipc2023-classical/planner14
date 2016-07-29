@@ -297,6 +297,7 @@ void SymVariables::add_options_to_parser(options::OptionParser &parser){
   
     parser.add_option<long> ("cudd_init_available_memory", 
 			     "Total available memory for the cudd manager.", "0L");
+    parser.add_option<bool> ("gamer_ordering", "Use Gamer ordering optimization", "true");
   
 }
 
