@@ -209,7 +209,7 @@ public:
                          double quality1 = 1.0, double quality0 = 1.0) const;
     BDD ExistAbstract(const BDD& cube, unsigned int limit = 0) const;
     BDD XorExistAbstract(const BDD& g, const BDD& cube) const;
-    BDD UnivAbstract(const BDD& cube) const;
+    BDD UnivAbstract(const BDD& cube, unsigned int limit = 0) const;
     BDD BooleanDiff(int x) const;
     bool VarIsDependent(const BDD& var) const;
     double Correlation(const BDD& g) const;

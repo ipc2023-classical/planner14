@@ -517,6 +517,7 @@ fast_downward_plugin(
     SOURCES
         symbolic/sym_manager.cc
         symbolic/sym_abstraction.cc
+        symbolic/sym_pdb.cc
 
     
     DEPENDS SYMBOLIC

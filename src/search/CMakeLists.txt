@@ -76,7 +76,7 @@ endif()
 if(PLUGIN_SYMBOLIC_ENABLED)
     include(ExternalProject)
     ExternalProject_add(
-      LIBCUDD
+      libcudd.a
       PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/cudd-3.0.0
       SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cudd-3.0.0
       CONFIGURE_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cudd-3.0.0/configure --enable-obj --build=i686-pc-linux-gnu "CFLAGS=-m32 -Wall -Wextra -g -O3" "CXXFLAGS=-m32 -Wall -Wextra -std=c++0x -g -O3" "LDFLAGS=-m32"
