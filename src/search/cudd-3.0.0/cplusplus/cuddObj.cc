@@ -95,6 +95,7 @@ public:
     DdManager *manager;
     PFC errorHandler;
     PFC timeoutHandler;
+    PFC nodesExceededHandler;
     PFC terminationHandler;
     std::vector<char *> varnames;
     int ref;
@@ -112,6 +113,7 @@ Capsule::Capsule(
 {
     errorHandler = defaultHandler;
     timeoutHandler = defaultHandler;
+    nodesExceededHandler = defaultHandler;
     terminationHandler = defaultHandler;
     manager = Cudd_Init(numVars, numVarsZ, numSlots, cacheSize, maxMemory);
     if (!manager)
@@ -214,17 +216,21 @@ DD::checkReturnValue(
 	    p->errorHandler("Out of memory.");
 	    break;
 	case CUDD_TOO_MANY_NODES:
+	    p->nodesExceededHandler("Too many nodes.");
+
 	    break;
 	case CUDD_MAX_MEM_EXCEEDED:
 	    p->errorHandler("Maximum memory exceeded.");
 	    break;
         case CUDD_TIMEOUT_EXPIRED: 
             {
-                std::ostringstream msg;
+		/* std::ostringstream msg;
                 unsigned long lag = 
                     Cudd_ReadElapsedTime(mgr) - Cudd_ReadTimeLimit(mgr);
-                msg << "Timeout expired.  Lag = " << lag << " ms.";
-                p->timeoutHandler(msg.str());
+		    msg << "Timeout expired.  Lag = " << lag << " ms.";
+		    p->timeoutHandler(msg.str());*/
+		p->timeoutHandler("Timeout");
+
             }
 	    break;
         case CUDD_TERMINATION:
@@ -261,18 +267,21 @@ DD::checkReturnValue(
 	case CUDD_MEMORY_OUT:
 	    p->errorHandler("Out of memory.");
 	    break;
-	case CUDD_TOO_MANY_NODES:
+	case CUDD_TOO_MANY_NODES:    
+	    p->nodesExceededHandler("Too many nodes.");
 	    break;
 	case CUDD_MAX_MEM_EXCEEDED:
 	    p->errorHandler("Maximum memory exceeded.");
 	    break;
         case CUDD_TIMEOUT_EXPIRED:
             {
+               /*
                 std::ostringstream msg;
                 unsigned long lag = 
                     Cudd_ReadElapsedTime(mgr) - Cudd_ReadTimeLimit(mgr);
                 msg << "Timeout expired.  Lag = " << lag << " ms.\n";
-                p->timeoutHandler(msg.str());
+                p->timeoutHandler(msg.str());*/
+		p->timeoutHandler("Timeout");
             }
 	    break;
         case CUDD_TERMINATION:
@@ -1302,6 +1311,24 @@ Cudd::getTimeoutHandler() const
 
 } // Cudd::getTimeourHandler
 
+PFC
+Cudd::setNodesExceededHandler(
+  PFC newHandler) const
+{
+    PFC oldHandler = p->nodesExceededHandler;
+    p->nodesExceededHandler = newHandler;
+    return oldHandler;
+
+} // Cudd::setHandler
+
+
+PFC
+Cudd::getNodesExceededHandler() const
+{
+    return p->nodesExceededHandler;
+
+} // Cudd::getHandler
+
 
 PFC
 Cudd::setTerminationHandler(
@@ -1357,16 +1384,17 @@ Cudd::checkReturnValue(
 	if (Cudd_ReadErrorCode(p->manager) == CUDD_MEMORY_OUT) {
 	    p->errorHandler("Out of memory.");
         } else if (Cudd_ReadErrorCode(p->manager) == CUDD_TOO_MANY_NODES) {
-            p->errorHandler("Too many nodes.");
+            p->nodesExceededHandler("Too many nodes.");
         } else if (Cudd_ReadErrorCode(p->manager) == CUDD_MAX_MEM_EXCEEDED) {
             p->errorHandler("Maximum memory exceeded.");
         } else if (Cudd_ReadErrorCode(p->manager) == CUDD_TIMEOUT_EXPIRED) {
-            std::ostringstream msg;
+            /*std::ostringstream msg;
             DdManager *mgr = p->manager;
             unsigned long lag = 
                 Cudd_ReadElapsedTime(mgr) - Cudd_ReadTimeLimit(mgr);
             msg << "Timeout expired.  Lag = " << lag << " ms.\n";
-            p->timeoutHandler(msg.str());
+            p->timeoutHandler(msg.str());*/
+	    p->timeoutHandler("Timeout");
         } else if (Cudd_ReadErrorCode(p->manager) == CUDD_TERMINATION) {
             std::ostringstream msg;
             msg << "Terminated.\n";
@@ -1391,16 +1419,17 @@ Cudd::checkReturnValue(
 	if (Cudd_ReadErrorCode(p->manager) == CUDD_MEMORY_OUT) {
 	    p->errorHandler("Out of memory.");
         } else if (Cudd_ReadErrorCode(p->manager) == CUDD_TOO_MANY_NODES) {
-            p->errorHandler("Too many nodes.");
+            p->nodesExceededHandler("Too many nodes.");
         } else if (Cudd_ReadErrorCode(p->manager) == CUDD_MAX_MEM_EXCEEDED) {
             p->errorHandler("Maximum memory exceeded.");
         } else if (Cudd_ReadErrorCode(p->manager) == CUDD_TIMEOUT_EXPIRED) {
-            std::ostringstream msg;
+            /*std::ostringstream msg;
             DdManager *mgr = p->manager;
             unsigned long lag = 
                 Cudd_ReadElapsedTime(mgr) - Cudd_ReadTimeLimit(mgr);
-            msg << "Timeout expired.  Lag = " << lag << " ms.\n";
-            p->timeoutHandler(msg.str());
+		msg << "Timeout expired.  Lag = " << lag << " ms.\n";
+		p->timeoutHandler(msg.str());*/
+	    p->timeoutHandler("Timeout");
         } else if (Cudd_ReadErrorCode(p->manager) == CUDD_TERMINATION) {
             std::ostringstream msg;
             msg << "Terminated.\n";
@@ -6166,3 +6195,5 @@ Cudd::OrderString(void) const
     return oss.str();
 
 } // Cudd::OrderString
+
+

@@ -286,7 +286,6 @@ public:
     ZDD PortToZdd() const;
     void PrintFactoredForm(char const * const * inames = 0, FILE * fp = stdout) const;
     std::string FactoredFormString(char const * const * inames = 0) const;
-
 }; // BDD
 
 
@@ -468,6 +467,8 @@ public:
     PFC getHandler(void) const;
     PFC setTimeoutHandler(PFC newHandler) const;
     PFC getTimeoutHandler(void) const;
+    PFC setNodesExceededHandler(PFC newHandler) const;
+    PFC getNodesExceededHandler() const;
     PFC setTerminationHandler(PFC newHandler) const;
     PFC getTerminationHandler(void) const;
     void pushVariableName(std::string s) const;

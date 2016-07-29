@@ -499,6 +499,28 @@ fast_downward_plugin(
     DEPENDS LP_SOLVER
 )
 
+fast_downward_plugin(
+    NAME SYMBOLIC
+    HELP "Plugin containing the base for symbolic search"
+    SOURCES
+        symbolic/sym_variables.cc
+        symbolic/sym_util.cc
+        symbolic/sym_enums.cc
+        symbolic/sym_transition.cc
+        symbolic/sym_bucket.cc
+    DEPENDENCY_ONLY 
+)
+
+fast_downward_plugin(
+    NAME SYMBOLIC_PDBS
+    HELP "Plugin containing the base for symbolic search"
+    SOURCES
+        symbolic/sym_manager.cc
+        symbolic/sym_abstraction.cc
+
+    
+    DEPENDS SYMBOLIC
+)
 fast_downward_add_plugin_sources(PLANNER_SOURCES)
 
 # The order in PLANNER_SOURCES influences the order in which object
