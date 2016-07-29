@@ -66,15 +66,15 @@ void SPMASHeuristic::initialize() {
     if(!currentSearch->finished() && (!solution.solved() || originalSearch->getF() < solution.getCost()) &&
        utils::g_timer() < generationTime && vars->totalMemory() < generationMemory){
       vector<SymPH *> tmp; 
-      tmp.swap(phs);
-      for(auto ph : tmp){
-	if(ph->init(this, vars.get(), originalStateSpace->getManager())){
-	    ph->setIgnoreIfUseful(); //Allows abstract search to go beyond initial state
-	  phs.push_back(ph);
+	tmp.swap(phs);
+	for(auto ph : tmp){
+	    if(ph->init(this, vars.get(), originalStateSpace->getManager())){
+		ph->setIgnoreIfUseful(); //Allows abstract search to go beyond initial state
+		phs.push_back(ph);
 	}else{
 	  delete ph;
+	    }
 	}
-      }
 
       SPHeuristic origSearchSp; 
       originalSearch->getBw()->getClosed()->getHeuristic(origSearchSp.heuristicADDs,

@@ -533,6 +533,8 @@ fast_downward_plugin(
 	symbolic/spmas_heuristic.cc
 	symbolic/sym_hnode.cc
 	symbolic/sym_ph.cc
+	symbolic/sym_ph_pdbs.cc
+	symbolic/variable_order_finder.cc
 
     
     DEPENDS SYMBOLIC

@@ -52,6 +52,6 @@ SymHNode * SymController::createHNode(SymHNode * node,
 void SymController::add_options_to_parser(OptionParser &parser, int maxStepTime, int maxStepNodes) {
     SymVariables::add_options_to_parser(parser);
     SymParamsMgr::add_options_to_parser(parser);
-    SymParamsSearch::add_options_to_parser(parser,maxStepTime, maxStepNodes);
+    SymParamsSearch::add_options_to_parser(parser, maxStepTime, maxStepNodes);
 }
 }

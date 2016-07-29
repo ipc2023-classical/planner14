@@ -53,6 +53,7 @@ void SymAstarOpen::insert(const SymAstarOpen & other, const SymAstarClosed & clo
     //2) open <-- other.reopen 
     for(auto openIt : other.reopen){
 	int g_val = openIt.first;
+
 	for(const BDD & bdd : openIt.second){
 	    open[g_val].push_back(bdd);
 	}
@@ -196,6 +197,9 @@ void SymAstarOpen::closeMinOpen() {
     assert(test_open()); 
     int ming = minG();
 
+    if (!open.count(ming)) {
+	return; //Search finished, nothing else to close
+    }
     assert(open.count(ming));
     
     if (!open[ming].empty()){

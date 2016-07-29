@@ -28,7 +28,7 @@ class SPHeuristic{
 class SPMASHeuristic : public Heuristic, public SymController {
 
   // Search Behavior parameters
-  std::vector<SymPH *> phs; 
+    std::vector<SymPH *> phs; 
 
   int generationTime;
   double generationMemory;

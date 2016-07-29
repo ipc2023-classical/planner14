@@ -46,7 +46,7 @@ class SymAstarOpen {
     } 
 
     bool empty() const {
-	return open.empty();
+	return open.empty() && reopen.empty();
     }
 
     std::pair <int, int> pop(int f, int g, bool use_heur) const;

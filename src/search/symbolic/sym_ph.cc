@@ -311,6 +311,11 @@ Dir SymPH::getDir(SymBDExp * bdExp) const {
   }
 }
 
+static PluginTypePlugin<SymPH> _type_plugin(
+    "SymPH",
+    // TODO: Replace empty string by synopsis for the wiki page.
+    "");
+
 
 // double SymPH::getMaxStepTime() const{
 //   return searchParams.maxStepTime * pow(ratioIncrease, ((numAbstractions+1)/5) - 1);

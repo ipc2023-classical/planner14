@@ -15,7 +15,6 @@ using namespace std;
 using options::Options;
 
 namespace symbolic {
-
     SymVariables::SymVariables(const Options & opts) : 
 	cudd_init_nodes(opts.get<long>("cudd_init_nodes")), 
 	cudd_init_cache_size(opts.get<long>("cudd_init_cache_size")), 
@@ -297,8 +296,7 @@ void SymVariables::add_options_to_parser(options::OptionParser &parser){
   
     parser.add_option<long> ("cudd_init_available_memory", 
 			     "Total available memory for the cudd manager.", "0L");
-    parser.add_option<bool> ("gamer_ordering", "Use Gamer ordering optimization", "true");
-  
+    parser.add_option<bool> ("gamer_ordering", "Use Gamer ordering optimization", "true");  
 }
 
 }
