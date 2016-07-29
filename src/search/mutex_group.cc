@@ -6,7 +6,6 @@
 using namespace std;
 
 MutexGroup::MutexGroup(istream &in) {
-    cout << "REad" << endl;
   check_magic(in, "begin_mutex_group");
   string exactly_one_str, dir;
   int num_facts;
@@ -22,8 +21,6 @@ MutexGroup::MutexGroup(istream &in) {
   check_magic(in, "end_mutex_group");
   exactly_one = (exactly_one_str == "exactly_one");
   detected_fw = (dir == "fw");
-    cout << "REaded" << endl;
-
 }
  
 bool MutexGroup::hasPair(int var, int val) const{
