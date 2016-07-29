@@ -36,6 +36,7 @@ SymController::SymController(const Options &opts)
     // 	ldSim->release_memory();
     // }
 
+    vars->init();
 }
 
 SymHNode * SymController::createHNode(SymHNode * node,

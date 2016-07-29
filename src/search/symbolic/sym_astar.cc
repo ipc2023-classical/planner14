@@ -887,11 +887,12 @@ double SymAstar::ratioUseful(Bucket & bucket) const{
 }
 
 bool SymAstar::isSearchableWithNodes(int maxNodes) const{
+   
     bool res = expansionReady() && 
 	((fw && bdExp->getDir() != Dir::BW) || 
 	 (!fw && bdExp->getDir() != Dir::FW)) &&
 	nextStepNodes() <= maxNodes;
-    //DEBUG_PHPDBS (cout << "Is searchable with nodes: " << nextStepNodes() << " <= " << maxNodes << " => " << (res ? "yes" : "no") << endl;);
+    DEBUG_PHPDBS (cout << "Is searchable with nodes: " << nextStepNodes() << " <= " << maxNodes << " => " << (res ? "yes" : "no") << endl;);
     return res;
 }
 

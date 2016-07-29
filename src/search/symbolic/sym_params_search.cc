@@ -37,7 +37,7 @@ void SymParamsSearch::print_options() const{
   cout << "Disj(nodes=" << max_disj_nodes << ")" << endl;
   cout << "Estimation: min_time(" << min_estimation_time << ")" <<
     " time_penalty +(" << penalty_time_estimation_sum << ")" <<
-    "*("  << penalty_time_estimation_mult << ")" <<
+      "*("  << penalty_time_estimation_mult << ")" <<
     " nodes_penalty +(" << penalty_nodes_estimation_sum << ")" <<
     "*("  << penalty_nodes_estimation_mult << ")" << endl;
   cout << "MaxStep(time=" << maxStepTime << ", nodes=" << maxStepNodes<< ", nodes_per_planning_second=" << maxStepNodesPerPlanningSecond  << ")" << endl;
@@ -74,11 +74,12 @@ void SymParamsSearch::add_options_to_parser(OptionParser &parser, int maxStepTim
   parser.add_option<int>("max_step_nodes_per_planning_second", "allowed nodes to perform a step in the search. Starts at 0 and increases by x per second.", 
 			 "100");
 
-  parser.add_option<int>("max_step_nodes_min", "allowed nodes to perform a step in the search. minimum value.", 
+  parser.add_option<int>("max_step_nodes_min",
+			 "allowed nodes to perform a step in the search. minimum value.", 
 			 "10000");
 
   parser.add_option<int>("max_step_nodes_time_start_increment", "max_step_nodes_min until this time", 
-			 "300");
+			 "-1");
 
 
   parser.add_option<double>("ratio_useful",
@@ -113,6 +114,7 @@ void SymParamsSearch::add_options_to_parser(OptionParser &parser, int maxStepTim
 }
 
 int SymParamsSearch::getMaxStepNodes() const{
+    if(maxStepNodesTimeStartIncrement == -1) return maxStepNodes;
     if(g_timer() < maxStepNodesTimeStartIncrement) return maxStepNodesMin;
     else return std::min<double>(maxStepNodes,
 				 maxStepNodesMin + maxStepNodesPerPlanningSecond*

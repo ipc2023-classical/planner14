@@ -21,6 +21,9 @@ namespace symbolic {
 	cudd_init_available_memory(opts.get<long>("cudd_init_available_memory")), 
 	gamer_ordering(opts.get<bool>("gamer_ordering")) {
 
+}
+
+void SymVariables::init(){
 	vector <int> var_order; 
 	if(gamer_ordering) {
 	    InfluenceGraph::compute_gamer_ordering(var_order);

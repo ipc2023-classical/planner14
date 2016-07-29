@@ -65,7 +65,8 @@ class SymVariables{
   
  public:
   SymVariables(const options::Options & opts);
-
+  void init();
+  
   //State getStateFrom(const BDD & bdd) const;
   BDD getStateBDD(const GlobalState & state) const ;
   BDD getStateBDD(const std::vector<int> & state) const ;
