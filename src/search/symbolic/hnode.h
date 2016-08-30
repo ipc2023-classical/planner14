@@ -1,5 +1,5 @@
-#ifndef SYMBOLICBOLIC_HNODE_H
-#define SYMBOLICBOLIC_HNODE_H
+#ifndef SYMBOLIC_HNODE_H
+#define SYMBOLIC_HNODE_H
 
 #include "sym_state_space_manager.h"
 #include <memory> 

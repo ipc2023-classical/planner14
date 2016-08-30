@@ -1,5 +1,5 @@
-#ifndef SYMBOLICBOLIC_HTREE_H
-#define SYMBOLICBOLIC_HTREE_H
+#ifndef SYMBOLIC_HTREE_H
+#define SYMBOLIC_HTREE_H
 
 #include <memory>
 #include <vector>

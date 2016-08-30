@@ -1,5 +1,5 @@
-#ifndef OPT_ORDER_H
-#define OPT_ORDER_H
+#ifndef SYMBOLIC_OPT_ORDER_H
+#define SYMBOLIC_OPT_ORDER_H
 
 #include "../utils/rng.h"
 #include <vector>

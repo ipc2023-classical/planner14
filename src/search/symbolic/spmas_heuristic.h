@@ -1,5 +1,5 @@
-#ifndef SPMAS_HEURISTIC_H
-#define SPMAS_HEURISTIC_H
+#ifndef SYMBOLIC_SPMAS_HEURISTIC_H
+#define SYMBOLIC_SPMAS_HEURISTIC_H
 
 #include "sym_controller.h"
 #include "sym_variables.h"

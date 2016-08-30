@@ -1,5 +1,5 @@
-#ifndef SYMBOLIC_SYM_STEP_COST_ESTIMATION_H
-#define SYMBOLIC_SYM_STEP_COST_ESTIMATION_H
+#ifndef SYMBOLIC_SYM_ESTIMATE_H
+#define SYMBOLIC_SYM_ESTIMATE_H
 
 #include <map>
 #include <utility>
