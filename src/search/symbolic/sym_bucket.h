@@ -1,5 +1,5 @@
-#ifndef SYMBOLIC_BUCKET_H
-#define SYMBOLIC_BUCKET_H
+#ifndef SYMBOLIC_SYM_BUCKET_H
+#define SYMBOLIC_SYM_BUCKET_H
 
 #include <vector>
 #include "cuddObj.hh"

@@ -1,5 +1,5 @@
-#ifndef SYMBOLIC_ENUMS_H
-#define SYMBOLIC_ENUMS_H
+#ifndef SYMBOLIC_SYM_ENUMS_H
+#define SYMBOLIC_SYM_ENUMS_H
 
 #include <string> 
 #include <iostream>

@@ -1,7 +1,5 @@
-#ifndef SYMBOLIC_EXPLORATION_H
-#define SYMBOLIC_EXPLORATION_H
-
-#include "../debug.h" 
+#ifndef SYMBOLIC_SYM_EXPLORATION_H
+#define SYMBOLIC_SYM_EXPLORATION_H
 
 
 #include "sym_params_search.h"

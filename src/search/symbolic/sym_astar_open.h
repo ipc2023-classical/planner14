@@ -1,5 +1,5 @@
-#ifndef SYMBOLIC_ASTAR_OPEN_H
-#define SYMBOLIC_ASTAR_OPEN_H
+#ifndef SYMBOLIC_SYM_ASTAR_OPEN_H
+#define SYMBOLIC_SYM_ASTAR_OPEN_H
 
 #include <map> 
 

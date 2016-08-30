@@ -1,5 +1,5 @@
-#ifndef SYMBOLIC_TEST_MUTEX_H
-#define SYMBOLIC_TEST_MUTEX_H
+#ifndef SYMBOLIC_SYM_TEST_MUTEX_H
+#define SYMBOLIC_SYM_TEST_MUTEX_H
 
 #include <map>
 #include <vector>

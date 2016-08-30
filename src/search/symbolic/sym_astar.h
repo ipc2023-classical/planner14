@@ -1,7 +1,6 @@
-#ifndef SYMBOLIC_ASTAR_H
-#define SYMBOLIC_ASTAR_H
+#ifndef SYMBOLIC_SYM_ASTAR_H
+#define SYMBOLIC_SYM_ASTAR_H
 
-#include "../debug.h" 
 #include "sym_exploration.h"
 #include "sym_heuristic.h"
 #include "sym_state_space_manager.h"

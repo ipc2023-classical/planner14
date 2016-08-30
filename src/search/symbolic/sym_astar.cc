@@ -1,7 +1,7 @@
 #include "sym_astar.h"
 
 #include "sym_bdexp.h"
-#include "../debug.h"
+#include "../utils/debug_macros.h"
 #include "sym_util.h"
 #include "../utils/timer.h"
 #include "../globals.h"

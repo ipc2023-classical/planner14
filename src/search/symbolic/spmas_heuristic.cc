@@ -4,7 +4,7 @@
 #include "sym_variables.h"
 #include "original_state_space.h"
 #include "sym_bdexp.h"
-#include "sym_ph.h"
+#include "ph.h"
 #include "hnode.h"
 #include "htree.h"
 

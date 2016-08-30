@@ -5,7 +5,7 @@
 #include "sym_state_space_manager.h"
 #include "sym_bdexp.h"
 #include "hnode.h"
-#include "../debug.h" 
+#include "../utils/debug_macros.h" 
 #include "../globals.h"
 // #include "../merge_and_shrink/ld_simulation.h"
 // #include "../merge_and_shrink/abstraction_builder.h"

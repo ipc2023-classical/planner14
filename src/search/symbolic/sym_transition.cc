@@ -3,7 +3,7 @@
 #include <algorithm> 
 #include <cassert> 
 
-#include "../debug.h"
+#include "../utils/debug_macros.h"
 #include "sym_state_space_manager.h"
 //#include "sym_pdb.h" 
 // #include "sym_smas.h" 

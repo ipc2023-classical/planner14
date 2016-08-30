@@ -1,5 +1,5 @@
-#ifndef SYMBOLIC_BDEXP_H
-#define SYMBOLIC_BDEXP_H
+#ifndef SYMBOLIC_SYM_BDEXP_H
+#define SYMBOLIC_SYM_BDEXP_H
 
 #include "sym_astar.h"
 
@@ -109,13 +109,7 @@ namespace symbolic {
 	    return fMainDiagonal;
 	}
 
-	inline void setFMainDiagonal(int newVal) {
-	    DEBUG_MSG(std::cout << "SET F MAIN DIAGONAL: " << newVal << std::endl;);
-	    if(fMainDiagonal == -1) {
-		fMainDiagonal = newVal;
-		DEBUG_MSG(std::cout << "FOUND CUT ON ABSTRACT STATE SPACE IN fMainDiagonal=" << fMainDiagonal << std::endl;);
-	    }
-	}
+	void setFMainDiagonal(int newVal); 
 
 	inline void forbidRelax() {
 	    mayRelax = false;

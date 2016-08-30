@@ -1,12 +1,12 @@
 #include "hnode.h"
 
 #include "htree.h"
-#include "sym_ph.h"
+#include "ph.h"
 #include "sym_bdexp.h"
 #include "sym_state_space_manager.h"
 #include "sym_engine.h" 
 
-#include "../debug.h"
+#include "../utils/debug_macros.h"
 
 #include "original_state_space.h"
 

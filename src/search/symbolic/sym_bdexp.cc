@@ -1,6 +1,6 @@
 #include "sym_bdexp.h"
 
-#include "../debug.h"
+#include "../utils/debug_macros.h"
 #include "sym_engine.h"
 #include <algorithm>    // std::reverse
 #include "../global_operator.h"
@@ -339,5 +339,15 @@ namespace symbolic {
 	if (bw) bw->statistics();
 	cout << endl;
     }
+
+
+    void SymBDExp::setFMainDiagonal(int newVal){
+	DEBUG_MSG(std::cout << "SET F MAIN DIAGONAL: " << newVal << std::endl;);
+	if(fMainDiagonal == -1) {
+	    fMainDiagonal = newVal;
+	    DEBUG_MSG(std::cout << "FOUND CUT ON ABSTRACT STATE SPACE IN fMainDiagonal=" << fMainDiagonal << std::endl;);
+	}
+    }
+
 
 }

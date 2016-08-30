@@ -1,5 +1,5 @@
-#ifndef SYMBOLIC_STATE_SPACE_MANAGER_H
-#define SYMBOLIC_STATE_SPACE_MANAGER_H
+#ifndef SYMBOLIC_SYM_STATE_SPACE_MANAGER_H
+#define SYMBOLIC_SYM_STATE_SPACE_MANAGER_H
 
 #include "../operator_cost.h"
 #include "sym_enums.h"

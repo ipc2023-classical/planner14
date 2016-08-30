@@ -1,5 +1,5 @@
-#ifndef SYMBOLIC_ENGINE_H
-#define SYMBOLIC_ENGINE_H
+#ifndef SYMBOLIC_SYM_ENGINE_H
+#define SYMBOLIC_SYM_ENGINE_H
 
 #include <vector>
 #include <memory>
@@ -16,10 +16,9 @@ namespace symbolic {
 class SymHeuristicGenerator;
 class SymHeuristic;
 class SymExploration;
-class SymAbstraction;
 class SymSolution;
 class HNode;
-class SymVariables;
+class HTree;
 
 class SymPH;
 class SymBDExp;
@@ -29,6 +28,9 @@ class SymEngine : public SearchEngine, public SymController {
  protected:
   Dir searchDir; //Direction of search in the original state space
   
+  //Tree of state spaces
+  std::unique_ptr<HTree> tree;
+
   // List of hierarchy policies to derive new abstractions
   std::vector <SymPH *> phs;
   
@@ -50,10 +52,6 @@ class SymEngine : public SearchEngine, public SymController {
 
   //Variable to keep the current lower bound. Used to know when we have proven an optimal solution.
   int lower_bound;
-
-  //The exploration and state space of the original problem
-  HNode * originalStateSpace;
-  SymBDExp * originalSearch;
 
   //Inherited methods
   virtual void initialize();
@@ -88,7 +86,7 @@ class SymEngine : public SearchEngine, public SymController {
     return lower_bound >= bound;
   }
 
-  virtual SymBDExp * relax(SymBDExp * exp) const;
+  //virtual SymBDExp * relax(SymBDExp * exp) const;
 
   static void add_options_to_parser(OptionParser &parser);
   static void set_default_options(Options & opts);

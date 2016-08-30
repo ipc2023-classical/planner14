@@ -1,5 +1,5 @@
-#ifndef SYMBOLIC_VARIABLES_H
-#define SYMBOLIC_VARIABLES_H
+#ifndef SYMBOLIC_SYM_VARIABLES_H
+#define SYMBOLIC_SYM_VARIABLES_H
 
 #include "sym_bucket.h"
 

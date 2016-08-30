@@ -532,8 +532,8 @@ fast_downward_plugin(
     SOURCES
         symbolic/hnode.cc
         symbolic/htree.cc
-        symbolic/sym_ph.cc
-	symbolic/sym_ph_pdbs.cc
+        symbolic/ph.cc
+	symbolic/ph_pdbs.cc
 	symbolic/spmas_heuristic.cc
 	symbolic/variable_order_finder.cc
     

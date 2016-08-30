@@ -4,13 +4,16 @@
 #include "sym_astar.h"
 #include "sym_bdexp.h"
 #include "sym_util.h"
+
 #include "../utils/timer.h"
+#include "../utils/debug_macros.h"
 
 #include <sstream>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include "../successor_generator.h"
+
 #include "sym_test.h" 
 
 #include <cassert>

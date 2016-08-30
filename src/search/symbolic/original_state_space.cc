@@ -1,6 +1,6 @@
 #include "original_state_space.h" 
 
-#include "../debug.h"
+#include "../utils/debug_macros.h"
 using namespace std;
 
 namespace symbolic {

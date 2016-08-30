@@ -4,12 +4,12 @@
 #include "sym_solution.h"
 #include "sym_enums.h"
 #include "hnode.h"
-#include "../debug.h" 
+#include "../utils/debug_macros.h" 
 #include "../globals.h"
 #include "../option_parser.h"
 #include "../plugin.h"
 #include "../prune_heuristic.h"
-#include "sym_ph.h"
+#include "ph.h"
 #include "test/sym_test.h"
 #include "sym_prune_heuristic.h"
 #include "sym_heuristic_generator.h"
@@ -20,7 +20,7 @@ using namespace std;
 namespace symbolic {
 
 SymEngine::SymEngine(const Options &opts)
-  : SearchEngine(opts), SymController(opts),
+    : SearchEngine(opts), SymController(opts),
     searchDir(Dir(opts.get_enum("search_dir"))),
     heuristic_generators(opts.get_list<SymHeuristicGenerator *> ("heuristic")),
     lower_bound(0), originalStateSpace(nullptr), originalSearch (nullptr){
@@ -49,8 +49,8 @@ void SymEngine::initialize() {
 #endif
     
     cout << "Initialize abstraction hierarchy" << endl;
-    originalStateSpace = new HNode(this, mgrParams);
-    nodes.push_back(unique_ptr<HNode> (originalStateSpace));
+    htree.init();
+
     if(prune_heuristic){
       originalStateSpace->getManager()->set_simulation(prune_heuristic.get());
     }
@@ -141,11 +141,11 @@ void SymEngine::set_default_options(Options & opts){
     opts.set<int>("search_dir", 2);
 }
 
-SymBDExp * SymEngine::relax(SymBDExp * exp) const{
-  for(auto ph : phs){
-    SymBDExp * res = ph->relax(exp);
-    if(res) return res;
-  }
-  return nullptr;
-}
+// SymBDExp * SymEngine::relax(SymBDExp * exp) const{
+//   for(auto ph : phs){
+//     SymBDExp * res = ph->relax(exp);
+//     if(res) return res;
+//   }
+//   return nullptr;
+// }
 }

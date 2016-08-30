@@ -1,5 +1,5 @@
-#ifndef SYMBOLIC_CONTROLLER_H
-#define SYMBOLIC_CONTROLLER_H
+#ifndef SYMBOLIC_SYM_CONTROLLER_H
+#define SYMBOLIC_SYM_CONTROLLER_H
 
 //Shared class for SymEngine and smas_heuristic
 
@@ -20,11 +20,10 @@ using options::OptionParser;
 using options::Options;
 
 namespace symbolic {
-class SymAbstraction;
 class SymSolution;
 class SymVariables;
 class SymPH;
-class SymBDExp;
+//class SymBDExp;
 
 
 class SymController { 
@@ -43,7 +42,7 @@ class SymController {
   virtual int getUpperBound() const{return std::numeric_limits<int>::max();}
   virtual int getLowerBound() const{return 0;}
   virtual bool solved () const{return false;}
-  virtual SymBDExp * relax(SymBDExp * /*exp*/) const {return nullptr;}
+  //virtual SymBDExp * relax(SymBDExp * /*exp*/) const {return nullptr;}
 
   //HNode * createHNode(HNode * node, std::unique_ptr <SymAbstraction> && abs, SymPH * ph);
 

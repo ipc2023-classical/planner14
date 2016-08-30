@@ -1,7 +1,7 @@
 
 #include "sym_heuristic.h"
 
-#include "../debug.h"
+#include "../utils/debug_macros.h"
 
 using namespace std;
 

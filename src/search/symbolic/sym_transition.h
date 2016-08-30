@@ -1,5 +1,5 @@
-#ifndef SYMBOLIC_TRANSITION_H
-#define SYMBOLIC_TRANSITION_H
+#ifndef SYMBOLIC_SYM_TRANSITION_H
+#define SYMBOLIC_SYM_TRANSITION_H
 
 #include "../global_operator.h"
 #include "sym_variables.h"

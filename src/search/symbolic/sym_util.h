@@ -1,5 +1,5 @@
-#ifndef SYMBOLIC_UTIL_H
-#define SYMBOLIC_UTIL_H
+#ifndef SYMBOLIC_SYM_UTIL_H
+#define SYMBOLIC_SYM_UTIL_H
 
 #include "sym_variables.h"
 #include "sym_transition.h"

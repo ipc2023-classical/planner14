@@ -1,7 +1,7 @@
 #include "sym_state_space_manager.h"
 
 #include "sym_enums.h" 
-#include "../debug.h"
+#include "../utils/debug_macros.h"
 #include <queue>
 #include <limits>
 #include <algorithm>

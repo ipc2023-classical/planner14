@@ -2,6 +2,7 @@
 
 #include "sym_astar_closed.h" 
 #include "sym_astar.h" 
+#include "../utils/debug_macros.h"
 
 #include <cassert>
 using namespace std;

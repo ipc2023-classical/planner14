@@ -1,5 +1,5 @@
-#ifndef SYMBOLIC_PDB_H
-#define SYMBOLIC_PDB_H
+#ifndef SYMBOLIC_SYM_PDB_H
+#define SYMBOLIC_SYM_PDB_H
 
 #include "sym_state_space_manager.h"
 #include "sym_variables.h"

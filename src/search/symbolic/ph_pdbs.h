@@ -1,7 +1,7 @@
 #ifndef SYMBOLIC_PH_PDBS_H
 #define SYMBOLIC_PH_PDBS_H
 
-#include "sym_ph.h"
+#include "ph.h"
 #include "variable_order_finder.h"
 
 

@@ -1,4 +1,4 @@
-#include "sym_ph_pdbs.h"
+#include "ph_pdbs.h"
 
 #include "hnode.h"
 #include "htree.h"
@@ -11,7 +11,7 @@
 #include "../plugin.h"
 #include "../globals.h"
 #include "../utils/rng.h"
-#include "../debug.h"
+#include "../utils/debug_macros.h"
 
 using namespace std;
 using utils::Timer;

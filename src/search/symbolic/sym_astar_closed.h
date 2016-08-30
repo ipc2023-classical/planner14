@@ -1,5 +1,5 @@
-#ifndef SYMBOLIC_ASTAR_CLOSED_H
-#define SYMBOLIC_ASTAR_CLOSED_H
+#ifndef SYMBOLIC_SYM_ASTAR_CLOSED_H
+#define SYMBOLIC_SYM_ASTAR_CLOSED_H
 
 #include "sym_state_space_manager.h"
 #include <vector>

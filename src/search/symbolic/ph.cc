@@ -1,14 +1,18 @@
-#include "sym_ph.h"
+#include "ph.h"
 
 #include "htree.h"
-#include "sym_engine.h" 
-#include "sym_bdexp.h"
-#include "sym_state_space_manager.h"
 #include "hnode.h"
+#include "sym_pdb.h"
+
+#include "sym_state_space_manager.h"
+#include "sym_bdexp.h"
+#include "sym_controller.h" 
+
 #include "../option_parser.h"
 #include "../utils/timer.h"
+#include "../utils/debug_macros.h"
+
 #include "../plugin.h"
-#include "sym_pdb.h"
 
 using namespace std;
 using options::Options; 

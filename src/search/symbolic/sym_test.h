@@ -1,5 +1,5 @@
-#ifndef SYMBOLIC_TEST_H
-#define SYMBOLIC_TEST_H
+#ifndef SYMBOLIC_SYM_TEST_H
+#define SYMBOLIC_SYM_TEST_H
 //Utilities for debugging!
 
 #include <map>
