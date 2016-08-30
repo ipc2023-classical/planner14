@@ -139,15 +139,15 @@ void read_variables(istream &in) {
             getline(in, fact_names[j]);
         g_fact_names.push_back(fact_names);
         check_magic(in, "end_variable");
-    //Alvaro, Vidal: Important set id_facts
-    g_id_first_fact.push_back(g_num_facts);
-    g_num_facts += range;
+        //Alvaro, Vidal: Important set id_facts
+        g_id_first_fact.push_back(g_num_facts);
+        g_num_facts += range;
     }
 }
 
 //Vidal, Alvaro: Changed all the read_mutexes method
 void read_mutexes(istream &in) {
-  g_inconsistent_facts.resize(g_num_facts*g_num_facts, false);
+    g_inconsistent_facts.resize(g_num_facts * g_num_facts, false);
 
     int num_mutex_groups;
     in >> num_mutex_groups;
@@ -159,10 +159,10 @@ void read_mutexes(istream &in) {
        aware of. */
 
     for (int i = 0; i < num_mutex_groups; ++i) {
-      MutexGroup mg = MutexGroup(in);
-      g_mutex_groups.push_back(mg);
-      
-      const vector<Fact> & invariant_group = mg.getFacts();
+        MutexGroup mg = MutexGroup(in);
+        g_mutex_groups.push_back(mg);
+
+        const vector<Fact> &invariant_group = mg.getFacts();
         for (size_t j = 0; j < invariant_group.size(); ++j) {
             const Fact &fact1 = invariant_group[j];
             for (size_t k = 0; k < invariant_group.size(); ++k) {
@@ -334,24 +334,24 @@ void verify_no_axioms_no_conditional_effects() {
 
 bool are_mutex(const Fact &a, const Fact &b) {
     // Vidal: if the value is unknown then they aren't mutex
-  if (a.value == -1 || b.value == -1)
-    return false;
-  if (a.var == b.var) // same variable: mutex iff different value
-    return a.value != b.value;
-  return g_inconsistent_facts[id_mutex(a, b)];
+    if (a.value == -1 || b.value == -1)
+        return false;
+    if (a.var == b.var) // same variable: mutex iff different value
+        return a.value != b.value;
+    return g_inconsistent_facts[id_mutex(a, b)];
 }
-int id_mutex(const Fact & a, const Fact &b){
-  int id_a = g_id_first_fact [a.var] + a.value;
-  int id_b = g_id_first_fact [b.var] + b.value;
-  if(id_a < id_b){
-    return g_num_facts*id_a + id_b;
-  }else{
-    return g_num_facts*id_b + id_a;
-  }
+int id_mutex(const Fact &a, const Fact &b) {
+    int id_a = g_id_first_fact [a.var] + a.value;
+    int id_b = g_id_first_fact [b.var] + b.value;
+    if (id_a < id_b) {
+        return g_num_facts * id_a + id_b;
+    } else {
+        return g_num_facts * id_b + id_a;
+    }
 }
 
-void set_mutex(const Fact & a, const Fact &b){
-  g_inconsistent_facts[id_mutex(a, b)] = true;
+void set_mutex(const Fact &a, const Fact &b) {
+    g_inconsistent_facts[id_mutex(a, b)] = true;
 }
 
 const shared_ptr<AbstractTask> g_root_task() {
@@ -382,7 +382,7 @@ vector<GlobalOperator> g_axioms;
 AxiomEvaluator *g_axiom_evaluator;
 SuccessorGenerator *g_successor_generator;
 
-vector<MutexGroup> g_mutex_groups; 
+vector<MutexGroup> g_mutex_groups;
 vector<bool> g_inconsistent_facts;
 int g_num_facts;
 vector<int> g_id_first_fact;

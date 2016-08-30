@@ -24,12 +24,11 @@ class VariableOrderFinder {
 public:
     VariableOrderFinder(VariableOrderType variable_order_type_, bool is_first = true);
     VariableOrderFinder(VariableOrderType variable_order_type_, bool is_first,
-			const std::vector <int> & remaining_vars_);
+                        const std::vector <int> &remaining_vars_);
     ~VariableOrderFinder();
     bool done() const;
     int next();
     void dump() const;
 };
-
 }
 #endif

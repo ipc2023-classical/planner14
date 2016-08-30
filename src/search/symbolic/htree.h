@@ -15,8 +15,7 @@ class SymPH;
 class SymBDExp;
 
 class HTree {
-
-    SymController * engine;
+    SymController *engine;
     const SymParamsMgr mgrParams;
     const OperatorCost cost_type;
 
@@ -24,26 +23,23 @@ class HTree {
 
     // List of abstract state spaces. We store a list with the unique
     // pointer so that if we want ever to delete some hNode we just
-    // remove it from this list. 
+    // remove it from this list.
     std::vector <std::unique_ptr<HNode>> nodes;
 
 public:
-    HTree(SymController * engine, const SymParamsMgr & mgrParams, OperatorCost cost_type );
+    HTree(SymController *engine, const SymParamsMgr &mgrParams, OperatorCost cost_type);
 
-    HNode * get_original_state_node();
+    HNode *get_original_state_node();
 
-    void release_memory(bool release_original_search = false);   
+    void release_memory(bool release_original_search = false);
 
-    SymController * get_engine() {
-	return engine;
+    SymController *get_engine() {
+        return engine;
     }
 
 
-    HNode * createHNode(HNode * parent, SymPH * ph, 
-			std::unique_ptr <SymStateSpaceManager> state_space) ;
-
-
+    HNode *createHNode(HNode *parent, SymPH *ph,
+                       std::unique_ptr <SymStateSpaceManager> state_space);
 };
-
 }
 #endif

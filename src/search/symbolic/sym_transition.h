@@ -10,7 +10,6 @@
 #include <vector>
 
 namespace symbolic {
-
 class SymStateSpaceManager;
 class SymPDB;
 class SymSMAS;
@@ -23,76 +22,75 @@ class DominanceRelation;
  * Label refers to variables not considered in the merge-and-shrink
  * Each label has one or more abstract state transitions
  */
-class SymTransition{
-  SymVariables * sV; //To call basic BDD creation methods
-  int cost; // transition cost
-  BDD tBDD; // bdd for making the relprod
-  
-  std::vector<int> effVars; //FD Index of eff variables. Must be sorted!!
-  BDD existsVars, existsBwVars;     // Cube with variables to existentialize
-  std::vector<BDD> swapVarsS, swapVarsSp; // Swap variables s to sp and viceversa
-  std::vector<BDD> swapVarsA, swapVarsAp; // Swap abstraction variables
+class SymTransition {
+    SymVariables *sV; //To call basic BDD creation methods
+    int cost; // transition cost
+    BDD tBDD; // bdd for making the relprod
 
-  std::set<const GlobalOperator *> ops; //List of operators represented by the TR
+    std::vector<int> effVars; //FD Index of eff variables. Must be sorted!!
+    BDD existsVars, existsBwVars;   // Cube with variables to existentialize
+    std::vector<BDD> swapVarsS, swapVarsSp; // Swap variables s to sp and viceversa
+    std::vector<BDD> swapVarsA, swapVarsAp; // Swap abstraction variables
 
-  const SymStateSpaceManager * absAfterImage;
- public:
-  //Constructor for abstraction transitions
- SymTransition(SymStateSpaceManager * mgr, 
-	       const DominanceRelation & sim_relations);
+    std::set<const GlobalOperator *> ops; //List of operators represented by the TR
 
-  //Constructor for transitions irrelevant for the abstraction
-  SymTransition(SymVariables * sVars, 
-		const GlobalOperator * op, int cost_);
+    const SymStateSpaceManager *absAfterImage;
+public:
+    //Constructor for abstraction transitions
+    SymTransition(SymStateSpaceManager *mgr,
+                  const DominanceRelation &sim_relations);
 
-  //Copy constructor
-  SymTransition(const SymTransition &) = default;
+    //Constructor for transitions irrelevant for the abstraction
+    SymTransition(SymVariables *sVars,
+                  const GlobalOperator *op, int cost_);
 
-  BDD image(const BDD & from) const;
-  BDD preimage(const BDD & from) const;
-  BDD image(const BDD & from, int maxNodes) const;
-  BDD preimage(const BDD & from, int maxNodes) const;
+    //Copy constructor
+    SymTransition(const SymTransition &) = default;
 
-  void edeletion(SymStateSpaceManager & mgr); //Includes mutex into the transition
+    BDD image(const BDD &from) const;
+    BDD preimage(const BDD &from) const;
+    BDD image(const BDD &from, int maxNodes) const;
+    BDD preimage(const BDD &from, int maxNodes) const;
 
-  void merge(const SymTransition & t2,
-	     int maxNodes);
+    void edeletion(SymStateSpaceManager &mgr); //Includes mutex into the transition
 
-  //shrinks the transition to another abstract state space (useful to preserve edeletion)
-  void shrink(const SymStateSpaceManager & abs, int maxNodes);
+    void merge(const SymTransition &t2,
+               int maxNodes);
 
-  bool setMaSAbstraction(const SymStateSpaceManager & abs,
-			 const BDD & bddSrc, const BDD &  bddTarget);
+    //shrinks the transition to another abstract state space (useful to preserve edeletion)
+    void shrink(const SymStateSpaceManager &abs, int maxNodes);
 
-  inline void setAbsAfterImage(const SymStateSpaceManager * abs){
-    absAfterImage = abs;
-  }
+    bool setMaSAbstraction(const SymStateSpaceManager &abs,
+                           const BDD &bddSrc, const BDD &bddTarget);
 
-  inline int getCost() const{
-    return cost;
-  }
-  inline int nodeCount() const{
-    return tBDD.nodeCount();
-  }
-  inline const std::set<const GlobalOperator *> &getOps() const {
-    return ops;
-  }
-
-  inline bool hasOp(std::set<const GlobalOperator *> ops) const {
-    for(const auto & op : ops){
-      if(ops.count(op)){
-	return true;
-      }
+    inline void setAbsAfterImage(const SymStateSpaceManager *abs) {
+        absAfterImage = abs;
     }
-    return false;
-  }
 
-  inline const BDD & getBDD() const {
-    return tBDD;
-  }
+    inline int getCost() const {
+        return cost;
+    }
+    inline int nodeCount() const {
+        return tBDD.nodeCount();
+    }
+    inline const std::set<const GlobalOperator *> &getOps() const {
+        return ops;
+    }
 
-  friend std::ostream & operator<<(std::ostream &os, const SymTransition & tr);
+    inline bool hasOp(std::set<const GlobalOperator *> ops) const {
+        for (const auto &op : ops) {
+            if (ops.count(op)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    inline const BDD &getBDD() const {
+        return tBDD;
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const SymTransition &tr);
 };
-
 }
 #endif

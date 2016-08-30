@@ -8,20 +8,17 @@
 #include "../../cudd-2.5.0/include/cuddObj.hh"
 
 namespace symbolic {
-
 class SymStateSpaceManager;
 
-class GSTMutex{
+class GSTMutex {
+    BDD notMutexBDD;
+public:
+    GSTMutex() {}
 
-  BDD notMutexBDD;
- public:
- GSTMutex(){}
-  
-  void check_mutexes(SymStateSpaceManager & manager);
+    void check_mutexes(SymStateSpaceManager &manager);
 };
 
 
 extern GSTMutex gst_mutex;
-
 }
 #endif

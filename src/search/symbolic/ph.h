@@ -2,15 +2,15 @@
 #define SYMBOLIC_PH_H
 
 #include "../option_parser.h"
-#include "sym_enums.h" 
+#include "sym_enums.h"
 #include "sym_params_search.h"
 #include "hnode.h"
 
 namespace symbolic {
-    class SymVariables;
-    class SymHierarchy;
-    class SymController;
-    class SymStateSpaceManager;
+class SymVariables;
+class SymHierarchy;
+class SymController;
+class SymStateSpaceManager;
 
 /*
  * The hierarchy policy incrementally builds a policy by inserting
@@ -18,129 +18,127 @@ namespace symbolic {
  *
  * The default policy does not build any abstraction (for bidirectional Dijkstra)
  */
-    class SymPH {
-    protected:
-	HTree * tree;
-	SymVariables * vars;
+class SymPH {
+protected:
+    HTree *tree;
+    SymVariables *vars;
 
-	//Common parameters to every hierarchy policy
-	const SymParamsMgr mgrParams; 
-	const SymParamsSearch searchParams; //Parameters to perform the abstract searches
-	const double phTime, phMemory;
+    //Common parameters to every hierarchy policy
+    const SymParamsMgr mgrParams;
+    const SymParamsSearch searchParams;     //Parameters to perform the abstract searches
+    const double phTime, phMemory;
 
-	//Maximum time and nodes to perform the whole? step? relaxation process 
-	const int maxRelaxTime, maxRelaxNodes;
- 
-	//How to compute the TRs of the abstract state space.
-	const AbsTRsStrategy absTRsStrategy;
- 
-	//Parameters to decide the relaxation 
-	const bool perimeterPDBs;  //Initializes explorations with the one being relaxed.
-	RelaxDirStrategy relaxDir;
-	const double ratioRelaxTime, ratioRelaxNodes; 
+    //Maximum time and nodes to perform the whole? step? relaxation process
+    const int maxRelaxTime, maxRelaxNodes;
 
-	//Whether the ph should use mutexes
-	const bool use_mutex_in_abstraction;
+    //How to compute the TRs of the abstract state space.
+    const AbsTRsStrategy absTRsStrategy;
 
-	const double shouldAbstractRatio;
-	const int maxNumAbstractions;
-	int numAbstractions;
+    //Parameters to decide the relaxation
+    const bool perimeterPDBs;      //Initializes explorations with the one being relaxed.
+    RelaxDirStrategy relaxDir;
+    const double ratioRelaxTime, ratioRelaxNodes;
 
-	//Special parameter for spmas heuristic
-	bool ignore_if_useful;
- 
-	//Other parameters to actually prove that their default values are the right ones :-)
-	//const bool forceHeuristic; //always forces heuristic computation
-	//const bool heuristicAbstract;  //If abstract state spaces are
-	//allowed to use others as heuristic
-	//const bool replaceAbstraction;   //If true, the relaxed exploration
-	//substitutes the previous (instead
-	//of having both)
+    //Whether the ph should use mutexes
+    const bool use_mutex_in_abstraction;
 
-	//The following attributes are used directly by the PH strategies:
-	//BDDs to detect spurious states.
-	//std::vector<BDD> notMutexBDDs; 
+    const double shouldAbstractRatio;
+    const int maxNumAbstractions;
+    int numAbstractions;
 
-	//Intermediate heuristics for fw and bw search
-	std::vector<std::map<int, BDD>> intermediate_heuristics_fw, intermediate_heuristics_bw;
+    //Special parameter for spmas heuristic
+    bool ignore_if_useful;
 
-	//Abstraction that may produce an explicit heuristic
-	SymStateSpaceManager * finalAbstraction;
+    //Other parameters to actually prove that their default values are the right ones :-)
+    //const bool forceHeuristic; //always forces heuristic computation
+    //const bool heuristicAbstract;  //If abstract state spaces are
+    //allowed to use others as heuristic
+    //const bool replaceAbstraction;   //If true, the relaxed exploration
+    //substitutes the previous (instead
+    //of having both)
 
-	//Initialization of the hierarchy policy in case that it is needed.
-	virtual bool init() = 0;
+    //The following attributes are used directly by the PH strategies:
+    //BDDs to detect spurious states.
+    //std::vector<BDD> notMutexBDDs;
 
-    public:
-	SymPH(const Options & opts);
-	virtual ~SymPH(){}
+    //Intermediate heuristics for fw and bw search
+    std::vector<std::map<int, BDD>> intermediate_heuristics_fw, intermediate_heuristics_bw;
 
-	virtual HNode * relax(HNode * iniHNode, SymBDExp * bdExp,  Dir dir, int num_relaxations) = 0;
-	virtual void dump_options() const;
+    //Abstraction that may produce an explicit heuristic
+    SymStateSpaceManager *finalAbstraction;
 
-	virtual void statistics() const{}
+    //Initialization of the hierarchy policy in case that it is needed.
+    virtual bool init() = 0;
 
-	bool init(HTree * tree);
+public:
+    SymPH(const Options &opts);
+    virtual ~SymPH() {}
 
-	void set_relax_dir (RelaxDirStrategy dir) {
-	    relaxDir = dir;
-	}
+    virtual HNode *relax(HNode *iniHNode, SymBDExp *bdExp, Dir dir, int num_relaxations) = 0;
+    virtual void dump_options() const;
 
-	// Relax bdExp to get a new exploration as heuristic. Depending on
-	// parameters, calls relax_binary_search, relax_one_by_one or
-	// relax_one_by_one_reverse
-	inline HNode * relax(HNode * hNode){
-	    return relax(hNode, hNode->getExp(), getDir(hNode->getExp()), 1);
-	}
+    virtual void statistics() const {}
 
-	inline HNode * relax(HNode * hNode,  int num_relaxations) {
-	    return relax(hNode, hNode->getExp(), getDir(hNode->getExp()), num_relaxations);
-	}
+    bool init(HTree *tree);
 
-	//Let the hierarchy policy take the control in case she wants to do
-	//something.
-	//void operate(HNode * origSearch);
+    void set_relax_dir(RelaxDirStrategy dir) {
+        relaxDir = dir;
+    }
 
-	//Ask the hierarchy policy to add new explorations or heuristics
-	//Returns true if it did something
-	// bool askHeuristic(HNode * origSearch, double allotedTime); 
+    // Relax bdExp to get a new exploration as heuristic. Depending on
+    // parameters, calls relax_binary_search, relax_one_by_one or
+    // relax_one_by_one_reverse
+    inline HNode *relax(HNode *hNode) {
+        return relax(hNode, hNode->getExp(), getDir(hNode->getExp()), 1);
+    }
 
-	static void add_options_to_parser(OptionParser & parser, 
-					  const std::string & default_tr_st, 
-					  int abstraction_limit);
+    inline HNode *relax(HNode *hNode, int num_relaxations) {
+        return relax(hNode, hNode->getExp(), getDir(hNode->getExp()), num_relaxations);
+    }
 
-	inline const SymParamsMgr & getMgrParams() const{
-	    return mgrParams;
-	}
+    //Let the hierarchy policy take the control in case she wants to do
+    //something.
+    //void operate(HNode * origSearch);
 
-	inline void setIgnoreIfUseful(){
-	    ignore_if_useful = true;
-	}
+    //Ask the hierarchy policy to add new explorations or heuristics
+    //Returns true if it did something
+    // bool askHeuristic(HNode * origSearch, double allotedTime);
 
-	const std::vector<std::map<int, BDD>> & get_intermediate_heuristics_fw(){
-	    return intermediate_heuristics_fw;
-	}
+    static void add_options_to_parser(OptionParser &parser,
+                                      const std::string &default_tr_st,
+                                      int abstraction_limit);
 
-	const std::vector<std::map<int, BDD>> & get_intermediate_heuristics_bw(){
-	    return intermediate_heuristics_bw;
-	}
+    inline const SymParamsMgr &getMgrParams() const {
+        return mgrParams;
+    }
 
-    protected:
-	Dir getDir(SymBDExp * bdExp) const;
+    inline void setIgnoreIfUseful() {
+        ignore_if_useful = true;
+    }
 
-	SymBDExp * addHeuristicExploration(SymBDExp * oldExp,
-					   HNode * hNode,
-					   std::unique_ptr<SymBDExp> newExp) const;
+    const std::vector<std::map<int, BDD>> &get_intermediate_heuristics_fw() {
+        return intermediate_heuristics_fw;
+    }
 
-	//Initializes the newBDExp to serve as heuristic for
-	//bdExp. Calls initFrontier and initAll.  If suceeds, returns
-	//true. If it does not suceed, returns false and, if the new
-	//exploration is not useful, sets the hNode as notUseful.
-	bool relax_in(SymBDExp * bdExp, std::unique_ptr<SymBDExp> & newExp,
-		      HNode * hNode, int num_relaxations) const;
+    const std::vector<std::map<int, BDD>> &get_intermediate_heuristics_bw() {
+        return intermediate_heuristics_bw;
+    }
 
-	std::unique_ptr<SymBDExp> createBDExp (Dir dir, SymBDExp * bdExp) const;
+protected:
+    Dir getDir(SymBDExp *bdExp) const;
 
-    };
+    SymBDExp *addHeuristicExploration(SymBDExp *oldExp,
+                                      HNode *hNode,
+                                      std::unique_ptr<SymBDExp> newExp) const;
 
+    //Initializes the newBDExp to serve as heuristic for
+    //bdExp. Calls initFrontier and initAll.  If suceeds, returns
+    //true. If it does not suceed, returns false and, if the new
+    //exploration is not useful, sets the hNode as notUseful.
+    bool relax_in(SymBDExp *bdExp, std::unique_ptr<SymBDExp> &newExp,
+                  HNode *hNode, int num_relaxations) const;
+
+    std::unique_ptr<SymBDExp> createBDExp(Dir dir, SymBDExp *bdExp) const;
+};
 }
 #endif

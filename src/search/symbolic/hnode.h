@@ -2,124 +2,123 @@
 #define SYMBOLIC_HNODE_H
 
 #include "sym_state_space_manager.h"
-#include <memory> 
-#include <vector> 
-#include <set> 
+#include <memory>
+#include <vector>
+#include <set>
 
 namespace symbolic {
-    class HTree;
-    class SymBDExp;
-    class SymParamsSearch;
+class HTree;
+class SymBDExp;
+class SymParamsSearch;
 
-    class SymPH;
-    class SymController;
-    class SymExploration;
-    class SymParamsMgr;
+class SymPH;
+class SymController;
+class SymExploration;
+class SymParamsMgr;
 
-    class HNode {
-    private:
-	HTree * tree;
-	SymPH * ph;
- 
-	std::shared_ptr<SymStateSpaceManager> state_space;
+class HNode {
+private:
+    HTree *tree;
+    SymPH *ph;
 
-	std::unique_ptr<SymBDExp> exp;
+    std::shared_ptr<SymStateSpaceManager> state_space;
 
-	//If should abstract is activated, we store a list with perimeters
-	//of the original exploration to initialize our abstractions. 
-	std::vector<std::unique_ptr<SymBDExp>> expPerimeters;
+    std::unique_ptr<SymBDExp> exp;
 
-	std::vector <HNode *> children; //Nodes more abstracted
-	std::vector <HNode *> parents; //Nodes less abstracted
+    //If should abstract is activated, we store a list with perimeters
+    //of the original exploration to initialize our abstractions.
+    std::vector<std::unique_ptr<SymBDExp>> expPerimeters;
 
-	std::set <SymBDExp *> failedForExps; //Set of exps we failed to abstract
-	std::set <SymBDExp *> notUsefulForExps; //Set of exps we are not useful for
-  
-    public:
-	// Constructor for the original state space
-	HNode(HTree * tree, const SymParamsMgr & mgr);
-	
-	// Constructor for abstract state space
-	HNode(HNode * o, SymPH * ph, std::unique_ptr<SymStateSpaceManager> abs); 
+    std::vector <HNode *> children;     //Nodes more abstracted
+    std::vector <HNode *> parents;     //Nodes less abstracted
 
-	HNode(const HNode & o) = delete;
-	HNode(HNode &&) = default;
-	HNode& operator=(const HNode& ) = delete;
-	HNode& operator=(HNode &&) = default;
-	~HNode() = default; 
+    std::set <SymBDExp *> failedForExps;     //Set of exps we failed to abstract
+    std::set <SymBDExp *> notUsefulForExps;     //Set of exps we are not useful for
 
-	SymBDExp * initSearch(const SymParamsSearch & searchParams, Dir dir);
+public:
+    // Constructor for the original state space
+    HNode(HTree *tree, const SymParamsMgr &mgr);
 
-	void getAllParents(std::set<HNode *> & setParents);
+    // Constructor for abstract state space
+    HNode(HNode *o, SymPH *ph, std::unique_ptr<SymStateSpaceManager> abs);
 
-	HNode * getParent(){
-	    return parents[0];
-	}
+    HNode(const HNode &o) = delete;
+    HNode(HNode &&) = default;
+    HNode &operator=(const HNode &) = delete;
+    HNode &operator=(HNode &&) = default;
+    ~HNode() = default;
 
-	void add_exploration(std::unique_ptr<SymBDExp> newExp);
-	void failed_exploration(SymBDExp * newExp);
-	void notuseful_exploration(SymBDExp * newExp);
+    SymBDExp *initSearch(const SymParamsSearch &searchParams, Dir dir);
 
-	void addChildren(HNode * newNode);
-	void addParent(HNode * newNode);
+    void getAllParents(std::set<HNode *> &setParents);
 
-	bool empty() const{
-	    return !exp && failedForExps.empty() && notUsefulForExps.empty();
-	}
-	bool hasExpFor(SymBDExp * bdExp) const;
-	bool isUsefulFor(SymBDExp * bdExp) const;
+    HNode *getParent() {
+        return parents[0];
+    }
 
-	inline int numVariablesToAbstract() const {
-	    return state_space->numVariablesToAbstract();
-	}
+    void add_exploration(std::unique_ptr<SymBDExp> newExp);
+    void failed_exploration(SymBDExp *newExp);
+    void notuseful_exploration(SymBDExp *newExp);
 
-	inline int numVariablesAbstracted() const {
-	    return state_space->numVariablesAbstracted();
-	}
+    void addChildren(HNode *newNode);
+    void addParent(HNode *newNode);
 
-	inline bool isAbstracted() const{
-	    return state_space->isAbstracted();
-	}
+    bool empty() const {
+        return !exp && failedForExps.empty() && notUsefulForExps.empty();
+    }
+    bool hasExpFor(SymBDExp *bdExp) const;
+    bool isUsefulFor(SymBDExp *bdExp) const;
 
-	/*inline const std::vector <HNode *> & getChildren(SymPH * of_ph){
-	  return children;
-	  }*/
+    inline int numVariablesToAbstract() const {
+        return state_space->numVariablesToAbstract();
+    }
 
-	inline std::vector <HNode *> getChildren(SymPH * of_ph){
-	    std::vector <HNode *> res;
-	    for(auto c : children){
-		if(c->ph == of_ph) 
-		    res.push_back(c);
-	    }
-	    return res;
-	}
+    inline int numVariablesAbstracted() const {
+        return state_space->numVariablesAbstracted();
+    }
 
-	/* SymBDExp * relax(SymBDExp * _exp) const; */
-  
-	SymBDExp * getPerimeter () const;
+    inline bool isAbstracted() const {
+        return state_space->isAbstracted();
+    }
 
-	SymStateSpaceManager * getStateSpace() const{
-	    return state_space.get();
-	}
+    /*inline const std::vector <HNode *> & getChildren(SymPH * of_ph){
+      return children;
+      }*/
 
-	std::shared_ptr<SymStateSpaceManager> & getStateSpaceRef() {
-	    return state_space;
-	}
+    inline std::vector <HNode *> getChildren(SymPH *of_ph) {
+        std::vector <HNode *> res;
+        for (auto c : children) {
+            if (c->ph == of_ph)
+                res.push_back(c);
+        }
+        return res;
+    }
 
-	inline SymBDExp * getExp() const{
-	    return exp.get();
-	}
+    /* SymBDExp * relax(SymBDExp * _exp) const; */
 
-	inline bool hasStoredPerimeters () const {
-	    return !expPerimeters.empty();
-	}
+    SymBDExp *getPerimeter() const;
 
-	void addPerimeter (std::unique_ptr<SymBDExp> perimeter) {
-	    expPerimeters.push_back(std::move(perimeter));
-	} 
+    SymStateSpaceManager *getStateSpace() const {
+        return state_space.get();
+    }
 
-	friend std::ostream & operator<<(std::ostream &os, const HNode & n);
-    };
+    std::shared_ptr<SymStateSpaceManager> &getStateSpaceRef() {
+        return state_space;
+    }
 
+    inline SymBDExp *getExp() const {
+        return exp.get();
+    }
+
+    inline bool hasStoredPerimeters() const {
+        return !expPerimeters.empty();
+    }
+
+    void addPerimeter(std::unique_ptr<SymBDExp> perimeter) {
+        expPerimeters.push_back(std::move(perimeter));
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const HNode &n);
+};
 }
 #endif
