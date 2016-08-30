@@ -45,6 +45,16 @@ namespace symbolic {
     }
 
     void HNode::add_exploration(unique_ptr<SymBDExp> newExp){
+	// SymBDExp * oldExp = parent->getExp();
+	// if(search){
+	//     SymBDExp * newExp = search.get();
+	//     // Needed so that the abstract heuristic starts informing as
+	//     // soon as possible (and to know whether it is useful)
+	//     oldExp->setHeuristic(*newExp);
+	    
+	//     newNode->add_exploration(std::move(search));
+	// }
+
 	//  if(res->init(this, searchDir, parent, maxTime, maxNodes)){
 	exp = move(newExp);
 	//parent->setHeuristic(*res, true);

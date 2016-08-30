@@ -19,7 +19,6 @@ namespace options {
 }
 
 namespace symbolic {
-
     class SymVariables;
     class SymTransition;
         
@@ -56,6 +55,7 @@ protected:
   // resources used by the parent manager if necessary.
   std::weak_ptr<SymStateSpaceManager> parent_mgr; 
 
+  const AbsTRsStrategy abs_trs_strategy;
 
   //If the variable is fully/partially/not considered in the abstraction
   std::set <int> fullVars, absVars, nonRelVars;
@@ -87,7 +87,6 @@ protected:
   void cost_preimage(const BDD & bdd, std::map <int, std::vector<BDD> > & res, int maxNodes) const;
   void zero_image(const BDD & bdd, std::vector <BDD> & res, int maxNodes) const;
   void cost_image(const BDD & bdd, std::map <int, std::vector<BDD> > & res, int maxNodes) const;
-
 
   virtual void init_initial_state() = 0;
   virtual void init_goal() = 0;
@@ -132,9 +131,14 @@ protected:
 
 
  public:
-  SymStateSpaceManager(SymVariables * v, const SymParamsMgr & params, OperatorCost cost_type_); //All vars are relevant
-  /* SymStateSpaceManager(SymVariables * v, const SymParamsMgr & params, OperatorCost cost_type_, const std::set<int> & relVars); */
-  SymStateSpaceManager(std::shared_ptr<SymStateSpaceManager> & parent, const std::set<int>& relevantVars);
+  SymStateSpaceManager(SymVariables * v,
+		       const SymParamsMgr & params, 
+		       OperatorCost cost_type_); //Original state space: All vars are relevant
+
+  SymStateSpaceManager(std::shared_ptr<SymStateSpaceManager> & parent, 
+		       AbsTRsStrategy abs_trs_strategy_, 
+		       const std::set<int> & relevantVars); //Abstract state space (PDBs) 
+
   virtual void init_mutex(const std::vector<MutexGroup> & mutex_groups);
 
   void init(){
@@ -142,7 +146,7 @@ protected:
     init_transitions();
   }
 
-  virtual void init_transitions();
+  void init_transitions();
   
   inline bool isAbstracted() const {
     //return true;

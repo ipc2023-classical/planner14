@@ -45,9 +45,9 @@ namespace symbolic {
     }
 
     SymPDB::SymPDB(shared_ptr<SymStateSpaceManager> & parent, 
-		   AbsTRsStrategy , 
+		   AbsTRsStrategy absTRsStrategy, 
 		   const std::set<int> & relevantVars) :
-	SymStateSpaceManager(parent, relevantVars) {
+	SymStateSpaceManager(parent, absTRsStrategy, relevantVars) {
 
 	nonRelVarsCube = vars->getCubePre(nonRelVars);// * vars->getCubep(nonRelVars);
 	nonRelVarsCubeWithPrimes = nonRelVarsCube * vars->getCubeEff(nonRelVars);

@@ -14,16 +14,18 @@
 #include "../options/options.h"
 #include "../options/option_parser.h"
 #include "../abstract_task.h"
+#include "../global_operator.h"
 
 using namespace std;
 
 namespace symbolic {
 
     SymStateSpaceManager::SymStateSpaceManager(shared_ptr<SymStateSpaceManager> & parent,
+					       AbsTRsStrategy abs_trs_strategy_, 
 					       const std::set<int>& relevantVars)
  :
 	vars(parent->vars), p(parent->p), cost_type(parent->cost_type), 
-	parent_mgr(parent),
+	parent_mgr(parent), abs_trs_strategy(abs_trs_strategy_),
 	fullVars(relevantVars), 
 	min_transition_cost(parent->min_transition_cost), 
 	hasTR0(parent->hasTR0), mutexInitialized(false), 
@@ -39,7 +41,8 @@ namespace symbolic {
     SymStateSpaceManager::SymStateSpaceManager(SymVariables * v,
 					       const SymParamsMgr & params, 
 					       OperatorCost cost_type_) :
-	vars(v), p(params), cost_type(cost_type_),
+	vars(v), p(params), cost_type(cost_type_), 
+	abs_trs_strategy(AbsTRsStrategy::REBUILD_TRS),
 	initialState(v->zeroBDD()), goal(v->zeroBDD()), 
 	min_transition_cost(0), hasTR0(false), 
 	mutexInitialized(false), 
@@ -509,8 +512,113 @@ namespace symbolic {
 
     void SymStateSpaceManager::init_transitions(){
 	if(!transitions.empty()) return; //Already initialized!
-	init_individual_trs(); 
-	init_transitions_from_individual_trs();
+	if(parent_mgr.expired() || abs_trs_strategy == AbsTRsStrategy::REBUILD_TRS) {
+	    init_individual_trs(); 
+	    init_transitions_from_individual_trs();
+	} else {
+	    auto parent = parent_mgr.lock();
+	    assert (!parent->transitions.empty());
+
+	    map<int, vector <SymTransition> > failedToShrink;
+	    switch(abs_trs_strategy){
+	    case AbsTRsStrategy::TR_SHRINK:    
+		for(const auto & trsParent : parent->transitions){
+		    int cost = trsParent.first; //For all the TRs of cost cost
+		    DEBUG_MSG(cout << "Init trs: " << cost << endl;);
+		    set <const GlobalOperator *> failed_ops;
+    
+		    double num_trs = parent->transitions.size()*trsParent.second.size();	
+		    for(const auto & trParent : trsParent.second){
+			SymTransition absTransition = SymTransition(trParent); 
+			DEBUG_MSG(cout << "SHRINK: " << absTransition << " time_out: "
+				  << 1+p.max_aux_time/num_trs << " max nodes: "
+				  << 1+p.max_aux_nodes <<  endl;);
+			try{
+			    vars->setTimeLimit(1+p.max_aux_time/num_trs);
+			    absTransition.shrink(*this, 1+p.max_aux_nodes);
+			    transitions[cost].push_back(move(absTransition));
+			    vars->unsetTimeLimit();
+			}catch(BDDError e){
+			    vars->unsetTimeLimit();
+			    DEBUG_MSG(cout << "Failed shrinking TR" << endl;);
+			    //Failed some
+			    const set <const GlobalOperator *> & tr_ops = trParent.getOps();
+			    failed_ops.insert(begin(tr_ops), end(tr_ops));
+			}
+		    }
+      
+		    if(!failed_ops.empty()){ //Add all the TRs related with it.
+			cout << "Failed ops" << endl;
+			for(const auto & trParent : indTRs.at(cost)){	  
+			    if(trParent.hasOp(failed_ops)){
+				SymTransition absTransition = SymTransition(trParent); 
+				vars->setTimeLimit(p.max_aux_time);
+				try{
+				    absTransition.shrink(*this, p.max_aux_nodes);
+				    transitions[cost].push_back(absTransition);
+				    vars->unsetTimeLimit();
+				}catch(BDDError e){
+				    failedToShrink[cost].push_back(absTransition);
+				    vars->unsetTimeLimit();
+				}
+			    }
+			}
+		    }
+		    merge(vars, transitions[cost], mergeTR, p.max_aux_time/parent->transitions.size(), p.max_tr_size);
+		}
+		break;
+	    case AbsTRsStrategy::IND_TR_SHRINK:
+		for(const auto & indTRsCost : parent->indTRs){
+		    int cost = indTRsCost.first;
+		    DEBUG_MSG(cout << "Init trs with IND_TR_SHRINK: " << cost << endl;);
+		
+		    for(const auto & trParent : indTRsCost.second){ 
+			SymTransition absTransition = SymTransition(trParent); 
+			try{
+			    vars->setTimeLimit(p.max_aux_time);
+			    absTransition.shrink(*this, p.max_aux_nodes);
+			    vars->unsetTimeLimit();
+			    transitions[cost].push_back(absTransition);
+			}catch(BDDError e){
+			    vars->unsetTimeLimit();
+			    failedToShrink[cost].push_back(absTransition);
+			}
+		    }
+		    merge(vars, transitions[cost], mergeTR, p.max_aux_time, p.max_tr_size);
+		}
+		break;
+	    case AbsTRsStrategy::SHRINK_AFTER_IMG:
+		//SetAbsAfterImage
+		for(const auto & t : parent->transitions){
+		    int cost = t.first;
+
+		    for(const auto & tr : t.second){
+			SymTransition newTR = tr;
+			newTR.setAbsAfterImage(this);
+			transitions[cost].push_back(newTR);
+		    }
+		}
+		break;
+	    
+	    case AbsTRsStrategy::REBUILD_TRS:
+		assert(false);
+		break;
+	    }
+	    
+	    //Use Shrink after img in all the transitions that failedToShrink
+	    DEBUG_MSG(cout << "Failed to shrink: " << (failedToShrink.empty() ? "no" : "yes") << endl;);
+	    for (auto & failedTRs : failedToShrink){
+		merge(vars, failedTRs.second, mergeTR, p.max_aux_time, p.max_tr_size);
+		for(auto & tr : failedTRs.second){
+		    tr.setAbsAfterImage(this);
+		    transitions[failedTRs.first].push_back(tr);
+		}
+	    }
+
+	}
+
+	DEBUG_MSG(cout << "Finished init trs: " << transitions.size() << endl;);
+
     }
 
 

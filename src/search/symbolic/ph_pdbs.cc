@@ -85,13 +85,11 @@ namespace symbolic {
 	    utils::exit_with(utils::ExitCode::UNSUPPORTED);
 	}
 
-
 	// Needed so that the abstract heuristic starts informing as
 	// soon as possible (and to know whether it is useful)
-	  
-
+	 
 	if(newHNode){
-	    assert(newHNode->getExp());
+	    assert(newHNode->getExp()); //The exploration must be added by relax_in called from the select methods
 	    bdExp->setHeuristic(*(newHNode->getExp()));
 	    cout << ">> Abstracted exploration: " << *newHNode << " total time: " << g_timer << endl;
 	    DEBUG_MSG(newHNode->getStateSpace()->print(cout, true););

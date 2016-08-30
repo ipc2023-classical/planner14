@@ -44,8 +44,6 @@ class SymController {
   virtual bool solved () const{return false;}
   //virtual SymBDExp * relax(SymBDExp * /*exp*/) const {return nullptr;}
 
-  //HNode * createHNode(HNode * node, std::unique_ptr <SymAbstraction> && abs, SymPH * ph);
-
   inline SymVariables * getVars(){
     return vars;
   }

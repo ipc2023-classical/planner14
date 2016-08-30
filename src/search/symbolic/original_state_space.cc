@@ -16,8 +16,6 @@ namespace symbolic {
 
     }
 
-
-
     void OriginalStateSpace::init_initial_state() {    
 	initialState = vars->getStateBDD(g_initial_state_data);
     }

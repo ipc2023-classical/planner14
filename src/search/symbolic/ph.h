@@ -128,7 +128,8 @@ namespace symbolic {
 	Dir getDir(SymBDExp * bdExp) const;
 
 	SymBDExp * addHeuristicExploration(SymBDExp * oldExp,
-					   std::unique_ptr<SymBDExp> newExp);
+					   HNode * hNode,
+					   std::unique_ptr<SymBDExp> newExp) const;
 
 	//Initializes the newBDExp to serve as heuristic for
 	//bdExp. Calls initFrontier and initAll.  If suceeds, returns
