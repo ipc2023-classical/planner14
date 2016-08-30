@@ -2,7 +2,7 @@
 #ifndef UTILS_DEBUG_MACROS_H
 #define UTILS_DEBUG_MACROS_H
 
-#ifdef NDEBUG
+#ifndef NDEBUG
    #define DEBUG_MSG(str) do { str } while( false )
    #define DEBUG_PHPDBS(str) do { str } while ( false )
    #define DEBUG_MAS(str) do { str } while( false )
