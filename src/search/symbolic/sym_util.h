@@ -33,7 +33,7 @@ T getData(std::string line, const std::string & separator, const std::string & s
   ss << line;
   if(!(ss >> res)){
     std::cout << std::endl << "ERROR, could not parse: " << line << std::endl;
-    exit(-1);
+    utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
   }
   return res;
 }

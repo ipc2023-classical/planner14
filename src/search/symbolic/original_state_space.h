@@ -10,15 +10,12 @@ class OriginalStateSpace : public SymStateSpaceManager {
 protected:
   virtual void init_initial_state() override;
   virtual void init_goal() override;
-  virtual void init_transitions() override;
   virtual void init_individual_trs () override;
 
 public: 
 
   OriginalStateSpace(SymVariables * v, const SymParamsMgr & params, OperatorCost cost_type_);
 
-
-  virtual void init_mutex(const std::vector<MutexGroup> & mutex_groups) override;
 
     virtual std::string tag() const override {
 	return "original";

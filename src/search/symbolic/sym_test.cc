@@ -38,7 +38,7 @@ void GSTPlanStep::checkHeuristicValue(BDD states, int h, int /*f*/, SymAstar * e
       //Check that the heuristic value is right
       if((exp->isFW() && h < g_values[exp]) || (!exp->isFW() && h < g_plan+h_plan - g_values[exp])){
 	cout << "## ERROR: " << *this << " assigned h: " << h << endl;
-	exit(-1);
+	utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
       }
     }
     /*    if (f == numeric_limits<int>::max()){
@@ -177,7 +177,7 @@ void GSTPlan::checkClose (BDD closedStates, int gVal, SymAstar * exp){
   for (auto & step : plan){
     if(!step.checkClose(closedStates, g, fw, exp)){
       checkExploration(exp);
-	exit(-1); 
+	utils::exit_with(utils::ExitCode::CRITICAL_ERROR); 
     }
   }
 }
@@ -203,7 +203,7 @@ void GSTPlan::loadPlan(string filename, const SymVariables & vars){
     for(auto op : plan_ops){
       if(!op->is_applicable(s)){
 	cout << "#ERROR: bad plan reconstruction" << endl;
-	exit(-1);	
+	utils::exit_with(utils::ExitCode::CRITICAL_ERROR);	
       }
       s = g_state_registry->get_successor_state(s, *op);
       g += op->get_cost();
@@ -215,7 +215,7 @@ void GSTPlan::loadPlan(string filename, const SymVariables & vars){
 
     if(!test_goal(s)){
       cout << "#ERROR: bad plan reconstruction" << endl;
-      exit(-1);
+      utils::exit_with(utils::ExitCode::CRITICAL_ERROR);;
     }
 
     cout << "Test plan loaded: " << *this << endl;

@@ -1,4 +1,6 @@
-#include "sym_enums.h" 
+#include "sym_enums.h"
+
+#include "../utils/system.h" 
 
 namespace symbolic {
 
@@ -9,7 +11,7 @@ std::ostream & operator<<(std::ostream &os, const LinearPDBStrategy & st){
   case LinearPDBStrategy::BINARY: return os << "binary_search";
   default:
     std::cerr << "Name of LinearPDBStrategy not known";
-    exit(-1);
+    utils::exit_with(utils::ExitCode::UNSUPPORTED);
   }
 }
 
@@ -21,7 +23,7 @@ std::ostream & operator<<(std::ostream &os, const RelaxDirStrategy & relaxDir){
   case RelaxDirStrategy::SWITCHBACK: return os << "sw"; 
   default:
     std::cerr << "Name of RelaxDirStrategy not known";
-    exit(-1);
+    utils::exit_with(utils::ExitCode::UNSUPPORTED);
   }
 }
 
@@ -32,7 +34,7 @@ std::ostream & operator<<(std::ostream &os, const Dir & dir){
   case Dir::BIDIR: return os << "bd"; 
   default:
     std::cerr << "Name of Dir not known";
-    exit(-1);
+    utils::exit_with(utils::ExitCode::UNSUPPORTED);
   }
 }
 
@@ -47,7 +49,7 @@ std::ostream & operator<<(std::ostream &os, const MutexType & m){
   case MutexType::MUTEX_LICOMP: return os << "licompaction";    
   default:
     std::cerr << "Name of MutexType not known";
-    exit(-1);
+    utils::exit_with(utils::ExitCode::UNSUPPORTED);
   }
 
 }
@@ -60,7 +62,7 @@ std::ostream & operator<<(std::ostream &os, const AbsTRsStrategy & a){
   case AbsTRsStrategy::SHRINK_AFTER_IMG: return os << "shrink_after_img";    
   default:
     std::cerr << "Name of AbsTRsStrategy not known";
-    exit(-1);
+    utils::exit_with(utils::ExitCode::UNSUPPORTED);
   }
 }
 
@@ -72,7 +74,7 @@ std::ostream & operator<<(std::ostream &os, const AbsMinimizationType & a){
   case AbsMinimizationType::SHORT_PATHS: return os << "short_paths";    
   default:
     std::cerr << "Name of AbsMinimizationType not known";
-    exit(-1);
+    utils::exit_with(utils::ExitCode::UNSUPPORTED);
   }
 }
 
@@ -88,7 +90,7 @@ std::ostream & operator<<(std::ostream &os, const UCTRewardType & a){
   case UCTRewardType::RAND: return os << "random";  
   default:
     std::cerr << "Name of AbsMinimizationType not known";
-    exit(-1);
+    utils::exit_with(utils::ExitCode::UNSUPPORTED);
   }
 }
 

@@ -44,7 +44,7 @@ namespace symbolic {
 	}
     }
 
-    void HNode::add_exploration(unique_ptr<SymBDExp> && newExp){
+    void HNode::add_exploration(unique_ptr<SymBDExp> newExp){
 	//  if(res->init(this, searchDir, parent, maxTime, maxNodes)){
 	exp = move(newExp);
 	//parent->setHeuristic(*res, true);
@@ -122,7 +122,7 @@ namespace symbolic {
 	       exp->initAll(numeric_limits<int>::max(), numeric_limits<int>::max())){
 	    }else{
 		cout << "Init exploration failed" << endl;
-		exit(-1);
+		utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
 	    }
 	}
 	return exp.get();

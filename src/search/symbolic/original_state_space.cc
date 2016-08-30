@@ -10,6 +10,10 @@ namespace symbolic {
 					   OperatorCost cost_type_) : 
 	SymStateSpaceManager(v, params, cost_type_) {
 
+	for (size_t i = 0; i < g_variable_domain.size(); ++i) {
+	    fullVars.insert(i);
+	}
+
     }
 
 
@@ -20,18 +24,6 @@ namespace symbolic {
 
     void OriginalStateSpace::init_goal() {
 	goal = vars->getPartialStateBDD(g_goal);
-    }
-
-    void OriginalStateSpace::init_mutex(const std::vector<MutexGroup> & mutex_groups){
-	//If (a) is initialized OR not using mutex OR edeletion does not need mutex
-	if(mutexInitialized || p.mutex_type == MutexType::MUTEX_NOT)
-	    return; //Skip mutex initialization
- 
-	if(p.mutex_type == MutexType::MUTEX_EDELETION){
-	    SymStateSpaceManager::init_mutex(mutex_groups, true, true);
-	}else{
-	    SymStateSpaceManager::init_mutex(mutex_groups, true, false);
-	}
     }
 
     void OriginalStateSpace::init_individual_trs(){
@@ -51,12 +43,6 @@ namespace symbolic {
 		indTRs[cost].back().edeletion(*this);
 	    }
 	}
-    }
-
-    void OriginalStateSpace::init_transitions(){
-	if(!transitions.empty()) return; //Already initialized!
-	init_individual_trs(); 
-	init_transitions_from_individual_trs();
     }
 
 }

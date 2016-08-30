@@ -39,12 +39,12 @@ public:
     }
 
     HNode * createHNode(HNode * parent, SymPH * ph, 
-			std::unique_ptr <SymStateSpaceManager> && state_space, 
+			std::unique_ptr <SymStateSpaceManager> state_space, 
 			std::unique_ptr<SymBDExp> search);
 
 
     HNode * createHNode(HNode * parent, SymPH * ph, 
-			std::unique_ptr <SymStateSpaceManager> && state_space) {
+			std::unique_ptr <SymStateSpaceManager> state_space) {
 	return createHNode (parent, ph, std::move(state_space), nullptr);
     }
 

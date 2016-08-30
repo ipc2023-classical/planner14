@@ -51,6 +51,12 @@ protected:
   const SymParamsMgr p;
   const OperatorCost cost_type;
 
+  // Hold a reference to the parent manager that can be used during
+  // initialization. Uses weak_ptr in order to allow releasing the
+  // resources used by the parent manager if necessary.
+  std::weak_ptr<SymStateSpaceManager> parent_mgr; 
+
+
   //If the variable is fully/partially/not considered in the abstraction
   std::set <int> fullVars, absVars, nonRelVars;
 
@@ -92,7 +98,7 @@ protected:
   virtual void getTransitions(const std::map<int, std::vector <SymTransition> > & /*individualTRs*/, 
 			      std::map<int, std::vector <SymTransition> > & /*res*/) const{
     std::cerr << "REBUILD TRs not supported by " << *this << std::endl;
-    exit(-1);
+    utils::exit_with(utils::ExitCode::UNSUPPORTED);
   }
 
   void shrinkTransitions(const std::map<int, std::vector <SymTransition> > & trs, 
@@ -128,15 +134,15 @@ protected:
  public:
   SymStateSpaceManager(SymVariables * v, const SymParamsMgr & params, OperatorCost cost_type_); //All vars are relevant
   /* SymStateSpaceManager(SymVariables * v, const SymParamsMgr & params, OperatorCost cost_type_, const std::set<int> & relVars); */
- SymStateSpaceManager(const SymStateSpaceManager & parent, const std::set<int>& relevantVars);
-  virtual void init_mutex(const std::vector<MutexGroup> & mutex_groups) = 0;
+  SymStateSpaceManager(std::shared_ptr<SymStateSpaceManager> & parent, const std::set<int>& relevantVars);
+  virtual void init_mutex(const std::vector<MutexGroup> & mutex_groups);
 
   void init(){
     init_mutex(g_mutex_groups);
     init_transitions();
   }
 
-  virtual void init_transitions() = 0;
+  virtual void init_transitions();
   
   inline bool isAbstracted() const {
     //return true;

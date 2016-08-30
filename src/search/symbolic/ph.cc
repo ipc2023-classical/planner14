@@ -170,7 +170,7 @@ bool SymPH::relax_in(SymBDExp * bdExp, unique_ptr<SymBDExp> & newExp,
     if (bdExp->getFw() != newExp->getFw()->getParent() && 
 	bdExp->getBw() != newExp->getBw()->getParent()){
 	cerr << "Assertion error" << endl;
-	exit(-1);
+	utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
     }
   
     cout << ">> Abstract in hNode: " << *hNode << " total time: " << g_timer << endl;
@@ -291,11 +291,11 @@ Dir SymPH::getDir(SymBDExp * bdExp) const {
       return Dir::FW;	
     }else{
       cerr<< "Cannot use Switchback with bidirectional searches" << endl;
-      exit(-1);
+      utils::exit_with(utils::ExitCode::UNSUPPORTED);
     }
   default: 
     cerr<< "Unkown RelaxDirStrategy" << endl;
-    exit(-1);
+    utils::exit_with(utils::ExitCode::UNSUPPORTED);
   }
 }
 

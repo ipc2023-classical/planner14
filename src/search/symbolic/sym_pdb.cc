@@ -21,7 +21,7 @@ namespace symbolic {
 	nonRelVarsCubeWithPrimes = bdd_vars->oneBDD();
 	if(!nonRelVarsCube.IsCube()){
 	    cout << "Error in sym_pdb: nonRelVars should be a cube"; nonRelVarsCube.print(0, 1);  cout << endl;
-	    exit(-1);
+	    utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
 	}
     }
 
@@ -40,11 +40,11 @@ namespace symbolic {
 	nonRelVarsCubeWithPrimes = nonRelVarsCube * vars->getCubeEff(nonRelVars);
 	if(!nonRelVarsCube.IsCube()){
 	    cout << "Error in sym_pdb: nonRelVars should be a cube"; nonRelVarsCube.print(0, 1);  cout << endl;
-	    exit(-1);
+	    utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
 	}
     }
 
-    SymPDB::SymPDB(const SymStateSpaceManager & parent, 
+    SymPDB::SymPDB(shared_ptr<SymStateSpaceManager> & parent, 
 		   AbsTRsStrategy , 
 		   const std::set<int> & relevantVars) :
 	SymStateSpaceManager(parent, relevantVars) {
@@ -53,7 +53,7 @@ namespace symbolic {
 	nonRelVarsCubeWithPrimes = nonRelVarsCube * vars->getCubeEff(nonRelVars);
 	if(!nonRelVarsCube.IsCube()){
 	    cout << "Error in sym_pdb: nonRelVars should be a cube"; nonRelVarsCube.print(0, 1);  cout << endl;
-	    exit(-1);
+	    utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
 	}
     }
 
@@ -70,19 +70,35 @@ namespace symbolic {
 	return bdd.UnivAbstract(nonRelVarsCube, maxNodes);
     }
 
-    void SymPDB::init_transitions() {
-	cout << "Not implemented SymPDB::init_transitions" << endl;
-	utils::exit_with(utils::ExitCode::UNSUPPORTED);
-    }
     void SymPDB::init_individual_trs ()  {
 	cout << "Not implemented SymPDB::init_individual_trs ()" << endl;
 	utils::exit_with(utils::ExitCode::UNSUPPORTED);
     }
 
-    void SymPDB::init_mutex(const std::vector<MutexGroup> & ) {
-	cout << "Not implemented SymPDB::init_mutex (const std::vector<MutexGroup> & mutex_groups)" << endl;
-	utils::exit_with(utils::ExitCode::UNSUPPORTED);
-    }
+    // void SymPDB::init_mutex(const std::vector<MutexGroup> & mutex_groups) {
+    // 	// if(/*p.init_mutex_from_parent &&*/ parentMgr){
+    // 	//     setTimeLimit(p.max_mutex_time);
+    // 	//     DEBUG_MSG(cout << "Init mutex from parent" << endl;);
+    // 	//     mutexInitialized = true;
+    // 	//     //Initialize mutexes from other manager
+    // 	//     try{
+    // 	// 	for(auto & bdd : parentMgr->notMutexBDDsFw){
+    // 	// 	    BDD shrinked = abstraction->shrinkExists(bdd, p.max_mutex_size);
+    // 	// 	    notMutexBDDsFw.push_back(shrinked);
+    // 	// 	}
+    // 	// 	for(auto & bdd : parentMgr->notMutexBDDsBw){
+    // 	// 	    BDD shrinked = abstraction->shrinkExists(bdd, p.max_mutex_size);
+    // 	// 	    notMutexBDDsBw.push_back(shrinked);
+    // 	// 	}
+    // 	// 	unsetTimeLimit();
+    // 	//     }catch(BDDError e){ 
+    // 	// 	unsetTimeLimit();
+    // 	// 	//Forget about it
+    // 	// 	vector<BDD>().swap(notMutexBDDsFw);
+    // 	// 	vector<BDD>().swap(notMutexBDDsBw);
+    // 	// 	init_mutex(mutex_groups, true, false);
+    // 	//     }
+    // }
 
 
 /*void SymPDB::getTransitions(map<int, std::vector <SymTransition> > & trs) const{

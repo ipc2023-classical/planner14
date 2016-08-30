@@ -20,8 +20,8 @@ namespace symbolic {
     private:
 	HTree * tree;
 	SymPH * ph;
-
-	std::unique_ptr<SymStateSpaceManager> state_space;
+ 
+	std::shared_ptr<SymStateSpaceManager> state_space;
 
 	std::unique_ptr<SymBDExp> exp;
 
@@ -56,7 +56,7 @@ namespace symbolic {
 	    return parents[0];
 	}
 
-	void add_exploration(std::unique_ptr<SymBDExp> && newExp);
+	void add_exploration(std::unique_ptr<SymBDExp> newExp);
 	void failed_exploration(SymBDExp * newExp);
 	void notuseful_exploration(SymBDExp * newExp);
 
@@ -98,8 +98,12 @@ namespace symbolic {
   
 	SymBDExp * getPerimeter () const;
 
-	inline SymStateSpaceManager * getStateSpace() const{
+	SymStateSpaceManager * getStateSpace() const{
 	    return state_space.get();
+	}
+
+	std::shared_ptr<SymStateSpaceManager> & getStateSpaceRef() {
+	    return state_space;
 	}
 
 	inline SymBDExp * getExp() const{
@@ -110,7 +114,7 @@ namespace symbolic {
 	    return !expPerimeters.empty();
 	}
 
-	void addPerimeter (std::unique_ptr<SymBDExp> & perimeter) {
+	void addPerimeter (std::unique_ptr<SymBDExp> perimeter) {
 	    expPerimeters.push_back(std::move(perimeter));
 	} 
 

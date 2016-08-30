@@ -43,6 +43,7 @@ namespace symbolic {
 			     Dir dir, int num_relaxations){
 	Timer t_relax;
 	cout << ">> Abstract " << *iniHNode << " total time: " << g_timer  << endl;
+
 	vector <HNode *> nodes;
 	HNode * hNode = iniHNode;
 	if(iniHNode->isAbstracted()){
@@ -59,6 +60,7 @@ namespace symbolic {
 		}
 	    }
 	}
+	
 	getListAbstraction(bdExp, hNode, nodes);
   
 	DEBUG_PHPDBS(cout << "List of abstractions created: " << nodes.size() << " total time: " << g_timer << endl;);
@@ -80,7 +82,7 @@ namespace symbolic {
 	case LinearPDBStrategy::BINARY:
 	    cout << "Not implemented select_binary_search" << endl;
 	    //newHNode = select_binary_search(nodes, bdExp, dir, num_relaxations);
-	    break;
+	    utils::exit_with(utils::ExitCode::UNSUPPORTED);
 	}
 
 
@@ -131,6 +133,7 @@ namespace symbolic {
 	set<int> currentVars (std::begin(remainingVars), std::end(remainingVars)); 
 	for(auto vit = var_ordering.rbegin(); vit != var_ordering.rend(); ++vit){
 	    DEBUG_PHPDBS(cout << "Removing variable: " << *vit << endl;);
+	    assert(currentVars.count(*vit));
 	    currentVars.erase(*vit);
 	    //for(auto var : var_ordering){
 	    //currentVars.erase(var);
@@ -147,7 +150,9 @@ namespace symbolic {
 		    DEBUG_MSG(cout << "YES, ITS USEFUL" << endl;);
 		}
 	    }else{
-		SymPDB * newPDB = new SymPDB(*(current->getStateSpace()), absTRsStrategy, currentVars);
+		assert(current);
+		DEBUG_PHPDBS(cout << "New PDB" << *(current->getStateSpace()) << endl;);
+		SymPDB * newPDB = new SymPDB(current->getStateSpaceRef(), absTRsStrategy, currentVars);
 		current = tree->createHNode(current, this, unique_ptr<SymStateSpaceManager> (newPDB));
 		res.push_back(current); 
 		generatedSets[currentVars] = current;
@@ -192,6 +197,7 @@ namespace symbolic {
 
 	    //I have a potential hNode
 	    if(relax_in(bdExp, newBDExp, hNode, num_relaxations)){
+		hNode->getStateSpace()->init();
 		return hNode;
 	    }else{
 		newBDExp.reset(nullptr);

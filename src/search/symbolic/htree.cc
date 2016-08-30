@@ -26,8 +26,8 @@ namespace symbolic {
     }
 
     HNode * HTree::createHNode(HNode * parent, SymPH * ph, 
-			       unique_ptr <SymStateSpaceManager> && state_space, 
-			       std::unique_ptr<SymBDExp> search){
+			       unique_ptr <SymStateSpaceManager> state_space, 
+			       unique_ptr<SymBDExp> search){
 	HNode * newNode = new HNode(parent, ph, std::move (state_space));
 	nodes.push_back(unique_ptr<HNode> (newNode));
 	parent->addChildren(newNode);
@@ -41,11 +41,7 @@ namespace symbolic {
 	    oldExp->setHeuristic(*newExp);
 	    
 	    newNode->add_exploration(std::move(search));
-	    return newNode;
-	}else{
-	    return nullptr;
 	}
-
 	return newNode;
     }
 

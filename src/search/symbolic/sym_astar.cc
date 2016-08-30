@@ -163,6 +163,7 @@ void SymAstar::setPerfectHeuristic(SymAstarClosed * h){
 //If failed, some BDDs may be shrinked.
 bool SymAstar::relaxFrontier(SymStateSpaceManager * manager, int maxTime, int maxNodes){
     mgr = manager;
+    DEBUG_MSG(cout << "Relax frontier" << endl;);
     mgr->setTimeLimit(maxTime);
     try{   //Shrink frontier
 	DEBUG_MSG (cout <<"Shrink frontier: "; printFrontier(); cout << "time limit: " << maxTime << " node limit: " << maxNodes << endl;);
@@ -177,7 +178,9 @@ bool SymAstar::relaxFrontier(SymStateSpaceManager * manager, int maxTime, int ma
 	cout << "Truncated while shrinking the frontier." << endl;
 	return false;
     }
-  
+    
+    mgr->init_transitions(); //TODO: I could delay this but I need to set hasTRs0 for prepareBucket
+    
     if(!expansionReady() && !prepareBucket(/*maxTime, maxNodes, true*/)){
 	cout << "Truncated because the new frontier could not be prepared: " << nodeCount(S) << endl;
 	return false;
@@ -1186,7 +1189,7 @@ std::ostream & operator<<(std::ostream &os, const TruncatedReason & reason){
     return os << "cost-image";
   default: 
     cerr << "SymAstar truncated by unkown reason" << endl;
-    exit(-1);
+    utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
   }
 }
 }

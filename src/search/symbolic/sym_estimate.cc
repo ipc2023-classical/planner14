@@ -106,7 +106,7 @@ void SymStepCostEstimation::nextStep(double nodes){
   cout << *this << endl;
   if(this->nodes() <= 0){
     cout << "ERROR: estimated nodes is lower than 0 after nextStep" << endl;
-    exit(-1);
+    utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
   }
 #endif
 }

@@ -333,7 +333,7 @@ void SymAstarClosed::extract_path(const BDD & c, int h, bool fw,
 	    }
 	    if(!found){
 		cerr << "Error: Solution reconstruction failed: " << dirname(exploration->isFW()) << endl;
-		exit(-1);
+		utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
 	    }
 	}
     }
@@ -361,7 +361,7 @@ SymSolution SymAstarClosed::checkCut(const BDD & states, int g, bool fw) const{
     }
 
     cerr << "Error: Cut with closedTotal but not found on closed" << endl;
-    exit(-1);
+    utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
 }
 
 std::ostream & operator<<(std::ostream &os, const SymAstarClosed & c){

@@ -19,11 +19,15 @@ using namespace std;
 
 namespace symbolic {
 
-    SymStateSpaceManager::SymStateSpaceManager(const SymStateSpaceManager & parent,
+    SymStateSpaceManager::SymStateSpaceManager(shared_ptr<SymStateSpaceManager> & parent,
 					       const std::set<int>& relevantVars)
  :
-	vars(parent.vars), p(parent.p), cost_type(parent.cost_type), 
-	fullVars(relevantVars) {
+	vars(parent->vars), p(parent->p), cost_type(parent->cost_type), 
+	parent_mgr(parent),
+	fullVars(relevantVars), 
+	min_transition_cost(parent->min_transition_cost), 
+	hasTR0(parent->hasTR0), mutexInitialized(false), 
+	mutexByFluentInitialized(false) {
     
 	for(size_t i = 0; i < g_variable_name.size(); i++){
 	    if (!fullVars.count(i)){
@@ -487,6 +491,26 @@ namespace symbolic {
 	for(size_t i = 0; i < bucket.size(); ++i){
 	    bucket[i] = shrinkExists(bucket[i], maxNodes);
 	}
+    }
+
+
+    void SymStateSpaceManager::init_mutex(const std::vector<MutexGroup> & mutex_groups){
+	//If (a) is initialized OR not using mutex OR edeletion does not need mutex
+	if(mutexInitialized || p.mutex_type == MutexType::MUTEX_NOT)
+	    return; //Skip mutex initialization
+ 
+	if(p.mutex_type == MutexType::MUTEX_EDELETION){
+	    SymStateSpaceManager::init_mutex(mutex_groups, true, true);
+	}else{
+	    SymStateSpaceManager::init_mutex(mutex_groups, true, false);
+	}
+    }
+
+
+    void SymStateSpaceManager::init_transitions(){
+	if(!transitions.empty()) return; //Already initialized!
+	init_individual_trs(); 
+	init_transitions_from_individual_trs();
     }
 
 

@@ -258,7 +258,7 @@ void SymTransition::merge(const SymTransition & t2,
   assert(cost == t2.cost);
   if (cost != t2.cost){
     cout << "Error: merging transitions with different cost: " << cost << " " << t2.cost << endl;
-    exit(-1);
+    utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
   }
 
   //  cout << "set_union" << endl;
@@ -470,7 +470,7 @@ void SymTransition::merge(const SymTransition & t2,
 void SymTransition::edeletion(SymStateSpaceManager & mgr) {
   if(ops.size() != 1){
     cerr << "Error, trying to apply edeletion over a transition with more than one op" << endl;
-    exit(-1);
+    utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
   }
 
   //For each op, include relevant mutexes

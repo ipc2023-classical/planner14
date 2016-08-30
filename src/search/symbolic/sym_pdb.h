@@ -14,7 +14,6 @@ class SymPDB : public SymStateSpaceManager {
 
   virtual void init_initial_state() override;
   virtual void init_goal() override;
-  virtual void init_transitions() override;
   virtual void init_individual_trs () override;
 
  public:  
@@ -22,9 +21,10 @@ class SymPDB : public SymStateSpaceManager {
   SymPDB(SymVariables * bdd_vars, const SymParamsMgr & params, OperatorCost cost_type_, 
 	 AbsTRsStrategy absTRsStrategy, const std::set<int> & relVars);
   
-  SymPDB(const SymStateSpaceManager & parent, AbsTRsStrategy absTRsStrategy, const std::set<int> & relVars);
+  SymPDB(std::shared_ptr<SymStateSpaceManager> & parent, 
+	 AbsTRsStrategy absTRsStrategy, const std::set<int> & relVars);
  
-  ~SymPDB(){}
+  virtual ~SymPDB(){}
   virtual BDD shrinkExists(const BDD & bdd, int maxNodes) const override;
   virtual BDD shrinkForall(const BDD & bdd, int maxNodes) const override;
   virtual BDD shrinkTBDD (const BDD & tBDD, int maxNodes) const override;
@@ -40,8 +40,7 @@ class SymPDB : public SymStateSpaceManager {
 
   virtual void print(std::ostream & os, bool fullInfo) const override;
 
-  virtual void init_mutex(const std::vector<MutexGroup> & mutex_groups) override;
-
+  //virtual void init_mutex(const std::vector<MutexGroup> & mutex_groups) override;
 };
 
 }

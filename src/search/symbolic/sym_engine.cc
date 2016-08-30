@@ -73,7 +73,7 @@ void SymEngine::initialize() {
       originalStateSpace->add_exploration(std::move(refExp));
     }else{
       cout << "Init exploration failed" << endl;
-      exit(-1);
+      utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
     }
     //hierarchy->init(this, policyHierarchy);
     //hierarchy->init_exploration(searchDir);
