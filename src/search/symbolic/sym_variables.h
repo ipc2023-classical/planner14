@@ -1,7 +1,7 @@
-#ifndef SYM_VARIABLES_H
-#define SYM_VARIABLES_H
+#ifndef SYMBOLIC_VARIABLES_H
+#define SYMBOLIC_VARIABLES_H
 
-#include "cuddObj.hh"
+#include "sym_bucket.h"
 
 #include "../utils/timer.h"
 #include "../globals.h"
@@ -74,6 +74,8 @@ class SymVariables{
   BDD getPartialStateBDD(const std::vector<std::pair<int, int> > & state) const;
   double numStates(const BDD & bdd) const; //Returns the number of states in a BDD
   double numStates() const;
+  double numStates(const Bucket & bucket) const;
+
 
   double percentageNumStates(const BDD & bdd) const {
       return numStates(bdd)/numStates();
@@ -100,25 +102,25 @@ class SymVariables{
   }
  
 
-  inline BDD getCubePre(int var){
+  inline BDD getCubePre(int var) const {
     return getCube(var, bdd_index_pre);
   }
-  inline BDD getCubePre(const std::set <int> & vars){
+  inline BDD getCubePre(const std::set <int> & vars) const {
     return getCube(vars, bdd_index_pre);
   }
 
-  inline BDD getCubeEff(int var){
+  inline BDD getCubeEff(int var) const {
     return getCube(var, bdd_index_eff);
   }
-  inline BDD getCubeEff(const std::set <int> & vars){
+  inline BDD getCubeEff(const std::set <int> & vars) const{
     return getCube(vars, bdd_index_eff);
   }
 
 
-  inline BDD getCubeAbs(int var){
+  inline BDD getCubeAbs(int var) const {
     return getCube(var, bdd_index_abs);
   }
-  inline BDD getCubeAbs(const std::set <int> & vars){
+  inline BDD getCubeAbs(const std::set <int> & vars) const {
     return getCube(vars, bdd_index_abs);
   }
 

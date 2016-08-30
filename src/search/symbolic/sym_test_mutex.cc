@@ -1,12 +1,12 @@
 #include "sym_test_mutex.h"
 
-#include "../sym_manager.h"
+#include "../sym_state_space_manager.h"
 
 using namespace std;
 
 namespace symbolic {
 
-void GSTMutex::check_mutexes(SymManager & manager){
+void GSTMutex::check_mutexes(SymStateSpaceManager & manager){
   SymAbstraction * abs = manager.getAbstraction();
   BDD goal = manager.getGoal();
   if(!abs->isAbstracted()){

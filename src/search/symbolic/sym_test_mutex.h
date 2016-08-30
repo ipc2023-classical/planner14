@@ -1,5 +1,5 @@
-#ifndef SYM_TEST_MUTEX_H
-#define SYM_TEST_MUTEX_H
+#ifndef SYMBOLIC_TEST_MUTEX_H
+#define SYMBOLIC_TEST_MUTEX_H
 
 #include <map>
 #include <vector>
@@ -9,7 +9,7 @@
 
 namespace symbolic {
 
-class SymManager;
+class SymStateSpaceManager;
 
 class GSTMutex{
 
@@ -17,7 +17,7 @@ class GSTMutex{
  public:
  GSTMutex(){}
   
-  void check_mutexes(SymManager & manager);
+  void check_mutexes(SymStateSpaceManager & manager);
 };
 
 

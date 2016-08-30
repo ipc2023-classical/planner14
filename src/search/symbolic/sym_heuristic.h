@@ -1,5 +1,5 @@
-#ifndef SYM_HEURISTIC_H
-#define SYM_HEURISTIC_H
+#ifndef SYMBOLIC_HEURISTIC_H
+#define SYMBOLIC_HEURISTIC_H
 
 #include "sym_variables.h"
 #include <map>

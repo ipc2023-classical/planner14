@@ -513,32 +513,33 @@ fast_downward_plugin(
         symbolic/sym_solution.cc
         symbolic/sym_exploration.cc
         symbolic/sym_astar.cc
+        symbolic/sym_state_space_manager.cc
+        symbolic/original_state_space.cc
         symbolic/sym_astar_open.cc
         symbolic/sym_astar_closed.cc
         symbolic/sym_heuristic.cc
         symbolic/sym_estimate.cc
         symbolic/sym_bdexp.cc
         symbolic/sym_params_search.cc
-
+        symbolic/sym_state_space_manager.cc
+        symbolic/sym_pdb.cc
     DEPENDENCY_ONLY 
 )
 
 fast_downward_plugin(
-    NAME SYMBOLIC_PDBS
+    NAME SYMBOLIC_PERIMETER_ABSTRACTIONS
     HELP "Plugin containing the base for symbolic search"
     SOURCES
-        symbolic/sym_manager.cc
-        symbolic/sym_abstraction.cc
-        symbolic/sym_pdb.cc
-	symbolic/spmas_heuristic.cc
-	symbolic/sym_hnode.cc
-	symbolic/sym_ph.cc
+        symbolic/hnode.cc
+        symbolic/htree.cc
+        symbolic/sym_ph.cc
 	symbolic/sym_ph_pdbs.cc
+	symbolic/spmas_heuristic.cc
 	symbolic/variable_order_finder.cc
-
     
     DEPENDS SYMBOLIC
 )
+
 fast_downward_add_plugin_sources(PLANNER_SOURCES)
 
 # The order in PLANNER_SOURCES influences the order in which object

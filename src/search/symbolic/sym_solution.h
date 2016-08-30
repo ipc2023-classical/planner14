@@ -1,6 +1,6 @@
 
-#ifndef SYM_SOLUTION_H
-#define SYM_SOLUTION_H
+#ifndef SYMBOLIC_SOLUTION_H
+#define SYMBOLIC_SOLUTION_H
 
 #include "sym_variables.h"
 #include <vector> 

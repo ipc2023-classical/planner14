@@ -1,10 +1,10 @@
-#ifndef SYM_ASTAR_H
-#define SYM_ASTAR_H
+#ifndef SYMBOLIC_ASTAR_H
+#define SYMBOLIC_ASTAR_H
 
 #include "../debug.h" 
 #include "sym_exploration.h"
 #include "sym_heuristic.h"
-#include "sym_manager.h"
+#include "sym_state_space_manager.h"
 #include "sym_bucket.h"
 #include "sym_astar_open.h"
 #include "sym_astar_closed.h"
@@ -144,8 +144,7 @@ class SymAstar : public SymExploration  {
 
   virtual bool stepImage(int maxTime, int maxNodes);
 
-
-  bool init(SymBDExp * exp, SymManager * manager, bool fw); //Init forward or backward search
+  bool init(SymBDExp * exp, SymStateSpaceManager * manager, bool fw); //Init forward or backward search
 
   //Initialize another search process by reutilizing information of this search
   //calls to 5 methods are needed.
@@ -157,7 +156,7 @@ class SymAstar : public SymExploration  {
   //Then, relaxFrontier only relaxes the first bucket to expand. 
   //The caller should check if expansion is feasible and useful
   //Finally, all the open list is relaxed to the new abstract state space
-  bool relaxFrontier(SymManager * manager, int maxTime, int maxNodes);
+  bool relaxFrontier(SymStateSpaceManager * manager, int maxTime, int maxNodes);
   bool relax_open(int maxTime, int maxNodes){
       return open_list.relax(maxTime, maxNodes);
   }
@@ -218,7 +217,7 @@ class SymAstar : public SymExploration  {
       return engine;
   }
 
-  inline const SymManager * get_mgr() const{
+  inline const SymStateSpaceManager * get_mgr() const{
     return mgr;
   }
 
@@ -301,7 +300,7 @@ class SymAstar : public SymExploration  {
   void getNotExpanded(Bucket & res) const;
 
   //void write(const std::string & file) const;
-  //void init(SymBDExp * exp, SymManager * manager,  const std::string & file);
+  //void init(SymBDExp * exp, SymStateSpaceManager * manager,  const std::string & file);
 
   void filterMutex (Bucket & bucket) {
       mgr->filterMutex(bucket, fw, initialization());

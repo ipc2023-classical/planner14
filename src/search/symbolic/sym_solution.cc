@@ -18,7 +18,7 @@ ADD SymSolution::getADD() const{
   vector <const GlobalOperator *> path;
   exp->getPlan(cut, g, h, path);
 
-  SymVariables * vars = exp->getManager()->getVars();
+  SymVariables * vars = exp->getStateSpace()->getVars();
   ADD hADD = vars->getADD(-1);
   int h_val = g+h;
 

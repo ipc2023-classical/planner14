@@ -1,5 +1,5 @@
-#ifndef SYM_PH_PDBS_H
-#define SYM_PH_PDBS_H
+#ifndef SYMBOLIC_PH_PDBS_H
+#define SYMBOLIC_PH_PDBS_H
 
 #include "sym_ph.h"
 #include "variable_order_finder.h"
@@ -9,7 +9,7 @@ namespace symbolic {
 
 typedef std::set<int> VarSet;
 
-class SymHNode;
+class HNode;
 
 
 class SymPHPDBs : public SymPH {
@@ -20,7 +20,7 @@ class SymPHPDBs : public SymPH {
  VariableOrderType var_strategy; //Strategy to select vars
  const bool randomize_strategy; //Whether to randomize the variable selection procedure
 
-  std::map<VarSet, SymHNode *> generatedSets;
+  std::map<VarSet, HNode *> generatedSets;
   
   //Statistics
   double time_relax;
@@ -28,27 +28,27 @@ class SymPHPDBs : public SymPH {
   SymPHPDBs(const Options & opts);
   virtual ~SymPHPDBs(){}
 
-  virtual bool init();
-  virtual SymBDExp * relax(SymBDExp * bdExp, SymHNode * iniHNode, Dir dir, int num_relaxations);
+  virtual bool init() override;
+  virtual HNode * relax(HNode * hNode, SymBDExp * exp, Dir dir, int num_relaxations) override;
 
-  virtual void dump_options() const;
-  virtual void statistics() const;
+  virtual void dump_options() const override;
+  virtual void statistics() const override;
 
-  virtual bool relaxGetsHarder(){
-      return false;
-  }
+  /* virtual bool relaxGetsHarder() override{ */
+  /*     return false; */
+  /* } */
+
 private:
-  void getListAbstraction(SymBDExp * bdExp, SymHNode * hNode, std::vector<SymHNode *> & res);
+  void getListAbstraction(SymBDExp * bdExp, HNode * hNode, std::vector<HNode *> & res);
 
-  std::unique_ptr <SymBDExp> 
-      select_binary_search(const std::vector <SymHNode *> & nodes, 
-			   SymBDExp * bdExp, Dir dir, int num_relaxations);
+  /* HNode* select_binary_search(const std::vector <HNode *> & nodes,  */
+  /* 			      SymBDExp * bdExp, Dir dir, int num_relaxations); */
   
-  std::unique_ptr<SymBDExp> select_linear(const std::vector <SymHNode *> & nodes,
-					  SymBDExp * bdExp, Dir dir, int num_relaxations);
+  HNode* select_linear(const std::vector <HNode *> & nodes,
+		       SymBDExp * bdExp, Dir dir, int num_relaxations);
   
-  std::unique_ptr<SymBDExp> select_reverse(const std::vector <SymHNode *> & nodes,
-					   SymBDExp * bdExp, Dir dir, int num_relaxations);
+  HNode* select_reverse(const std::vector <HNode *> & nodes,
+			SymBDExp * bdExp, Dir dir, int num_relaxations);
 };
 }
 #endif

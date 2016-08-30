@@ -2,9 +2,9 @@
 
 #include "opt_order.h"
 
-#include "sym_manager.h"
+#include "sym_state_space_manager.h"
 #include "sym_bdexp.h"
-#include "sym_hnode.h"
+#include "hnode.h"
 #include "../debug.h" 
 #include "../globals.h"
 // #include "../merge_and_shrink/ld_simulation.h"
@@ -37,16 +37,6 @@ SymController::SymController(const Options &opts)
     // }
 
     vars->init();
-}
-
-SymHNode * SymController::createHNode(SymHNode * node,
-				      unique_ptr <SymAbstraction> && abs, 
-				      SymPH * ph){
-    SymHNode * newNode = new SymHNode(node, ph, move (abs));
-    nodes.push_back(unique_ptr<SymHNode> (newNode));
-    node->addChildren(newNode);
-    newNode->addParent(node);
-    return newNode;
 }
 
 

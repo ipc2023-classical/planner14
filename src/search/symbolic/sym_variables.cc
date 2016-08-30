@@ -199,6 +199,15 @@ double SymVariables::numStates() const{
     return numStates(validBDD);
 }
 
+    double SymVariables::numStates(const Bucket & bucket) const {
+	double sum = 0;
+	for(const BDD & bdd : bucket){
+	    sum += numStates(bdd);
+	}
+	return sum;
+    }
+
+
 BDD SymVariables::generateBDDVar(const std::vector<int> & _bddVars, int value) const{
   BDD res = _manager->bddOne();
   for (int v :  _bddVars){      

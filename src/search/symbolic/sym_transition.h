@@ -1,5 +1,5 @@
-#ifndef SYM_TRANSITION_H
-#define SYM_TRANSITION_H
+#ifndef SYMBOLIC_TRANSITION_H
+#define SYMBOLIC_TRANSITION_H
 
 #include "../global_operator.h"
 #include "sym_variables.h"
@@ -11,8 +11,7 @@
 
 namespace symbolic {
 
-class SymAbstraction;
-class SymManager;
+class SymStateSpaceManager;
 class SymPDB;
 class SymSMAS;
 class SimulationRelation;
@@ -36,10 +35,10 @@ class SymTransition{
 
   std::set<const GlobalOperator *> ops; //List of operators represented by the TR
 
- const SymAbstraction * absAfterImage;
+  const SymStateSpaceManager * absAfterImage;
  public:
   //Constructor for abstraction transitions
- SymTransition(SymManager * mgr, 
+ SymTransition(SymStateSpaceManager * mgr, 
 	       const DominanceRelation & sim_relations);
 
   //Constructor for transitions irrelevant for the abstraction
@@ -54,18 +53,18 @@ class SymTransition{
   BDD image(const BDD & from, int maxNodes) const;
   BDD preimage(const BDD & from, int maxNodes) const;
 
-  void edeletion(SymManager & mgr); //Includes mutex into the transition
+  void edeletion(SymStateSpaceManager & mgr); //Includes mutex into the transition
 
   void merge(const SymTransition & t2,
 	     int maxNodes);
 
   //shrinks the transition to another abstract state space (useful to preserve edeletion)
-  void shrink(const SymAbstraction & abs, int maxNodes);
+  void shrink(const SymStateSpaceManager & abs, int maxNodes);
 
-  bool setMaSAbstraction(SymAbstraction * abs,
+  bool setMaSAbstraction(const SymStateSpaceManager & abs,
 			 const BDD & bddSrc, const BDD &  bddTarget);
 
-  inline void setAbsAfterImage(const SymAbstraction * abs){
+  inline void setAbsAfterImage(const SymStateSpaceManager * abs){
     absAfterImage = abs;
   }
 

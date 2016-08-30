@@ -1,9 +1,9 @@
-#ifndef SYM_CONTROLLER_H
-#define SYM_CONTROLLER_H
+#ifndef SYMBOLIC_CONTROLLER_H
+#define SYMBOLIC_CONTROLLER_H
 
 //Shared class for SymEngine and smas_heuristic
 
-#include "sym_manager.h"
+#include "sym_state_space_manager.h"
 #include "sym_enums.h"
 #include "sym_params_search.h"
 
@@ -22,7 +22,6 @@ using options::Options;
 namespace symbolic {
 class SymAbstraction;
 class SymSolution;
-class SymHNode;
 class SymVariables;
 class SymPH;
 class SymBDExp;
@@ -30,17 +29,11 @@ class SymBDExp;
 
 class SymController { 
  protected:
-  std::unique_ptr<SymVariables> vars; //The symbolic variables are declared here  
+  SymVariables * vars; //The symbolic variables are declared here  
 
-  SymParamsMgr mgrParams; //Parameters for SymManager configuration.
+  SymParamsMgr mgrParams; //Parameters for SymStateSpaceManager configuration.
   SymParamsSearch searchParams; //Parameters to search the original state space 
   
-  // List of abstract state spaces. We store a list with the unique
-  // pointer so that if we want ever to delete some hNode we just
-  // remove it from this list. TODO: maybe we could use
-  // shared_pointers instead....
-  std::vector <std::unique_ptr<SymHNode>> nodes;
-
  public:
   SymController(const Options &opts);
   virtual ~SymController() {}
@@ -52,10 +45,10 @@ class SymController {
   virtual bool solved () const{return false;}
   virtual SymBDExp * relax(SymBDExp * /*exp*/) const {return nullptr;}
 
-  SymHNode * createHNode(SymHNode * node, std::unique_ptr <SymAbstraction> && abs, SymPH * ph);
+  //HNode * createHNode(HNode * node, std::unique_ptr <SymAbstraction> && abs, SymPH * ph);
 
   inline SymVariables * getVars(){
-    return vars.get();
+    return vars;
   }
 
   inline const SymParamsMgr & getMgrParams() const{

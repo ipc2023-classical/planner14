@@ -1,8 +1,7 @@
-#ifndef SYM_ASTAR_CLOSED_H
-#define SYM_ASTAR_CLOSED_H
+#ifndef SYMBOLIC_ASTAR_CLOSED_H
+#define SYMBOLIC_ASTAR_CLOSED_H
 
-#include "sym_manager.h"
-#include "sym_abstraction.h"
+#include "sym_state_space_manager.h"
 #include <vector>
 #include <set>
 #include <map>
@@ -14,7 +13,7 @@ class SymAstar;
 class SymSolution;
 
 class SymAstarClosed;
-class SymManager;
+class SymStateSpaceManager;
 
 //Auxiliar class to denote an heuristic evaluation
 class Evaluation {
@@ -40,7 +39,7 @@ public:
 class SymAstarClosed /*: public SymHeuristic */ {  
     friend class Evaluation; //For using evaluate_abs_orig
 private:
-    SymManager * mgr; //Symbolic manager to perform bdd operations
+    SymStateSpaceManager * mgr; //Symbolic manager to perform bdd operations
     SymAstar * exploration;
 
     std::map<int, BDD> closed;   // Mapping from cost to set of states
@@ -85,8 +84,8 @@ private:
 
 public:
     SymAstarClosed();
-    void init(SymAstar * exp, SymManager * manager); 
-    void init(SymAstar * exp, SymManager * manager, const SymAstarClosed & other);
+    void init(SymAstar * exp, SymStateSpaceManager * manager); 
+    void init(SymAstar * exp, SymStateSpaceManager * manager, const SymAstarClosed & other);
 
     void insert (int h, const BDD & S); 
     void setHNotClosed(int h);
@@ -170,7 +169,7 @@ public:
     }
 
 //    void write(const std::string & fname, std::ofstream & file) const;
-//    void init(SymAstar * exp, SymManager * manager, const std::string & fname, std::ifstream & file); 
+//    void init(SymAstar * exp, SymStateSpaceManager * manager, const std::string & fname, std::ifstream & file); 
 
     ADD getHeuristic(int previousMaxH = -1) const;
     void getHeuristic(std::vector<ADD> & heuristics,

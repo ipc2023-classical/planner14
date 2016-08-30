@@ -1,9 +1,10 @@
 #include "sym_ph.h"
 
+#include "htree.h"
 #include "sym_engine.h" 
 #include "sym_bdexp.h"
-#include "sym_manager.h"
-#include "sym_hnode.h"
+#include "sym_state_space_manager.h"
+#include "hnode.h"
 #include "../option_parser.h"
 #include "../utils/timer.h"
 #include "../plugin.h"
@@ -34,143 +35,126 @@ SymPH::SymPH(const Options & opts) :
     dump_options();
 }
 
-bool SymPH::init(SymController * eng, SymVariables * v, SymManager * mgr){
-    engine = eng;
-    vars = v;
-    if(use_mutex_in_abstraction){
-	const auto & nmFw = mgr->getNotMutexBDDs(true);
-	const auto & nmBw = mgr->getNotMutexBDDs(false);
-	notMutexBDDs.insert(end(notMutexBDDs), begin(nmFw), end(nmFw));
-	notMutexBDDs.insert(end(notMutexBDDs), begin(nmBw), end(nmBw));
-    }
+
+bool SymPH::init(HTree * tree_){
+    tree = tree_;
+    vars = tree->get_engine()->getVars();
+    // if(use_mutex_in_abstraction){
+    // 	const auto & nmFw = mgr->getNotMutexBDDs(true);
+    // 	const auto & nmBw = mgr->getNotMutexBDDs(false);
+    // 	notMutexBDDs.insert(end(notMutexBDDs), begin(nmFw), end(nmFw));
+    // 	notMutexBDDs.insert(end(notMutexBDDs), begin(nmBw), end(nmBw));
+    // }
     return init();
 }
 
 
-bool SymPH::askHeuristic(SymBDExp * originalSearch, double allotedTime){
-    DEBUG_PHPDBS(cout << "Ask heuristic" << endl;);
-    Timer t_gen_heuristic;
-    allotedTime = min<double> (allotedTime, phTime);
+// bool SymPH::askHeuristic(HNode * originalSearchNode, double allotedTime){
+//     DEBUG_PHPDBS(cout << "Ask heuristic" << endl;);
+//     Timer t_gen_heuristic;
+//     allotedTime = min<double> (allotedTime, phTime);
 
-    SymBDExp * bdExp = originalSearch;
-    assert (bdExp->getFw()->getClosed()->hasEvalOrig() || 
-	    bdExp->getBw()->getClosed()->hasEvalOrig());
+//     SymBDExp * originalSearch = originalSearchNode->getPerimeter();
+//     assert (originalSearch->getFw()->getClosed()->hasEvalOrig() || 
+// 	    originalSearch->getBw()->getClosed()->hasEvalOrig());
     
-    if(!expPerimeters.empty()){  //Use the other perimeter instead
-	DEBUG_PHPDBS(cout << ">> Reusing stored perimeter"<< endl;);
-	bdExp = expPerimeters[0].get(); 
-    }
-
   
-    while(t_gen_heuristic() < allotedTime && 
-	  vars->totalMemory() < phMemory && 
-	  !originalSearch->isSearchable() && 
-	  numAbstractions < maxNumAbstractions){	
-	numAbstractions++;
+//     while(t_gen_heuristic() < allotedTime && 
+// 	  vars->totalMemory() < phMemory && 
+// 	  !originalSearch->isSearchable() && 
+// 	  numAbstractions < maxNumAbstractions){	
+// 	numAbstractions++;
 
-	//1) Generate a new abstract exploration
-	SymBDExp * abstractExp = relax(bdExp);
+// 	//1) Generate a new abstract exploration
+// 	HNode * abstractExpNode = relax(originalSearchNode);
+// 	SymBDExp * abstractExp = abstractExpNode->getExp();
 
-	int num_relaxations = 1;
+// 	int num_relaxations = 1;
 
-	//2) Search the new exploration
-	while(abstractExp &&
-	      (!abstractExp->finishedMainDiagonal() || abstractExp->isUseful()) &&
-	      vars->totalMemory() < phMemory && 
-	      t_gen_heuristic() < allotedTime){
+// 	//2) Search the new exploration
+// 	while(abstractExp &&
+// 	      (!abstractExp->finishedMainDiagonal() || abstractExp->isUseful()) &&
+// 	      vars->totalMemory() < phMemory && 
+// 	      t_gen_heuristic() < allotedTime){
 
-	    auto * selectedExp = abstractExp->selectBestDirection(false);
+// 	    auto * selectedExp = abstractExp->selectBestDirection(false);
 	    
-	    if (selectedExp->isSearchable()){
-		selectedExp->step();
-	    } else {
-		if (!abstractExp->isSearchable() && 
-		    (abstractExp->getF() < originalSearch->getF() || 
-		     !abstractExp->finishedMainDiagonal())){
-		    // We skip this abstract state space if it is not
-		    // searchable or we have not finished the main
-		    // diagonal
-		    abstractExp->desactivate();
-		    numAbstractions --; //Does not count
-		    //TODO: Here we should liberate all the memory
-		    //used by this abstraction
-		} 
+// 	    if (selectedExp->isSearchable()){
+// 		selectedExp->step();
+// 	    } else {
+// 		if (!abstractExp->isSearchable() && 
+// 		    (abstractExp->getF() < originalSearch->getF() || 
+// 		     !abstractExp->finishedMainDiagonal())){
+// 		    // We skip this abstract state space if it is not
+// 		    // searchable or we have not finished the main
+// 		    // diagonal
+// 		    abstractExp->desactivate();
+// 		    numAbstractions --; //Does not count
+// 		    //TODO: Here we should liberate all the memory
+// 		    //used by this abstraction
+// 		} 
 
-		if(numAbstractions++ >= maxNumAbstractions ) {
-		    break; 
-		}
+// 		if(numAbstractions++ >= maxNumAbstractions ) {
+// 		    break; 
+// 		}
 	
-		//If we cannot continue the search, we relax it even more
-		cout << "We cannot continue the search so we relax it even more" << endl;
-		abstractExp = relax(bdExp, abstractExp->getHNode(), ++num_relaxations);			
-	    }
-	}
+// 		//If we cannot continue the search, we relax it even more
+// 		cout << "We cannot continue the search so we relax it even more" << endl;
+// 		abstractExp = relax(originalSearch, abstractExpNode, ++num_relaxations);			
+// 	    }
+// 	}
     
-	string reason = !abstractExp ? ">> No abstract search remaining" : 
-	    (abstractExp->finishedMainDiagonal() ? (abstractExp->finished() ? "totally explored" : 
-						    (!abstractExp->isUseful() ? "is not useful" :
-						     "f > concrete_f")) : 
-	     "exhausted resources");
+// 	string reason = !abstractExp ? ">> No abstract search remaining" : 
+// 	    (abstractExp->finishedMainDiagonal() ? (abstractExp->finished() ? "totally explored" : 
+// 						    (!abstractExp->isUseful() ? "is not useful" :
+// 						     "f > concrete_f")) : 
+// 	     "exhausted resources");
 
-	cout << "Finished the exploration of the abstract state space (" <<  reason
-	     << "): " << t_gen_heuristic() << "s spent of " << allotedTime << endl;
+// 	cout << "Finished the exploration of the abstract state space (" <<  reason
+// 	     << "): " << t_gen_heuristic() << "s spent of " << allotedTime << endl;
   
-	//3) Add last heuristic 
-	if(abstractExp){
-	    DEBUG_PHPDBS(cout << "Set heuristic to abstract exp: " << *abstractExp << endl;);
-	    bdExp->setHeuristic(*abstractExp);
+// 	//3) Add last heuristic 
+// 	if(abstractExp){
+// 	    DEBUG_PHPDBS(cout << "Set heuristic to abstract exp: " << *abstractExp << endl;);
+// 	    originalSearch->setHeuristic(*abstractExp);
       
-	}else{
-	    DEBUG_PHPDBS(cout << "Adding explicit heuristic to bw: "<< 
-			 intermediate_heuristics_fw.size() << endl;);
-	    //Add explicit heuristic
-	    for(auto & inth : intermediate_heuristics_fw){
-		originalSearch->getFw()->addHeuristic(make_shared<SymHeuristic>(*vars,inth));
-	    }
+// 	}else{
+// 	    DEBUG_PHPDBS(cout << "Adding explicit heuristic to bw: "<< 
+// 			 intermediate_heuristics_fw.size() << endl;);
+// 	    //Add explicit heuristic
+// 	    for(auto & inth : intermediate_heuristics_fw){
+// 		originalSearch->getFw()->addHeuristic(make_shared<SymHeuristic>(*vars,inth));
+// 	    }
     
-	    DEBUG_PHPDBS(cout << "Adding explicit heuristic to fw: " <<
-			 intermediate_heuristics_bw.size() << endl;);
-	    for(auto & inth : intermediate_heuristics_bw){
-		originalSearch->getBw()->addHeuristic(make_shared<SymHeuristic> (*vars,inth));
-	    }
-	}
-    }
+// 	    DEBUG_PHPDBS(cout << "Adding explicit heuristic to fw: " <<
+// 			 intermediate_heuristics_bw.size() << endl;);
+// 	    for(auto & inth : intermediate_heuristics_bw){
+// 		originalSearch->getBw()->addHeuristic(make_shared<SymHeuristic> (*vars,inth));
+// 	    }
+// 	}
+//     }
 
-    DEBUG_PHPDBS(cout << *originalSearch << endl;);
-    //I did not generate any heuristic
-    return false;
-}
+//     DEBUG_PHPDBS(cout << *originalSearch << endl;);
+//     //I did not generate any heuristic
+//     return false;
+// }
 
-void SymPH::operate(SymBDExp * originalSearch) {
-    int nextStepNodes = max(originalSearch->getFw()->nextStepNodes(),
-			    originalSearch->getBw()->nextStepNodes());
-    if(expPerimeters.empty() && shouldAbstractRatio && 
-       (nextStepNodes > searchParams.maxStepNodes*shouldAbstractRatio)){
-	expPerimeters.push_back(createBDExp(getDir(originalSearch), originalSearch));
-    }     
-}
-
-SymBDExp * SymPH::addHeuristicExploration(SymBDExp * oldExp,
-					  unique_ptr<SymBDExp> && newExp){
-    if(newExp){
-	// Needed so that the abstract heuristic starts informing as
-	// soon as possible (and to know whether it is useful)
-	oldExp->setHeuristic(*newExp);  
-	SymBDExp * ptr = newExp.get();
-	SymHNode * hnode = newExp->getHNode();
-	hnode->add_exploration(std::move(newExp));
-	return ptr;
-    }else{
-	return nullptr;
-    }
-}
+// void SymPH::operate(HNode * originalSearchNode) {
+//     SymBDExp * originalSearch = originalSearchNode->getExp();
+//     int nextStepNodes = max(originalSearch->getFw()->nextStepNodes(),
+// 			    originalSearch->getBw()->nextStepNodes());
+//     if(!originalSearchNode->hasStoredPerimeters()  && shouldAbstractRatio && 
+//        (nextStepNodes > searchParams.maxStepNodes*shouldAbstractRatio)){
+// 	originalSearchNode->addPerimeter(createBDExp(getDir(originalSearch), originalSearch));
+//     }     
+// }
 
 unique_ptr<SymBDExp> SymPH::createBDExp (Dir dir, SymBDExp * bdExp) const{
     return unique_ptr<SymBDExp> (new SymBDExp(bdExp, searchParams, dir));
 }
 
 bool SymPH::relax_in(SymBDExp * bdExp, unique_ptr<SymBDExp> & newExp, 
-		     SymHNode * hNode, int num_relaxations) const{
+		     HNode * hNode, int num_relaxations) const{
   
     Timer relax_timer; //TODO: remove. Only used for debugging
 
@@ -187,7 +171,7 @@ bool SymPH::relax_in(SymBDExp * bdExp, unique_ptr<SymBDExp> & newExp,
   
     cout << ">> Abstract in hNode: " << *hNode << " total time: " << g_timer << endl;
     //I have received a hNode and does not have an exploration. Try.
-    if(newExp->initFrontier(hNode, maxRelaxTime, maxRelaxNodes)){
+    if(newExp->initFrontier(hNode->getStateSpace(), maxRelaxTime, maxRelaxNodes)){
 	//Ok, I relaxed the frontier!
 	//Check if it is useful
 	DEBUG_PHPDBS(cout << "Frontier initialized. total time: " << g_timer << endl;);
@@ -199,8 +183,8 @@ bool SymPH::relax_in(SymBDExp * bdExp, unique_ptr<SymBDExp> & newExp,
 	} else if(newExp->isSearchableAfterRelax(num_relaxations)){
 	    DEBUG_PHPDBS(cout << "New exp is searchable. total time: " << g_timer << endl;);
 	    if(!perimeterPDBs){
-		newExp.reset(new SymBDExp(engine, searchParams, getDir(bdExp)));
-		return newExp->initFrontier(hNode, maxRelaxTime, maxRelaxNodes) &&
+		newExp.reset(new SymBDExp(tree->get_engine(), searchParams, getDir(bdExp)));
+		return newExp->initFrontier(hNode->getStateSpace(), maxRelaxTime, maxRelaxNodes) &&
 		    newExp->initAll(maxRelaxTime, maxRelaxNodes);
 
 	    }else if(newExp->initAll(maxRelaxTime, maxRelaxNodes)){
@@ -333,4 +317,22 @@ static PluginTypePlugin<SymPH> _type_plugin(
 // double SymPH::getMaxAfterRelaxNodes() const{
 //   return getMaxStepNodes()*ratioRelaxNodes;
 // }
+
+
+// SymBDExp * SymPH::addHeuristicExploration(SymBDExp * oldExp,
+// 					  SymBDExp * newExp){
+//     assert(newExp)
+//     if(newExp){
+// 	// Needed so that the abstract heuristic starts informing as
+// 	// soon as possible (and to know whether it is useful)
+// 	oldExp->setHeuristic(*newExp);  
+// 	SymBDExp * ptr = newExp.get();
+// 	SymHNode * hnode = newExp->getHNode();
+// 	hnode->add_exploration(std::move(newExp));
+// 	return ptr;
+//     }else{
+// 	return nullptr;
+//     }
+// }
+
 }

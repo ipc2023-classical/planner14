@@ -1,5 +1,5 @@
-#ifndef SYM_ENUMS_H
-#define SYM_ENUMS_H
+#ifndef SYMBOLIC_ENUMS_H
+#define SYMBOLIC_ENUMS_H
 
 #include <string> 
 #include <iostream>
@@ -17,8 +17,7 @@ enum class MutexType {MUTEX_NOT, MUTEX_AND, MUTEX_RESTRICT,
 std::ostream & operator<<(std::ostream &os, const MutexType & m);
 extern const std::vector<std::string> MutexTypeValues;
 
-enum class AbsTRsStrategy{TR_SHRINK, IND_TR_SHRINK, REBUILD_TRS,
-    SHRINK_AFTER_IMG};
+enum class AbsTRsStrategy{TR_SHRINK, IND_TR_SHRINK, REBUILD_TRS, SHRINK_AFTER_IMG};
 std::ostream & operator<<(std::ostream &os, const AbsTRsStrategy & a);
 extern const std::vector<std::string> AbsTRsStrategyValues;
 

@@ -1,8 +1,10 @@
-#ifndef SYM_UTIL_H
-#define SYM_UTIL_H
+#ifndef SYMBOLIC_UTIL_H
+#define SYMBOLIC_UTIL_H
 
 #include "sym_variables.h"
 #include "sym_transition.h"
+#include "sym_bucket.h" 
+
 #include <math.h>
 #include <memory> 
 #include <iostream> 
@@ -126,6 +128,7 @@ template <class T, class FunctionMerge>
 SymTransition mergeTR (SymTransition tr, const SymTransition & tr2, int maxSize);
 BDD mergeAndBDD(const BDD & bdd, const BDD & bdd2, int maxSize);
 BDD mergeOrBDD(const BDD & bdd, const BDD & bdd2, int maxSize);
+
 
 
 inline std::string dirname(bool fw){ 

@@ -1,11 +1,11 @@
-#ifndef SYM_EXPLORATION_H
-#define SYM_EXPLORATION_H
+#ifndef SYMBOLIC_EXPLORATION_H
+#define SYMBOLIC_EXPLORATION_H
 
 #include "../debug.h" 
 
 
 #include "sym_params_search.h"
-#include "sym_manager.h"
+#include "sym_state_space_manager.h"
 #include "sym_estimate.h"
 #include "sym_util.h"
 #include <vector>
@@ -14,7 +14,7 @@
 
 namespace symbolic {
 
-class SymManager;
+class SymStateSpaceManager;
 
 //We use this enumerate to know why the current operation was truncated
 enum class TruncatedReason {
@@ -51,7 +51,7 @@ public:
 class SymExploration  { 
 protected: 
   //Attributes that characterize the search:
-  SymManager * mgr;            //Symbolic manager to perform bdd operations
+  SymStateSpaceManager * mgr;            //Symbolic manager to perform bdd operations
   SymParamsSearch p;
   bool fw; //Direction of the search. true=forward, false=backward 
 
@@ -65,18 +65,11 @@ protected:
   }
 
   inline bool isAbstracted() const{
-    return mgr->getAbstraction() != nullptr &&
-      mgr->getAbstraction()->isAbstracted();
+    return mgr->isAbstracted();
   }
 
   inline bool isOriginal() const{
-      return mgr->getAbstraction() == nullptr ||
-	  !mgr->getAbstraction()->isAbstracted();
-  }
-
-  SymAbstraction * getAbstraction() const{
-    return mgr->getAbstraction();
-    
+      return mgr->isAbstracted();
   }
 
   inline bool isUseful() const {
@@ -111,9 +104,7 @@ protected:
   virtual void getHeuristic(std::vector<ADD> & heuristics,
 			    std::vector <int> & maxHeuristicValues) const = 0;
 
-
   void statistics() const;
-
 
   virtual bool isUseful(double ratio) const = 0;
   virtual bool isSearchableWithNodes(int maxNodes) const = 0;   

@@ -3,7 +3,7 @@
 #include "sym_bdexp.h"
 #include "sym_solution.h"
 #include "sym_enums.h"
-#include "sym_hnode.h"
+#include "hnode.h"
 #include "../debug.h" 
 #include "../globals.h"
 #include "../option_parser.h"
@@ -49,8 +49,8 @@ void SymEngine::initialize() {
 #endif
     
     cout << "Initialize abstraction hierarchy" << endl;
-    originalStateSpace = new SymHNode(this, mgrParams);
-    nodes.push_back(unique_ptr<SymHNode> (originalStateSpace));
+    originalStateSpace = new HNode(this, mgrParams);
+    nodes.push_back(unique_ptr<HNode> (originalStateSpace));
     if(prune_heuristic){
       originalStateSpace->getManager()->set_simulation(prune_heuristic.get());
     }

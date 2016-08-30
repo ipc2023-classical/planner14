@@ -1,5 +1,5 @@
-#ifndef SYM_ENGINE_H
-#define SYM_ENGINE_H
+#ifndef SYMBOLIC_ENGINE_H
+#define SYMBOLIC_ENGINE_H
 
 #include <vector>
 #include <memory>
@@ -18,7 +18,7 @@ class SymHeuristic;
 class SymExploration;
 class SymAbstraction;
 class SymSolution;
-class SymHNode;
+class HNode;
 class SymVariables;
 
 class SymPH;
@@ -27,8 +27,6 @@ class SymPruneHeuristic;
 
 class SymEngine : public SearchEngine, public SymController { 
  protected:
-  //unique_ptr<SymVariables> vars; //The symbolic variables are declared here
-  
   Dir searchDir; //Direction of search in the original state space
   
   // List of hierarchy policies to derive new abstractions
@@ -48,13 +46,13 @@ class SymEngine : public SearchEngine, public SymController {
   // pointer so that if we want ever to delete some hNode we just
   // remove it from this list. TODO: maybe we could use
   // shared_pointers instead....
-  //std::vector <std::unique_ptr<SymHNode>> nodes;
+  //std::vector <std::unique_ptr<HNode>> nodes;
 
   //Variable to keep the current lower bound. Used to know when we have proven an optimal solution.
   int lower_bound;
 
   //The exploration and state space of the original problem
-  SymHNode * originalStateSpace;
+  HNode * originalStateSpace;
   SymBDExp * originalSearch;
 
   //Inherited methods

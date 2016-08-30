@@ -1,5 +1,5 @@
-#ifndef SYM_ASTAR_OPEN_H
-#define SYM_ASTAR_OPEN_H
+#ifndef SYMBOLIC_ASTAR_OPEN_H
+#define SYMBOLIC_ASTAR_OPEN_H
 
 #include <map> 
 
@@ -9,12 +9,12 @@
 namespace symbolic {
 
 class SymAstarClosed;
-class SymManager;
+class SymStateSpaceManager;
 class SymAstar;
 
 class SymAstarOpen {
 
-    SymManager * mgr;
+    SymStateSpaceManager * mgr;
     SymAstar * exp;
     
     std::map<int, Bucket> open;//States in open with unkwown h-value
@@ -40,7 +40,7 @@ class SymAstarOpen {
     SymAstarOpen () : mgr(nullptr), exp(nullptr) {
     }
     
-    void init(SymAstar * _exp, SymManager * _mgr) {
+    void init(SymAstar * _exp, SymStateSpaceManager * _mgr) {
 	mgr = _mgr;
 	exp = _exp;
     } 

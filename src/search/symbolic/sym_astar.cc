@@ -1,7 +1,6 @@
 #include "sym_astar.h"
 
 #include "sym_bdexp.h"
-#include "sym_abstraction.h"
 #include "../debug.h"
 #include "sym_util.h"
 #include "../utils/timer.h"
@@ -30,7 +29,7 @@ SymAstar::SymAstar(SymController * eng,
     //estimationDisjCost(params), estimationDisjZero(params),
     lastStepCost(true), engine(eng) {}
 
-bool SymAstar::init(SymBDExp * exp, SymManager * manager, bool forward){
+bool SymAstar::init(SymBDExp * exp, SymStateSpaceManager * manager, bool forward){
     bdExp = exp;
     mgr = manager;
     fw = forward;
@@ -162,7 +161,7 @@ void SymAstar::setPerfectHeuristic(SymAstarClosed * h){
 }
 
 //If failed, some BDDs may be shrinked.
-bool SymAstar::relaxFrontier(SymManager * manager, int maxTime, int maxNodes){
+bool SymAstar::relaxFrontier(SymStateSpaceManager * manager, int maxTime, int maxNodes){
     mgr = manager;
     mgr->setTimeLimit(maxTime);
     try{   //Shrink frontier
@@ -344,7 +343,8 @@ bool SymAstar::prepareBucket(){
     if(!Smerge.empty()){  
 	if(Smerge.size() > 1){
 	    int remainingTime = maxTime - 1000*filterTime();
-	    if(remainingTime < 0 || !mgr->mergeBucket(Smerge, remainingTime, maxNodes)){
+	    if(remainingTime < 0 ||
+	       !mgr->mergeBucket(Smerge, remainingTime, maxNodes)){
 		violated(TruncatedReason::MERGE_BUCKET, filterTime(), maxTime, maxNodes);
 		return false;
 	    }
@@ -547,11 +547,7 @@ bool SymAstar::expand_cost(int maxTime, int maxNodes){
 
 
 bool SymAstar::stepImage(int maxTime, int maxNodes){
-    if(mgr->getAbstraction())
-	cout << ">> Step: " << *(mgr->getAbstraction());
-    else
-	cout << ">> Step: original";
-    cout << (fw ? " fw " : " bw ") << "f=" << f << ", g=" << g;
+    cout << ">> Step: " << *mgr << (fw ? " fw " : " bw ") << "f=" << f << ", g=" << g;
     cout << " frontierNodes: " << frontierNodes() << " [" << frontierBuckets() << "]"  << " total time: " << g_timer 
 	 << " total nodes: " << mgr->totalNodes() << " total memory: " << mgr->totalMemory() << endl;
 
@@ -964,13 +960,7 @@ long SymAstar::nextStepNodesResult() const {
 std::ostream & operator<<(std::ostream &os, const SymAstar & exp){
     os << "exp " << dirname(exp.isFW());
     if(exp.mgr){
-	os << " in ";
-	if(exp.mgr->getAbstraction()){
-	    os << "abstract ";
-	    os << *(exp.mgr->getAbstraction());
-	}else{
-	    os << "original state space";
-	}
+	os << " in " << *exp.mgr;
 	os << " f=" << exp.getF() << flush;
 	os << " g=" << exp.getG() << flush;
 	os << exp.open_list << flush;
@@ -1019,7 +1009,7 @@ bool SymAstar::isBetter(const SymAstar & other) const{
 // }
 
 
-// void SymAstar::init(SymBDExp * exp, SymManager * manager, const string & dir){
+// void SymAstar::init(SymBDExp * exp, SymStateSpaceManager * manager, const string & dir){
 //     bdExp = exp;
 //     mgr = manager;
 //     cout << "   Open file: " << dir << "data.txt" << endl;

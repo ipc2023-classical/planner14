@@ -4,8 +4,7 @@
 #include <cassert> 
 
 #include "../debug.h"
-#include "sym_abstraction.h"
-#include "sym_manager.h"
+#include "sym_state_space_manager.h"
 //#include "sym_pdb.h" 
 // #include "sym_smas.h" 
 
@@ -17,7 +16,7 @@ using namespace std;
 
 namespace symbolic {
 
-// SymTransition::SymTransition(SymManager * mgr, 
+// SymTransition::SymTransition(SymStateSpaceManager * mgr, 
 // 			     const DominanceRelation & dominance_relation) : 
 //   sV(mgr->getVars()), cost(0), tBDD (mgr->getVars()->oneBDD()), 
 //   existsVars(mgr->getVars()->oneBDD()), existsBwVars(mgr->getVars()->oneBDD()), 
@@ -154,8 +153,8 @@ SymTransition::SymTransition(SymVariables * sVars,
   //DEBUG_MSG(cout << "Computing tr took " << tr_timer; tBDD.print(1, 1););
 }
 
-void SymTransition::shrink(const SymAbstraction & abs, int maxNodes){
-  tBDD = abs.shrinkTBDD(tBDD, maxNodes);
+    void SymTransition::shrink(const SymStateSpaceManager & abs, int maxNodes){
+	tBDD = abs.shrinkTBDD(tBDD, maxNodes);
 
   // effVars
   vector <int> newEffVars;
@@ -468,7 +467,7 @@ void SymTransition::merge(const SymTransition & t2,
 // }
 
 
-void SymTransition::edeletion(SymManager & mgr) {
+void SymTransition::edeletion(SymStateSpaceManager & mgr) {
   if(ops.size() != 1){
     cerr << "Error, trying to apply edeletion over a transition with more than one op" << endl;
     exit(-1);

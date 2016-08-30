@@ -1,12 +1,12 @@
-#ifndef SYM_BUCKET_H
-#define SYM_BUCKET_H
+#ifndef SYMBOLIC_BUCKET_H
+#define SYMBOLIC_BUCKET_H
 
-#include "sym_util.h"
+#include <vector>
+#include "cuddObj.hh"
 
 namespace symbolic {
 
 typedef std::vector<BDD> Bucket;
-
 
 void removeZero(Bucket & bucket);
 void copyBucket(const Bucket & bucket, Bucket & res);

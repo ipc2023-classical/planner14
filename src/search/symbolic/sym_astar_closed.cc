@@ -54,7 +54,7 @@ SymAstarClosed::SymAstarClosed() : mgr(nullptr), exploration(nullptr),
 			 time_prune_some(0),  time_prune_all (0), time_prune_some_children(0) */{
 }
 
-void SymAstarClosed::init(SymAstar * exp, SymManager * manager){
+void SymAstarClosed::init(SymAstar * exp, SymStateSpaceManager * manager){
     exploration = exp;
     mgr = manager;
     set<int>().swap(h_values);
@@ -493,7 +493,7 @@ ADD SymAstarClosed::getHeuristic(int previousMaxH /*= -1*/) const {
 //     closedTotal.write(fname + "_closedTotal");
 // }
 
-// void SymAstarClosed::init(SymAstar * exp, SymManager * manager, const string & fname, ifstream & file){
+// void SymAstarClosed::init(SymAstar * exp, SymStateSpaceManager * manager, const string & fname, ifstream & file){
 //     exploration = exp;
 //     mgr = manager;
 //     set<int>().swap(h_values);

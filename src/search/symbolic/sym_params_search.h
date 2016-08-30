@@ -1,5 +1,5 @@
-#ifndef SYM_PARAMS_SEARCH_H
-#define SYM_PARAMS_SEARCH_H
+#ifndef SYMBOLIC_PARAMS_SEARCH_H
+#define SYMBOLIC_PARAMS_SEARCH_H
 
 #include <algorithm>
 
