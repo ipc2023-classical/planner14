@@ -517,12 +517,14 @@ fast_downward_plugin(
         symbolic/original_state_space.cc
         symbolic/sym_astar_open.cc
         symbolic/sym_astar_closed.cc
+	symbolic/closed_list.cc
         symbolic/sym_heuristic.cc
         symbolic/sym_estimate.cc
         symbolic/sym_bdexp.cc
         symbolic/sym_params_search.cc
         symbolic/sym_state_space_manager.cc
         symbolic/sym_pdb.cc
+	symbolic/breadth_first_search.cc
     DEPENDENCY_ONLY 
 )
 

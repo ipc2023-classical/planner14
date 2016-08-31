@@ -68,7 +68,7 @@ SymBDExp::SymBDExp(SymBDExp *other,
               );
 }
 
-bool SymBDExp::initFrontier(SymStateSpaceManager *state_space,
+    bool SymBDExp::initFrontier(shared_ptr<SymStateSpaceManager>state_space,
                             int maxTime, int maxNodes) {
     //Set the new abstract state space
     state_space_manager = state_space;

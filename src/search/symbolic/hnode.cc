@@ -128,7 +128,7 @@ SymBDExp *HNode::initSearch(const SymParamsSearch &searchParams, Dir dir) {
     if (!exp) {
         exp.reset(new SymBDExp(tree->get_engine(), searchParams, dir));
 
-        if (exp->initFrontier(state_space.get(), numeric_limits<int>::max(), numeric_limits<int>::max()) &&
+        if (exp->initFrontier(state_space, numeric_limits<int>::max(), numeric_limits<int>::max()) &&
             exp->initAll(numeric_limits<int>::max(), numeric_limits<int>::max())) {
         } else {
             cout << "Init exploration failed" << endl;

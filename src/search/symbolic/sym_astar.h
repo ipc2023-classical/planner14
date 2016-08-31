@@ -143,7 +143,7 @@ public:
 
     virtual bool stepImage(int maxTime, int maxNodes);
 
-    bool init(SymBDExp *exp, SymStateSpaceManager *manager, bool fw); //Init forward or backward search
+    bool init(SymBDExp *exp, std::shared_ptr<SymStateSpaceManager> manager, bool fw); //Init forward or backward search
 
     //Initialize another search process by reutilizing information of this search
     //calls to 5 methods are needed.
@@ -155,7 +155,7 @@ public:
     //Then, relaxFrontier only relaxes the first bucket to expand.
     //The caller should check if expansion is feasible and useful
     //Finally, all the open list is relaxed to the new abstract state space
-    bool relaxFrontier(SymStateSpaceManager *manager, int maxTime, int maxNodes);
+    bool relaxFrontier(std::shared_ptr<SymStateSpaceManager> manager, int maxTime, int maxNodes);
     bool relax_open(int maxTime, int maxNodes) {
         return open_list.relax(maxTime, maxNodes);
     }
@@ -214,10 +214,6 @@ public:
 
     inline SymController *getEngine() const {
         return engine;
-    }
-
-    inline const SymStateSpaceManager *get_mgr() const {
-        return mgr;
     }
 
     inline SymAstar *getParent() const {
@@ -327,7 +323,6 @@ private:
             return mgr->stateCount(Sfilter) + mgr->stateCount(Smerge);
         }
     }
-
 
     int frontierBuckets() const {
         if (!Szero.empty()) {

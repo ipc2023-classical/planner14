@@ -48,7 +48,7 @@ public:
 class SymExploration {
 protected:
     //Attributes that characterize the search:
-    SymStateSpaceManager *mgr;           //Symbolic manager to perform bdd operations
+    std::shared_ptr<SymStateSpaceManager> mgr;           //Symbolic manager to perform bdd operations
     SymParamsSearch p;
     bool fw; //Direction of the search. true=forward, false=backward
 
@@ -66,7 +66,7 @@ public:
     }
 
     inline bool isOriginal() const {
-        return mgr->isAbstracted();
+        return !mgr->isAbstracted();
     }
 
     inline bool isUseful() const {

@@ -172,7 +172,7 @@ bool SymPH::relax_in(SymBDExp *bdExp, unique_ptr<SymBDExp> &newExp,
 
     cout << ">> Abstract in hNode: " << *hNode << " total time: " << g_timer << endl;
     //I have received a hNode and does not have an exploration. Try.
-    if (newExp->initFrontier(hNode->getStateSpace(), maxRelaxTime, maxRelaxNodes)) {
+    if (newExp->initFrontier(hNode->getStateSpaceRef(), maxRelaxTime, maxRelaxNodes)) {
         //Ok, I relaxed the frontier!
         //Check if it is useful
         DEBUG_PHPDBS(cout << "Frontier initialized. total time: " << g_timer << endl;
@@ -189,7 +189,7 @@ bool SymPH::relax_in(SymBDExp *bdExp, unique_ptr<SymBDExp> &newExp,
                          );
             if (!perimeterPDBs) {
                 newExp.reset(new SymBDExp(tree->get_engine(), searchParams, getDir(bdExp)));
-                return newExp->initFrontier(hNode->getStateSpace(), maxRelaxTime, maxRelaxNodes) &&
+                return newExp->initFrontier(hNode->getStateSpaceRef(), maxRelaxTime, maxRelaxNodes) &&
                        newExp->initAll(maxRelaxTime, maxRelaxNodes) &&
                        addHeuristicExploration(bdExp, hNode, std::move(newExp));
             } else if (newExp->initAll(maxRelaxTime, maxRelaxNodes)) {

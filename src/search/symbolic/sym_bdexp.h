@@ -6,7 +6,7 @@
 namespace symbolic {
 class SymBDExp {
 private:
-    SymStateSpaceManager *state_space_manager;
+    std::shared_ptr<SymStateSpaceManager> state_space_manager;
     SymBDExp *parent;
 
     // In order to initialize a bd_exp, we keep the states that have
@@ -34,7 +34,7 @@ public:
 
     //Initialization is performed in two steps
     //initFrontier: sets the abstract state space and relax the frontier
-    bool initFrontier(SymStateSpaceManager *state_space, int maxTime, int maxNodes);
+    bool initFrontier(std::shared_ptr<SymStateSpaceManager> state_space, int maxTime, int maxNodes);
     //initAll: relax the rest of the search (should have called initFrontier first
     bool initAll(int maxTime, int maxNodes);
 
@@ -62,7 +62,7 @@ public:
     }
 
     inline SymStateSpaceManager *getStateSpace() const {
-        return state_space_manager;
+        return state_space_manager.get();
     }
 
     inline bool isAbstracted() const {

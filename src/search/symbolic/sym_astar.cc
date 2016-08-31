@@ -28,7 +28,7 @@ SymAstar::SymAstar(SymController *eng,
                                                     //estimationDisjCost(params), estimationDisjZero(params),
                                                     lastStepCost(true), engine(eng) {}
 
-bool SymAstar::init(SymBDExp *exp, SymStateSpaceManager *manager, bool forward) {
+    bool SymAstar::init(SymBDExp *exp, shared_ptr<SymStateSpaceManager> manager, bool forward) {
     bdExp = exp;
     mgr = manager;
     fw = forward;
@@ -52,8 +52,8 @@ bool SymAstar::init(SymBDExp *exp, SymStateSpaceManager *manager, bool forward) 
               cout << "Init closed" << endl;
               );
 
-    open_list.init(this, mgr);
-    closed->init(this, mgr);
+    open_list.init(this, mgr.get());
+    closed->init(this, mgr.get());
 
     f = open_list.minNextG(g);
     cout << "Init f to " << f << endl;
@@ -88,7 +88,7 @@ void SymAstar::init(SymBDExp *exp, SymAstar *other) {
     parent = other;
     p.inheritParentParams(parent->p);
 
-    open_list.init(this, mgr);
+    open_list.init(this, mgr.get());
 
 
     DEBUG_MSG(cout << "Init exploration " << *this <<
@@ -170,7 +170,7 @@ void SymAstar::setPerfectHeuristic(SymAstarClosed *h) {
 }
 
 //If failed, some BDDs may be shrinked.
-bool SymAstar::relaxFrontier(SymStateSpaceManager *manager, int maxTime, int maxNodes) {
+    bool SymAstar::relaxFrontier(shared_ptr<SymStateSpaceManager> manager, int maxTime, int maxNodes) {
     mgr = manager;
     DEBUG_MSG(cout << "Relax frontier" << endl;
               );
@@ -222,8 +222,8 @@ void SymAstar::getNotExpanded(Bucket &res) const {
 }
 
 void SymAstar::relaxClosed() {
-    open_list.init(this, mgr);
-    closed->init(this, mgr);
+    open_list.init(this, mgr.get());
+    closed->init(this, mgr.get());
 
     assert(expansionReady());
     assert(!S.empty());

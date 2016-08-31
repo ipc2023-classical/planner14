@@ -132,10 +132,8 @@ void SymAstarClosed::insert(int h, const BDD &S) {
     }
 
     if (exploration->isAbstracted()) {
-        if (evalOrig)
-            evalOrig->updateClosed(S, h);
-        if (evalOpposite)
-            evalOpposite->updateClosed(S, h);
+        if (evalOrig) evalOrig->updateClosed(S, h);
+        if (evalOpposite) evalOpposite->updateClosed(S, h);
     }
 }
 
@@ -842,6 +840,9 @@ void SymAstarClosed::addChild(SymAstarClosed *c) {
     assert(c->parent == nullptr || c->parent == this);
     if (!evalOrig)
         return;           //We will not use this heuristic (in this direction)
+
+    cout << evalOrig->f << endl;
+    cout << evalOrig->exp->getF() << endl;
 
     assert(evalOrig->f == evalOrig->exp->getF());
     assert(evalOrig->h == evalOrig->exp->getH());
