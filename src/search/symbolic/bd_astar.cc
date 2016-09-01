@@ -1,4 +1,4 @@
-#include "sym_bdexp.h"
+#include "bd_astar.h"
 
 #include "../utils/debug_macros.h"
 #include "sym_engine.h"
@@ -9,7 +9,7 @@ using namespace std;
 using utils::g_timer;
 
 namespace symbolic {
-SymBDExp::SymBDExp(SymController *engine,
+BDAstar::BDAstar(SymController *engine,
                    const SymParamsSearch &params,
                    Dir dir) :
     state_space_manager(nullptr), parent(nullptr),
@@ -18,7 +18,7 @@ SymBDExp::SymBDExp(SymController *engine,
     searchDir(dir), mayRelax(true), fMainDiagonal(-1) {
 }
 
-SymBDExp::SymBDExp(SymBDExp *other,
+BDAstar::BDAstar(BDAstar *other,
                    const SymParamsSearch &params,
                    Dir dir) :
     state_space_manager(nullptr), parent(other),
@@ -29,7 +29,7 @@ SymBDExp::SymBDExp(SymBDExp *other,
     bw->init(this, other->bw.get());
     fw->init2(bw.get());
     bw->init2(fw.get());
-    SymBDExp *lastParent = parent;
+    BDAstar *lastParent = parent;
     while (lastParent->getParent())
         lastParent = lastParent->getParent();
 
@@ -68,7 +68,7 @@ SymBDExp::SymBDExp(SymBDExp *other,
               );
 }
 
-    bool SymBDExp::initFrontier(shared_ptr<SymStateSpaceManager>state_space,
+    bool BDAstar::initFrontier(shared_ptr<SymStateSpaceManager>state_space,
                             int maxTime, int maxNodes) {
     //Set the new abstract state space
     state_space_manager = state_space;
@@ -125,7 +125,7 @@ SymBDExp::SymBDExp(SymBDExp *other,
     }
 }
 
-bool SymBDExp::initAll(int maxTime, int maxNodes) {
+bool BDAstar::initAll(int maxTime, int maxNodes) {
     if (parent) {
         //Relax all the search
         if (!fw->relax_open(maxTime, maxNodes) ||
@@ -141,12 +141,12 @@ bool SymBDExp::initAll(int maxTime, int maxNodes) {
 }
 
 
-std::ostream &operator<<(std::ostream &os, const SymBDExp &bdexp) {
+std::ostream &operator<<(std::ostream &os, const BDAstar &bdexp) {
     os << "BD exp [" << *(bdexp.fw.get()) << ",  " << *(bdexp.bw.get()) << "]" << (bdexp.mayRelax ? " is abstractable" : " no abstractable");
     return os;
 }
 
-void SymBDExp::getPlan(const BDD &cut,
+void BDAstar::getPlan(const BDD &cut,
                        int g, int h,
                        std::vector <const GlobalOperator *> &path) const {
     DEBUG_MSG(cout << "Extract path forward: " << g << endl;
@@ -221,11 +221,11 @@ void SymBDExp::getPlan(const BDD &cut,
       });*/
 }
 
-bool SymBDExp::isExpFor(SymBDExp *bdExp) const {
+bool BDAstar::isExpFor(BDAstar *bdExp) const {
     if (!parent) {
         return false;
     }
-    SymBDExp *exp = parent;
+    BDAstar *exp = parent;
     while (exp && exp != bdExp) {
         exp = exp->parent;
     }
@@ -234,7 +234,7 @@ bool SymBDExp::isExpFor(SymBDExp *bdExp) const {
 }
 
 
-void SymBDExp::setHeuristic(SymBDExp &other) {
+void BDAstar::setHeuristic(BDAstar &other) {
     DEBUG_MSG(cout << "Set BDExp as heuristic " << other
                    << " to " << *this << endl;
               );
@@ -244,7 +244,7 @@ void SymBDExp::setHeuristic(SymBDExp &other) {
 
 
 
-SymAstar *SymBDExp::selectBestDirection(bool skipUseful) const {
+SymAstar *BDAstar::selectBestDirection(bool skipUseful) const {
     if (searchDir == Dir::FW) {
         return fw.get();
     } else if (searchDir == Dir::BW) {
@@ -281,13 +281,13 @@ SymAstar *SymBDExp::selectBestDirection(bool skipUseful) const {
 }
 
 
-// void SymBDExp::write(const string & filename) const {
+// void BDAstar::write(const string & filename) const {
 //   fw->write(filename + "fw");
 //   bw->write(filename + "bw");
 //   //  state_space_manager.write(filename + "mgr");
 // }
 
-// SymBDExp::SymBDExp(SymController * engine, const SymParamsSearch & params,
+// BDAstar::BDAstar(SymController * engine, const SymParamsSearch & params,
 //                 Dir dir, const string & filename, HNode * node) :
 //   hnode(nullptr), parent(nullptr),
 //   fw(new SymAstar(engine, params)),
@@ -309,19 +309,19 @@ SymAstar *SymBDExp::selectBestDirection(bool skipUseful) const {
 //   state_space_manager->init_transitions();
 // }
 
-bool SymBDExp::finished() const {
+bool BDAstar::finished() const {
     return (searchDir == Dir::BW || fw->finished())
            && (searchDir == Dir::FW || bw->finished());
 }
 
 
-bool SymBDExp::finishedMainDiagonal() const {
+bool BDAstar::finishedMainDiagonal() const {
     return finished() || ((searchDir == Dir::BW || fw->finished() || (fMainDiagonal != -1 && fw->getF() > fMainDiagonal))
                           && (searchDir == Dir::FW || bw->finished() || (fMainDiagonal != -1 && bw->getF() > fMainDiagonal)));
 }
 
 
-bool SymBDExp::isUsefulAfterRelax(double ratio) const {
+bool BDAstar::isUsefulAfterRelax(double ratio) const {
     if (parent->isAbstracted()) {
         return fw->getParent()->getClosed()->isUsefulAfterRelax(ratio, fw->getS())
                || bw->getParent()->getClosed()->isUsefulAfterRelax(ratio, bw->getS());
@@ -342,7 +342,7 @@ bool SymBDExp::isUsefulAfterRelax(double ratio) const {
 
 
 
-void SymBDExp::statistics() const {
+void BDAstar::statistics() const {
     cout << "Statistics of " << *state_space_manager << " search: ";
     if (fw)
         fw->statistics();
@@ -352,7 +352,7 @@ void SymBDExp::statistics() const {
 }
 
 
-void SymBDExp::setFMainDiagonal(int newVal) {
+void BDAstar::setFMainDiagonal(int newVal) {
     DEBUG_MSG(std::cout << "SET F MAIN DIAGONAL: " << newVal << std::endl;
               );
     if (fMainDiagonal == -1) {

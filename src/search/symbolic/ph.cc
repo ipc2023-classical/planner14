@@ -5,7 +5,7 @@
 #include "sym_pdb.h"
 
 #include "sym_state_space_manager.h"
-#include "sym_bdexp.h"
+#include "bd_astar.h"
 #include "sym_controller.h"
 
 #include "../option_parser.h"
@@ -56,7 +56,7 @@ bool SymPH::init(HTree *tree_) {
 //     Timer t_gen_heuristic;
 //     allotedTime = min<double> (allotedTime, phTime);
 
-//     SymBDExp * originalSearch = originalSearchNode->getPerimeter();
+//     BDAstar * originalSearch = originalSearchNode->getPerimeter();
 //     assert (originalSearch->getFw()->getClosed()->hasEvalOrig() ||
 //          originalSearch->getBw()->getClosed()->hasEvalOrig());
 
@@ -69,7 +69,7 @@ bool SymPH::init(HTree *tree_) {
 
 //      //1) Generate a new abstract exploration
 //      HNode * abstractExpNode = relax(originalSearchNode);
-//      SymBDExp * abstractExp = abstractExpNode->getExp();
+//      BDAstar * abstractExp = abstractExpNode->getExp();
 
 //      int num_relaxations = 1;
 
@@ -142,7 +142,7 @@ bool SymPH::init(HTree *tree_) {
 // }
 
 // void SymPH::operate(HNode * originalSearchNode) {
-//     SymBDExp * originalSearch = originalSearchNode->getExp();
+//     BDAstar * originalSearch = originalSearchNode->getExp();
 //     int nextStepNodes = max(originalSearch->getFw()->nextStepNodes(),
 //                          originalSearch->getBw()->nextStepNodes());
 //     if(!originalSearchNode->hasStoredPerimeters()  && shouldAbstractRatio &&
@@ -151,11 +151,11 @@ bool SymPH::init(HTree *tree_) {
 //     }
 // }
 
-unique_ptr<SymBDExp> SymPH::createBDExp(Dir dir, SymBDExp *bdExp) const {
-    return unique_ptr<SymBDExp> (new SymBDExp(bdExp, searchParams, dir));
+unique_ptr<BDAstar> SymPH::createBDExp(Dir dir, BDAstar *bdExp) const {
+    return unique_ptr<BDAstar> (new BDAstar(bdExp, searchParams, dir));
 }
 
-bool SymPH::relax_in(SymBDExp *bdExp, unique_ptr<SymBDExp> &newExp,
+bool SymPH::relax_in(BDAstar *bdExp, unique_ptr<BDAstar> &newExp,
                      HNode *hNode, int num_relaxations) const {
     Timer relax_timer;     //TODO: remove. Only used for debugging
 
@@ -188,7 +188,7 @@ bool SymPH::relax_in(SymBDExp *bdExp, unique_ptr<SymBDExp> &newExp,
             DEBUG_PHPDBS(cout << "New exp is searchable. total time: " << g_timer << endl;
                          );
             if (!perimeterPDBs) {
-                newExp.reset(new SymBDExp(tree->get_engine(), searchParams, getDir(bdExp)));
+                newExp.reset(new BDAstar(tree->get_engine(), searchParams, getDir(bdExp)));
                 return newExp->initFrontier(hNode->getStateSpaceRef(), maxRelaxTime, maxRelaxNodes) &&
                        newExp->initAll(maxRelaxTime, maxRelaxNodes) &&
                        addHeuristicExploration(bdExp, hNode, std::move(newExp));
@@ -277,7 +277,7 @@ void SymPH::dump_options() const {
 
 
 //Select direction of the new BDExp based on relaxDir
-Dir SymPH::getDir(SymBDExp *bdExp) const {
+Dir SymPH::getDir(BDAstar *bdExp) const {
     switch (relaxDir) {
     case RelaxDirStrategy::FW:
         return Dir::FW;
@@ -331,15 +331,15 @@ static PluginTypePlugin<SymPH> _type_plugin(
 // }
 
 
-SymBDExp *SymPH::addHeuristicExploration(SymBDExp *oldExp,
+BDAstar *SymPH::addHeuristicExploration(BDAstar *oldExp,
                                          HNode *hnode,
-                                         unique_ptr<SymBDExp> newExp) const {
+                                         unique_ptr<BDAstar> newExp) const {
     assert(newExp);
     if (newExp) {
         // Needed so that the abstract heuristic starts informing as
         // soon as possible (and to know whether it is useful)
         oldExp->setHeuristic(*newExp);
-        SymBDExp *ptr = newExp.get();
+        BDAstar *ptr = newExp.get();
         hnode->add_exploration(std::move(newExp));
         return ptr;
     } else {

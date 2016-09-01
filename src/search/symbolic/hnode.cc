@@ -2,7 +2,7 @@
 
 #include "htree.h"
 #include "ph.h"
-#include "sym_bdexp.h"
+#include "bd_astar.h"
 #include "sym_state_space_manager.h"
 #include "sym_engine.h"
 
@@ -24,14 +24,14 @@ HNode::HNode(HNode *o, SymPH *ph_,
     tree(o->tree), ph(ph_), state_space(std::move(state_space_mgr)) {
 }
 
-void HNode::failed_exploration(SymBDExp *newExp) {
+void HNode::failed_exploration(BDAstar *newExp) {
     failedForExps.insert(newExp);
     for (auto &p : parents) {
         p->failed_exploration(newExp);
     }
 }
 
-void HNode::notuseful_exploration(SymBDExp *newExp) {
+void HNode::notuseful_exploration(BDAstar *newExp) {
     if (newExp) {
         notUsefulForExps.insert(newExp);
         notuseful_exploration(newExp->getParent());     //This is not useful for newExp or its parent
@@ -42,10 +42,10 @@ void HNode::notuseful_exploration(SymBDExp *newExp) {
     }
 }
 
-void HNode::add_exploration(unique_ptr<SymBDExp> newExp) {
-    // SymBDExp * oldExp = parent->getExp();
+void HNode::add_exploration(unique_ptr<BDAstar> newExp) {
+    // BDAstar * oldExp = parent->getExp();
     // if(search){
-    //     SymBDExp * newExp = search.get();
+    //     BDAstar * newExp = search.get();
     //     // Needed so that the abstract heuristic starts informing as
     //     // soon as possible (and to know whether it is useful)
     //     oldExp->setHeuristic(*newExp);
@@ -66,13 +66,13 @@ void HNode::add_exploration(unique_ptr<SymBDExp> newExp) {
     //}
 }
 
-bool HNode::hasExpFor(SymBDExp *bdExp) const {
+bool HNode::hasExpFor(BDAstar *bdExp) const {
     return (exp && exp->isExpFor(bdExp)) ||
            failedForExps.count(bdExp) ||
            notUsefulForExps.count(bdExp);
 }
 
-bool HNode::isUsefulFor(SymBDExp *bdExp) const {
+bool HNode::isUsefulFor(BDAstar *bdExp) const {
     return notUsefulForExps.count(bdExp) == 0;
 }
 
@@ -105,7 +105,7 @@ std::ostream &operator<<(std::ostream &os, const HNode &n) {
 }
 
 
-// SymBDExp * HNode::relax(SymBDExp * _exp) const {
+// BDAstar * HNode::relax(BDAstar * _exp) const {
 //      if(ph){
 //          return ph->relax(_exp);
 //      }else{
@@ -113,7 +113,7 @@ std::ostream &operator<<(std::ostream &os, const HNode &n) {
 //      }
 // }
 
-SymBDExp *HNode::getPerimeter() const {
+BDAstar *HNode::getPerimeter() const {
     if (!expPerimeters.empty()) {    //Use the other perimeter instead
         DEBUG_PHPDBS(cout << ">> Reusing stored perimeter" << endl;
                      );
@@ -123,10 +123,10 @@ SymBDExp *HNode::getPerimeter() const {
     return exp.get();
 }
 
-SymBDExp *HNode::initSearch(const SymParamsSearch &searchParams, Dir dir) {
+BDAstar *HNode::initSearch(const SymParamsSearch &searchParams, Dir dir) {
     assert(!exp);
     if (!exp) {
-        exp.reset(new SymBDExp(tree->get_engine(), searchParams, dir));
+        exp.reset(new BDAstar(tree->get_engine(), searchParams, dir));
 
         if (exp->initFrontier(state_space, numeric_limits<int>::max(), numeric_limits<int>::max()) &&
             exp->initAll(numeric_limits<int>::max(), numeric_limits<int>::max())) {

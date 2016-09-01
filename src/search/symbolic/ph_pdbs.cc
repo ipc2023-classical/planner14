@@ -3,7 +3,7 @@
 #include "hnode.h"
 #include "htree.h"
 #include "sym_pdb.h"
-#include "sym_bdexp.h"
+#include "bd_astar.h"
 #include "variable_order_finder.h"
 
 
@@ -40,7 +40,7 @@ void SymPHPDBs::statistics() const {
     cout << endl;
 }
 
-HNode *SymPHPDBs::relax(HNode *iniHNode, SymBDExp *bdExp,
+HNode *SymPHPDBs::relax(HNode *iniHNode, BDAstar *bdExp,
                         Dir dir, int num_relaxations) {
     Timer t_relax;
     cout << ">> Abstract " << *iniHNode << " total time: " << g_timer << endl;
@@ -108,7 +108,7 @@ HNode *SymPHPDBs::relax(HNode *iniHNode, SymBDExp *bdExp,
     return newHNode;
 }
 
-void SymPHPDBs::getListAbstraction(SymBDExp *bdExp, HNode *hNode, vector<HNode *> &res) {
+void SymPHPDBs::getListAbstraction(BDAstar *bdExp, HNode *hNode, vector<HNode *> &res) {
     HNode *current = hNode;
     vector<int> remainingVars;
     if (current->isAbstracted()) {
@@ -175,11 +175,11 @@ void SymPHPDBs::getListAbstraction(SymBDExp *bdExp, HNode *hNode, vector<HNode *
 }
 
 
-HNode *SymPHPDBs::select_linear(const vector <HNode *> &nodes, SymBDExp *bdExp, Dir dir, int num_relaxations) {
+HNode *SymPHPDBs::select_linear(const vector <HNode *> &nodes, BDAstar *bdExp, Dir dir, int num_relaxations) {
     Timer time_select;
     DEBUG_MSG(cout << "Relax one by one: " << nodes.size() << endl;
               );
-    unique_ptr<SymBDExp> newBDExp = createBDExp(dir, bdExp);
+    unique_ptr<BDAstar> newBDExp = createBDExp(dir, bdExp);
     for (HNode *hNode : nodes) {
         if (relax_in(bdExp, newBDExp, hNode, num_relaxations)) {
             return hNode;
@@ -192,9 +192,9 @@ HNode *SymPHPDBs::select_linear(const vector <HNode *> &nodes, SymBDExp *bdExp, 
     return nullptr;
 }
 
-HNode *SymPHPDBs::select_reverse(const vector <HNode *> &nodes, SymBDExp *bdExp, Dir dir, int num_relaxations) {
+HNode *SymPHPDBs::select_reverse(const vector <HNode *> &nodes, BDAstar *bdExp, Dir dir, int num_relaxations) {
     cout << "Relax one by one" << endl;
-    unique_ptr<SymBDExp> newBDExp;
+    unique_ptr<BDAstar> newBDExp;
     for (auto it = nodes.rbegin(); it != nodes.rend(); ++it) {
         HNode *hNode = *it;
         if (!hNode->isUsefulFor(bdExp) || hNode->hasExpFor(bdExp)) {
@@ -222,12 +222,12 @@ HNode *SymPHPDBs::select_reverse(const vector <HNode *> &nodes, SymBDExp *bdExp,
 
 // HNode * SymPHPDBs::
 // select_binary_search(const vector <HNode *> & nodes,
-//                       SymBDExp * bdExp, Dir dir, int num_relaxations){
+//                       BDAstar * bdExp, Dir dir, int num_relaxations){
 //      Timer time_select;
 //      int imin = 0; // Most informed abstraction
 //      int imax = nodes.size() - 1; //Most relaxed abstraction
-//      unique_ptr<SymBDExp> newExp;
-//      unique_ptr<SymBDExp> best;
+//      unique_ptr<BDAstar> newExp;
+//      unique_ptr<BDAstar> best;
 //      int trials = 0;
 //      while (imax >= imin && time_select() <= phTime &&
 //             vars->totalMemory() <= phMemory && trials ++ < 15){ //TODO: HACK: this 15 should be a parameter

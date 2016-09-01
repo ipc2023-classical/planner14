@@ -28,7 +28,7 @@ public:
     virtual ~SymPHPDBs() {}
 
     virtual bool init() override;
-    virtual HNode *relax(HNode *hNode, SymBDExp *exp, Dir dir, int num_relaxations) override;
+    virtual HNode *relax(HNode *hNode, BDAstar *exp, Dir dir, int num_relaxations) override;
 
     virtual void dump_options() const override;
     virtual void statistics() const override;
@@ -38,16 +38,16 @@ public:
     /* } */
 
 private:
-    void getListAbstraction(SymBDExp *bdExp, HNode *hNode, std::vector<HNode *> &res);
+    void getListAbstraction(BDAstar *bdExp, HNode *hNode, std::vector<HNode *> &res);
 
     /* HNode* select_binary_search(const std::vector <HNode *> & nodes,  */
-    /*                        SymBDExp * bdExp, Dir dir, int num_relaxations); */
+    /*                        BDAstar * bdExp, Dir dir, int num_relaxations); */
 
     HNode *select_linear(const std::vector <HNode *> &nodes,
-                         SymBDExp *bdExp, Dir dir, int num_relaxations);
+                         BDAstar *bdExp, Dir dir, int num_relaxations);
 
     HNode *select_reverse(const std::vector <HNode *> &nodes,
-                          SymBDExp *bdExp, Dir dir, int num_relaxations);
+                          BDAstar *bdExp, Dir dir, int num_relaxations);
 };
 }
 #endif

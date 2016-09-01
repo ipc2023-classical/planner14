@@ -1,6 +1,6 @@
 #include "sym_engine.h"
 
-#include "sym_bdexp.h"
+#include "bd_astar.h"
 #include "sym_solution.h"
 #include "sym_enums.h"
 #include "hnode.h"
@@ -53,8 +53,8 @@ void SymEngine::initialize() {
         originalStateSpace->getManager()->set_simulation(prune_heuristic.get());
     }
 
-    originalSearch = new SymBDExp(this, searchParams, searchDir);
-    unique_ptr<SymBDExp> refExp(originalSearch);
+    originalSearch = new BDAstar(this, searchParams, searchDir);
+    unique_ptr<BDAstar> refExp(originalSearch);
 
     vector<SymPH *> tmp;
     tmp.swap(phs);
@@ -139,9 +139,9 @@ void SymEngine::set_default_options(Options &opts) {
     opts.set<int>("search_dir", 2);
 }
 
-// SymBDExp * SymEngine::relax(SymBDExp * exp) const{
+// BDAstar * SymEngine::relax(BDAstar * exp) const{
 //   for(auto ph : phs){
-//     SymBDExp * res = ph->relax(exp);
+//     BDAstar * res = ph->relax(exp);
 //     if(res) return res;
 //   }
 //   return nullptr;

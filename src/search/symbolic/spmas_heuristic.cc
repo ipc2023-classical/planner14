@@ -3,7 +3,7 @@
 #include "sym_enums.h"
 #include "sym_variables.h"
 #include "original_state_space.h"
-#include "sym_bdexp.h"
+#include "bd_astar.h"
 #include "ph.h"
 #include "hnode.h"
 #include "htree.h"
@@ -42,14 +42,14 @@ void SPMASHeuristic::initialize() {
     cout << "Initialize original search" << endl;
     HTree htree(this, mgrParams, cost_type);
     HNode *originalStateSpace = htree.get_original_state_node();
-    SymBDExp *originalSearch = originalStateSpace->initSearch(searchParams, Dir::BW);
+    BDAstar *originalSearch = originalStateSpace->initSearch(searchParams, Dir::BW);
 
     //Get mutex fw BDDs to detect spurious states as dead ends
     const vector<BDD> &nmBDD = originalSearch->getStateSpace()->getNotMutexBDDs(true);
     notMutexBDDs.insert(std::end(notMutexBDDs), std::begin(nmBDD), std::end(nmBDD));
 
     HNode *currentHNode = originalStateSpace;
-    SymBDExp *currentBDExp = originalSearch;
+    BDAstar *currentBDExp = originalSearch;
     SymExploration *currentSearch = originalSearch->getBw();
     while (!currentSearch->finished() &&
            utils::g_timer() < generationTime &&

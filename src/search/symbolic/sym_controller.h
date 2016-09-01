@@ -23,7 +23,7 @@ namespace symbolic {
 class SymSolution;
 class SymVariables;
 class SymPH;
-//class SymBDExp;
+//class BDAstar;
 
 
 class SymController {
@@ -42,7 +42,7 @@ public:
     virtual int getUpperBound() const {return std::numeric_limits<int>::max(); }
     virtual int getLowerBound() const {return 0; }
     virtual bool solved() const {return false; }
-    //virtual SymBDExp * relax(SymBDExp * /*exp*/) const {return nullptr;}
+    //virtual BDAstar * relax(BDAstar * /*exp*/) const {return nullptr;}
 
     inline SymVariables *getVars() {
         return vars;

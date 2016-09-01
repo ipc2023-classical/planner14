@@ -74,7 +74,7 @@ public:
     SymPH(const Options &opts);
     virtual ~SymPH() {}
 
-    virtual HNode *relax(HNode *iniHNode, SymBDExp *bdExp, Dir dir, int num_relaxations) = 0;
+    virtual HNode *relax(HNode *iniHNode, BDAstar *bdExp, Dir dir, int num_relaxations) = 0;
     virtual void dump_options() const;
 
     virtual void statistics() const {}
@@ -125,20 +125,20 @@ public:
     }
 
 protected:
-    Dir getDir(SymBDExp *bdExp) const;
+    Dir getDir(BDAstar *bdExp) const;
 
-    SymBDExp *addHeuristicExploration(SymBDExp *oldExp,
+    BDAstar *addHeuristicExploration(BDAstar *oldExp,
                                       HNode *hNode,
-                                      std::unique_ptr<SymBDExp> newExp) const;
+                                      std::unique_ptr<BDAstar> newExp) const;
 
     //Initializes the newBDExp to serve as heuristic for
     //bdExp. Calls initFrontier and initAll.  If suceeds, returns
     //true. If it does not suceed, returns false and, if the new
     //exploration is not useful, sets the hNode as notUseful.
-    bool relax_in(SymBDExp *bdExp, std::unique_ptr<SymBDExp> &newExp,
+    bool relax_in(BDAstar *bdExp, std::unique_ptr<BDAstar> &newExp,
                   HNode *hNode, int num_relaxations) const;
 
-    std::unique_ptr<SymBDExp> createBDExp(Dir dir, SymBDExp *bdExp) const;
+    std::unique_ptr<BDAstar> createBDExp(Dir dir, BDAstar *bdExp) const;
 };
 }
 #endif

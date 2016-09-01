@@ -29,12 +29,12 @@ namespace symbolic {
  * Zero cost operators have been expanded iff !S.IsZero() && Szero.IsZero()
  */
 class SymController;
-class SymBDExp;
+class BDAstar;
 
 class SymAstar : public SymExploration  {
     friend class SymAstarOpen;
     SymAstar *parent;  //Parent of the search
-    SymBDExp *bdExp;
+    BDAstar *bdExp;
 
     //Current state of the search:
     SymAstarOpen open_list;
@@ -143,12 +143,12 @@ public:
 
     virtual bool stepImage(int maxTime, int maxNodes);
 
-    bool init(SymBDExp *exp, std::shared_ptr<SymStateSpaceManager> manager, bool fw); //Init forward or backward search
+    bool init(BDAstar *exp, std::shared_ptr<SymStateSpaceManager> manager, bool fw); //Init forward or backward search
 
     //Initialize another search process by reutilizing information of this search
     //calls to 5 methods are needed.
     //1) init(), prepares the data of the other exploration.
-    void init(SymBDExp *exp, SymAstar *other);
+    void init(BDAstar *exp, SymAstar *other);
     //2) init2() reopens closed states in other frontier and initializes g, f
     //Should be called right after init is executed on both frontiers.
     void init2(SymAstar *opposite);
@@ -251,7 +251,7 @@ public:
         }
     }
 
-    inline SymBDExp *getBDExp() const {
+    inline BDAstar *getBDExp() const {
         return bdExp;
     }
 
@@ -295,7 +295,7 @@ public:
     void getNotExpanded(Bucket &res) const;
 
     //void write(const std::string & file) const;
-    //void init(SymBDExp * exp, SymStateSpaceManager * manager,  const std::string & file);
+    //void init(BDAstar * exp, SymStateSpaceManager * manager,  const std::string & file);
 
     void filterMutex(Bucket &bucket) {
         mgr->filterMutex(bucket, fw, initialization());

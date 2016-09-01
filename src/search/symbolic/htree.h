@@ -12,7 +12,7 @@ class HNode;
 class SymController;
 class SymMgrParams;
 class SymPH;
-class SymBDExp;
+class BDAstar;
 
 class HTree {
     SymController *engine;

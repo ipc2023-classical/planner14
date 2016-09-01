@@ -520,7 +520,7 @@ fast_downward_plugin(
 	symbolic/closed_list.cc
         symbolic/sym_heuristic.cc
         symbolic/sym_estimate.cc
-        symbolic/sym_bdexp.cc
+        symbolic/bd_astar.cc
         symbolic/sym_params_search.cc
         symbolic/sym_state_space_manager.cc
         symbolic/sym_pdb.cc

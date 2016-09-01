@@ -1,6 +1,6 @@
 #include "sym_astar.h"
 
-#include "sym_bdexp.h"
+#include "bd_astar.h"
 #include "../utils/debug_macros.h"
 #include "sym_util.h"
 #include "../utils/timer.h"
@@ -28,7 +28,7 @@ SymAstar::SymAstar(SymController *eng,
                                                     //estimationDisjCost(params), estimationDisjZero(params),
                                                     lastStepCost(true), engine(eng) {}
 
-    bool SymAstar::init(SymBDExp *exp, shared_ptr<SymStateSpaceManager> manager, bool forward) {
+    bool SymAstar::init(BDAstar *exp, shared_ptr<SymStateSpaceManager> manager, bool forward) {
     bdExp = exp;
     mgr = manager;
     fw = forward;
@@ -82,7 +82,7 @@ SymAstar::SymAstar(SymController *eng,
  * By keeping the new closed list empty, we can put everything,
  * frontier, open and reopen on the open list.
  */
-void SymAstar::init(SymBDExp *exp, SymAstar *other) {
+void SymAstar::init(BDAstar *exp, SymAstar *other) {
     bdExp = exp;
     fw = other->isFW();
     parent = other;
@@ -1087,7 +1087,7 @@ bool SymAstar::isBetter(const SymAstar &other) const {
 // }
 
 
-// void SymAstar::init(SymBDExp * exp, SymStateSpaceManager * manager, const string & dir){
+// void SymAstar::init(BDAstar * exp, SymStateSpaceManager * manager, const string & dir){
 //     bdExp = exp;
 //     mgr = manager;
 //     cout << "   Open file: " << dir << "data.txt" << endl;

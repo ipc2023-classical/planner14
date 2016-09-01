@@ -1,13 +1,13 @@
-#ifndef SYMBOLIC_SYM_BDEXP_H
-#define SYMBOLIC_SYM_BDEXP_H
+#ifndef SYMBOLIC_BD_ASTAR_H
+#define SYMBOLIC_BD_ASTAR_H
 
 #include "sym_astar.h"
 
 namespace symbolic {
-class SymBDExp {
+class BDAstar {
 private:
     std::shared_ptr<SymStateSpaceManager> state_space_manager;
-    SymBDExp *parent;
+    BDAstar *parent;
 
     // In order to initialize a bd_exp, we keep the states that have
     // been closed by the exploration meant to use this exploration as
@@ -29,8 +29,8 @@ private:
     int fMainDiagonal;
 
 public:
-    SymBDExp(SymController *engine, const SymParamsSearch &params, Dir dir);        // Create with initial states
-    SymBDExp(SymBDExp *other, const SymParamsSearch &params, Dir dir);          // Create with other frontiers
+    BDAstar(SymController *engine, const SymParamsSearch &params, Dir dir);        // Create with initial states
+    BDAstar(BDAstar *other, const SymParamsSearch &params, Dir dir);          // Create with other frontiers
 
     //Initialization is performed in two steps
     //initFrontier: sets the abstract state space and relax the frontier
@@ -38,7 +38,7 @@ public:
     //initAll: relax the rest of the search (should have called initFrontier first
     bool initAll(int maxTime, int maxNodes);
 
-    void setHeuristic(SymBDExp &other);
+    void setHeuristic(BDAstar &other);
 
 
     //Returns the best direction to search the bd exp
@@ -47,7 +47,7 @@ public:
     bool finished() const;
     bool finishedMainDiagonal() const;
 
-    inline SymBDExp *getParent() const {
+    inline BDAstar *getParent() const {
         return parent;
     }
 
@@ -69,7 +69,7 @@ public:
         return state_space_manager->isAbstracted();
     }
 
-    bool isExpFor(SymBDExp *bdExp) const;
+    bool isExpFor(BDAstar *bdExp) const;
 
     inline bool isUseful() const {
         return fw->isUseful() || bw->isUseful();
@@ -113,8 +113,8 @@ public:
         mayRelax = false;
     }
 
-    /* inline SymBDExp * relax() { */
-    /*     SymBDExp * res = nullptr; */
+    /* inline BDAstar * relax() { */
+    /*     BDAstar * res = nullptr; */
     /*     if(mayRelax){ */
     /*  res = hnode->relax(this); */
     /*  if(!res){ */
@@ -150,13 +150,13 @@ public:
         bw->desactivate();
     }
 
-    friend std::ostream &operator<<(std::ostream &os, const SymBDExp &other);
+    friend std::ostream &operator<<(std::ostream &os, const BDAstar &other);
 
     void getPlan(const BDD &cut, int g, int h, std::vector <const GlobalOperator *> &path) const;
 
     //Two methods useful for debugging: store/load into/from a file
     /* void write(const std::string & filename) const; */
-    /* SymBDExp(SymController * engine, const SymParamsSearch & params,  */
+    /* BDAstar(SymController * engine, const SymParamsSearch & params,  */
     /*     Dir dir, const std::string & filename, HNode * node); */
 };
 }

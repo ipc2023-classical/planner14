@@ -21,7 +21,7 @@ class HNode;
 class HTree;
 
 class SymPH;
-class SymBDExp;
+class BDAstar;
 class SymPruneHeuristic;
 
 class SymEngine : public SearchEngine, public SymController {
@@ -86,7 +86,7 @@ public:
         return lower_bound >= bound;
     }
 
-    //virtual SymBDExp * relax(SymBDExp * exp) const;
+    //virtual BDAstar * relax(BDAstar * exp) const;
 
     static void add_options_to_parser(OptionParser &parser);
     static void set_default_options(Options &opts);

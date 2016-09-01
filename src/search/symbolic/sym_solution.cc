@@ -1,7 +1,7 @@
 #include "sym_solution.h"
 
 #include <vector>       // std::vector
-#include "sym_bdexp.h"
+#include "bd_astar.h"
 #include "../state_registry.h"
 
 using namespace std;

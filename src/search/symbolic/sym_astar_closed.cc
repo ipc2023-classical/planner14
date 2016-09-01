@@ -2,7 +2,7 @@
 
 #include "sym_solution.h"
 #include "sym_astar.h"
-#include "sym_bdexp.h"
+#include "bd_astar.h"
 #include "sym_util.h"
 
 #include "../utils/timer.h"
