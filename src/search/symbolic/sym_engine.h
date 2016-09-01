@@ -21,7 +21,6 @@ class HNode;
 class HTree;
 
 class SymPH;
-class BDAstar;
 class SymPruneHeuristic;
 
 class SymEngine : public SearchEngine, public SymController {
@@ -85,8 +84,6 @@ public:
     virtual bool solved() const {
         return lower_bound >= bound;
     }
-
-    //virtual BDAstar * relax(BDAstar * exp) const;
 
     static void add_options_to_parser(OptionParser &parser);
     static void set_default_options(Options &opts);

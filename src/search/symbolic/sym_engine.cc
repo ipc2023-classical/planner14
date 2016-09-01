@@ -139,11 +139,4 @@ void SymEngine::set_default_options(Options &opts) {
     opts.set<int>("search_dir", 2);
 }
 
-// BDAstar * SymEngine::relax(BDAstar * exp) const{
-//   for(auto ph : phs){
-//     BDAstar * res = ph->relax(exp);
-//     if(res) return res;
-//   }
-//   return nullptr;
-// }
 }

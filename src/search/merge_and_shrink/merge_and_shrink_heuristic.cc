@@ -24,6 +24,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <cmath> //std::sqrt
 
 using namespace std;
 using utils::ExitCode;

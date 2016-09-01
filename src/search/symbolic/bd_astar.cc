@@ -3,6 +3,8 @@
 #include "../utils/debug_macros.h"
 #include "sym_engine.h"
 #include <algorithm>    // std::reverse
+#include <memory>    
+
 #include "../global_operator.h"
 
 using namespace std;
@@ -13,8 +15,8 @@ BDAstar::BDAstar(SymController *engine,
                    const SymParamsSearch &params,
                    Dir dir) :
     state_space_manager(nullptr), parent(nullptr),
-    fw(new SymAstar(engine, params)),
-    bw(new SymAstar(engine, params)),
+    fw(make_unique<SymAstar>(engine, params)),
+    bw(make_unique<SymAstar>(engine, params)),
     searchDir(dir), mayRelax(true), fMainDiagonal(-1) {
 }
 
@@ -22,8 +24,8 @@ BDAstar::BDAstar(BDAstar *other,
                    const SymParamsSearch &params,
                    Dir dir) :
     state_space_manager(nullptr), parent(other),
-    fw(new SymAstar(other->getFw()->getEngine(), params)),
-    bw(new SymAstar(other->getFw()->getEngine(), params)),
+    fw(make_unique<SymAstar>(other->getFw()->getEngine(), params)),
+    bw(make_unique<SymAstar>(other->getFw()->getEngine(), params)),
     searchDir(dir), mayRelax(true), fMainDiagonal(-1) {
     fw->init(this, other->fw.get());
     bw->init(this, other->bw.get());
@@ -290,8 +292,8 @@ SymAstar *BDAstar::selectBestDirection(bool skipUseful) const {
 // BDAstar::BDAstar(SymController * engine, const SymParamsSearch & params,
 //                 Dir dir, const string & filename, HNode * node) :
 //   hnode(nullptr), parent(nullptr),
-//   fw(new SymAstar(engine, params)),
-//   bw(new SymAstar(engine, params)),
+//   fw(make_unique<SymAstar>(engine, params)),
+//   bw(make_unique<SymAstar>(engine, params)),
 //   searchDir(dir), mayRelax(true),  fMainDiagonal (-1)
 // {
 //   hnode = node;

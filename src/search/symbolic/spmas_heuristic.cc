@@ -45,7 +45,7 @@ void SPMASHeuristic::initialize() {
     BDAstar *originalSearch = originalStateSpace->initSearch(searchParams, Dir::BW);
 
     //Get mutex fw BDDs to detect spurious states as dead ends
-    const vector<BDD> &nmBDD = originalSearch->getStateSpace()->getNotMutexBDDs(true);
+    const vector<BDD> &nmBDD = originalStateSpace->getStateSpace()->getNotMutexBDDs(true);
     notMutexBDDs.insert(std::end(notMutexBDDs), std::begin(nmBDD), std::end(nmBDD));
 
     HNode *currentHNode = originalStateSpace;
