@@ -1,6 +1,6 @@
 #include "sym_engine.h"
 
-#include "bd_astar.h"
+#include "bidirectional_search.h"
 #include "sym_solution.h"
 #include "sym_enums.h"
 #include "hnode.h"
@@ -53,8 +53,8 @@ void SymEngine::initialize() {
         originalStateSpace->getManager()->set_simulation(prune_heuristic.get());
     }
 
-    originalSearch = new BDAstar(this, searchParams, searchDir);
-    unique_ptr<BDAstar> refExp(originalSearch);
+    originalSearch = new BidirectionalSearch(this, searchParams, searchDir);
+    unique_ptr<BidirectionalSearch> refExp(originalSearch);
 
     vector<SymPH *> tmp;
     tmp.swap(phs);

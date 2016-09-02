@@ -2,7 +2,7 @@
 
 #include "sym_solution.h"
 #include "sym_astar.h"
-#include "bd_astar.h"
+#include "bidirectional_search.h"
 #include "sym_util.h"
 
 #include "../utils/timer.h"

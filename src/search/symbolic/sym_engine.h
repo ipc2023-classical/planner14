@@ -15,7 +15,7 @@ class Options;
 namespace symbolic {
 class SymHeuristicGenerator;
 class SymHeuristic;
-class SymExploration;
+class UnidirectionalSearch;
 class SymSolution;
 class HNode;
 class HTree;
@@ -59,7 +59,7 @@ protected:
     //Auxiliar method to get the return code for step()
     int stepReturn() const;
 public:
-    SymEngine(const Options &opts);
+    SymEngine(const options::Options &opts);
     virtual ~SymEngine();
 
     void statistics() const;
@@ -85,8 +85,8 @@ public:
         return lower_bound >= bound;
     }
 
-    static void add_options_to_parser(OptionParser &parser);
-    static void set_default_options(Options &opts);
+    static void add_options_to_parser(options::OptionParser &parser);
+    static void set_default_options(options::Options &opts);
 };
 }
 

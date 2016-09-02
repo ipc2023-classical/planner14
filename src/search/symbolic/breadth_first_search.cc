@@ -15,7 +15,7 @@ using utils::g_timer;
 namespace symbolic {
 
 BreadthFirstSearch::BreadthFirstSearch(const SymParamsSearch & params): 
-    SymExploration(params), estimation(params), parent(nullptr) {}
+    UnidirectionalSearch(params), estimation(params), parent(nullptr) {}
 
 
 bool BreadthFirstSearch::init(std::shared_ptr<SymStateSpaceManager> manager, bool forward){
@@ -228,7 +228,7 @@ void BreadthFirstSearch::notifyMutexes (const BDD & mutex_bdd) {
 
     estimation.recalculate(estimation, nodeCount(open)); 
 
-    if(isOriginal() && nodeCount(open) != nodesBefore) {
+    if(mgr->isOriginal() && nodeCount(open) != nodesBefore) {
 	cout << "Applying mutexes to orig search " << (fw? "fw: "  : "bw: ") 
 	     << nodesBefore << " => " << nodeCount(open) << endl;
     }

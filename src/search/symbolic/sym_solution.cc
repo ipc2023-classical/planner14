@@ -1,8 +1,10 @@
 #include "sym_solution.h"
 
 #include <vector>       // std::vector
-#include "bd_astar.h"
 #include "../state_registry.h"
+
+#include "sym_search.h"
+
 
 using namespace std;
 

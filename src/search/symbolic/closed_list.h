@@ -12,7 +12,7 @@ namespace symbolic {
 class SymStateSpaceManager;
 class SymAstar;
 class SymSolution;
-class SymExploration;
+class UnidirectionalSearch;
 
 class ClosedList {
 private:

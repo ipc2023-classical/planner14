@@ -1,7 +1,7 @@
 #ifndef SYMBOLIC_SYM_ASTAR_H
 #define SYMBOLIC_SYM_ASTAR_H
 
-#include "sym_exploration.h"
+#include "unidirectional_search.h"
 #include "sym_heuristic.h"
 #include "sym_state_space_manager.h"
 #include "sym_bucket.h"
@@ -29,12 +29,12 @@ namespace symbolic {
  * Zero cost operators have been expanded iff !S.IsZero() && Szero.IsZero()
  */
 class SymController;
-class BDAstar;
+class BidirectionalSearch;
 
-class SymAstar : public SymExploration  {
+class SymAstar : public UnidirectionalSearch  {
     friend class SymAstarOpen;
     SymAstar *parent;  //Parent of the search
-    BDAstar *bdExp;
+    BidirectionalSearch *bdExp;
 
     //Current state of the search:
     SymAstarOpen open_list;
@@ -143,12 +143,12 @@ public:
 
     virtual bool stepImage(int maxTime, int maxNodes);
 
-    bool init(BDAstar *exp, std::shared_ptr<SymStateSpaceManager> manager, bool fw); //Init forward or backward search
+    bool init(BidirectionalSearch *exp, std::shared_ptr<SymStateSpaceManager> manager, bool fw); //Init forward or backward search
 
     //Initialize another search process by reutilizing information of this search
     //calls to 5 methods are needed.
     //1) init(), prepares the data of the other exploration.
-    void init(BDAstar *exp, SymAstar *other);
+    void init(BidirectionalSearch *exp, SymAstar *other);
     //2) init2() reopens closed states in other frontier and initializes g, f
     //Should be called right after init is executed on both frontiers.
     void init2(SymAstar *opposite);
@@ -188,8 +188,6 @@ public:
     SymAstar *getOpposite() const;
 
     virtual bool isSearchableWithNodes(int maxNodes) const;
-
-    using SymExploration::isUseful;
 
     bool isUseful(const std::vector<BDD> &evalStates,
                   const std::vector<BDD> &newFrontier,
@@ -251,7 +249,7 @@ public:
         }
     }
 
-    inline BDAstar *getBDExp() const {
+    inline BidirectionalSearch *getBDExp() const {
         return bdExp;
     }
 
@@ -295,7 +293,7 @@ public:
     void getNotExpanded(Bucket &res) const;
 
     //void write(const std::string & file) const;
-    //void init(BDAstar * exp, SymStateSpaceManager * manager,  const std::string & file);
+    //void init(BidirectionalSearch * exp, SymStateSpaceManager * manager,  const std::string & file);
 
     void filterMutex(Bucket &bucket) {
         mgr->filterMutex(bucket, fw, initialization());

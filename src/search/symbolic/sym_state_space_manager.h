@@ -149,8 +149,11 @@ public:
     void init_transitions();
 
     inline bool isAbstracted() const {
-        //return true;
         return !(absVars.empty() && nonRelVars.empty());
+    }
+
+    inline bool isOriginal() const {
+        return !isAbstracted();
     }
 
     virtual BDD shrinkExists(const BDD &bdd, int maxNodes) const = 0;

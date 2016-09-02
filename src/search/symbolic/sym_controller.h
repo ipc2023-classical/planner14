@@ -16,9 +16,6 @@ class OptionParser;
 class Options;
 }
 
-using options::OptionParser;
-using options::Options;
-
 namespace symbolic {
 class SymSolution;
 class SymVariables;
@@ -33,7 +30,7 @@ protected:
     SymParamsSearch searchParams; //Parameters to search the original state space
 
 public:
-    SymController(const Options &opts);
+    SymController(const options::Options &opts);
     virtual ~SymController() {}
 
     virtual void new_solution(const SymSolution & /*sol*/) {}
@@ -54,7 +51,7 @@ public:
         return searchParams;
     }
 
-    static void add_options_to_parser(OptionParser &parser,
+    static void add_options_to_parser(options::OptionParser &parser,
                                       int maxStepTime, int maxStepNodes);
 };
 }

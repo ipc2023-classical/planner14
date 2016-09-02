@@ -5,7 +5,7 @@
 #include "sym_pdb.h"
 
 #include "sym_state_space_manager.h"
-#include "bd_astar.h"
+#include "bidirectional_search.h"
 #include "sym_controller.h"
 
 #include "../option_parser.h"
@@ -41,121 +41,14 @@ SymPH::SymPH(const Options &opts) :
 bool SymPH::init(HTree *tree_) {
     tree = tree_;
     vars = tree->get_engine()->getVars();
-    // if(use_mutex_in_abstraction){
-    //  const auto & nmFw = mgr->getNotMutexBDDs(true);
-    //  const auto & nmBw = mgr->getNotMutexBDDs(false);
-    //  notMutexBDDs.insert(end(notMutexBDDs), begin(nmFw), end(nmFw));
-    //  notMutexBDDs.insert(end(notMutexBDDs), begin(nmBw), end(nmBw));
-    // }
     return init();
 }
 
-
-// bool SymPH::askHeuristic(HNode * originalSearchNode, double allotedTime){
-//     DEBUG_PHPDBS(cout << "Ask heuristic" << endl;);
-//     Timer t_gen_heuristic;
-//     allotedTime = min<double> (allotedTime, phTime);
-
-//     BDAstar * originalSearch = originalSearchNode->getPerimeter();
-//     assert (originalSearch->getFw()->getClosed()->hasEvalOrig() ||
-//          originalSearch->getBw()->getClosed()->hasEvalOrig());
-
-
-//     while(t_gen_heuristic() < allotedTime &&
-//        vars->totalMemory() < phMemory &&
-//        !originalSearch->isSearchable() &&
-//        numAbstractions < maxNumAbstractions){
-//      numAbstractions++;
-
-//      //1) Generate a new abstract exploration
-//      HNode * abstractExpNode = relax(originalSearchNode);
-//      BDAstar * abstractExp = abstractExpNode->getExp();
-
-//      int num_relaxations = 1;
-
-//      //2) Search the new exploration
-//      while(abstractExp &&
-//            (!abstractExp->finishedMainDiagonal() || abstractExp->isUseful()) &&
-//            vars->totalMemory() < phMemory &&
-//            t_gen_heuristic() < allotedTime){
-
-//          auto * selectedExp = abstractExp->selectBestDirection(false);
-
-//          if (selectedExp->isSearchable()){
-//              selectedExp->step();
-//          } else {
-//              if (!abstractExp->isSearchable() &&
-//                  (abstractExp->getF() < originalSearch->getF() ||
-//                   !abstractExp->finishedMainDiagonal())){
-//                  // We skip this abstract state space if it is not
-//                  // searchable or we have not finished the main
-//                  // diagonal
-//                  abstractExp->desactivate();
-//                  numAbstractions --; //Does not count
-//                  //TODO: Here we should liberate all the memory
-//                  //used by this abstraction
-//              }
-
-//              if(numAbstractions++ >= maxNumAbstractions ) {
-//                  break;
-//              }
-
-//              //If we cannot continue the search, we relax it even more
-//              cout << "We cannot continue the search so we relax it even more" << endl;
-//              abstractExp = relax(originalSearch, abstractExpNode, ++num_relaxations);
-//          }
-//      }
-
-//      string reason = !abstractExp ? ">> No abstract search remaining" :
-//          (abstractExp->finishedMainDiagonal() ? (abstractExp->finished() ? "totally explored" :
-//                                                  (!abstractExp->isUseful() ? "is not useful" :
-//                                                   "f > concrete_f")) :
-//           "exhausted resources");
-
-//      cout << "Finished the exploration of the abstract state space (" <<  reason
-//           << "): " << t_gen_heuristic() << "s spent of " << allotedTime << endl;
-
-//      //3) Add last heuristic
-//      if(abstractExp){
-//          DEBUG_PHPDBS(cout << "Set heuristic to abstract exp: " << *abstractExp << endl;);
-//          originalSearch->setHeuristic(*abstractExp);
-
-//      }else{
-//          DEBUG_PHPDBS(cout << "Adding explicit heuristic to bw: "<<
-//                       intermediate_heuristics_fw.size() << endl;);
-//          //Add explicit heuristic
-//          for(auto & inth : intermediate_heuristics_fw){
-//              originalSearch->getFw()->addHeuristic(make_shared<SymHeuristic>(*vars,inth));
-//          }
-
-//          DEBUG_PHPDBS(cout << "Adding explicit heuristic to fw: " <<
-//                       intermediate_heuristics_bw.size() << endl;);
-//          for(auto & inth : intermediate_heuristics_bw){
-//              originalSearch->getBw()->addHeuristic(make_shared<SymHeuristic> (*vars,inth));
-//          }
-//      }
-//     }
-
-//     DEBUG_PHPDBS(cout << *originalSearch << endl;);
-//     //I did not generate any heuristic
-//     return false;
-// }
-
-// void SymPH::operate(HNode * originalSearchNode) {
-//     BDAstar * originalSearch = originalSearchNode->getExp();
-//     int nextStepNodes = max(originalSearch->getFw()->nextStepNodes(),
-//                          originalSearch->getBw()->nextStepNodes());
-//     if(!originalSearchNode->hasStoredPerimeters()  && shouldAbstractRatio &&
-//        (nextStepNodes > searchParams.maxStepNodes*shouldAbstractRatio)){
-//      originalSearchNode->addPerimeter(createBDExp(getDir(originalSearch), originalSearch));
-//     }
-// }
-
-unique_ptr<BDAstar> SymPH::createBDExp(Dir dir, BDAstar *bdExp) const {
-    return unique_ptr<BDAstar> (new BDAstar(bdExp, searchParams, dir));
+unique_ptr<BidirectionalSearch> SymPH::createBDExp(Dir dir) const {
+    return unique_ptr<BidirectionalSearch> (new BidirectionalSearch(searchParams, dir));
 }
 
-bool SymPH::relax_in(BDAstar *bdExp, unique_ptr<BDAstar> &newExp,
+bool SymPH::relax_in(BidirectionalSearch *bdExp, unique_ptr<BidirectionalSearch> &newExp,
                      HNode *hNode, int num_relaxations) const {
     Timer relax_timer;     //TODO: remove. Only used for debugging
 
@@ -164,11 +57,8 @@ bool SymPH::relax_in(BDAstar *bdExp, unique_ptr<BDAstar> &newExp,
         return false;
     }
 
-    if (bdExp->getFw() != newExp->getFw()->getParent() &&
-        bdExp->getBw() != newExp->getBw()->getParent()) {
-        cerr << "Assertion error" << endl;
-        utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
-    }
+    assert (bdExp->getFw() == newExp->getFw()->getParent() ||
+	    bdExp->getBw() == newExp->getBw()->getParent());
 
     cout << ">> Abstract in hNode: " << *hNode << " total time: " << g_timer << endl;
     //I have received a hNode and does not have an exploration. Try.
@@ -188,7 +78,7 @@ bool SymPH::relax_in(BDAstar *bdExp, unique_ptr<BDAstar> &newExp,
             DEBUG_PHPDBS(cout << "New exp is searchable. total time: " << g_timer << endl;
                          );
             if (!perimeterPDBs) {
-                newExp.reset(new BDAstar(tree->get_engine(), searchParams, getDir(bdExp)));
+                newExp.reset(new BidirectionalSearch(tree->get_engine(), searchParams, getDir(bdExp)));
                 return newExp->initFrontier(hNode->getStateSpaceRef(), maxRelaxTime, maxRelaxNodes) &&
                        newExp->initAll(maxRelaxTime, maxRelaxNodes) &&
                        addHeuristicExploration(bdExp, hNode, std::move(newExp));
@@ -277,7 +167,7 @@ void SymPH::dump_options() const {
 
 
 //Select direction of the new BDExp based on relaxDir
-Dir SymPH::getDir(BDAstar *bdExp) const {
+Dir SymPH::getDir(BidirectionalSearch *bdExp) const {
     switch (relaxDir) {
     case RelaxDirStrategy::FW:
         return Dir::FW;
@@ -331,15 +221,15 @@ static PluginTypePlugin<SymPH> _type_plugin(
 // }
 
 
-BDAstar *SymPH::addHeuristicExploration(BDAstar *oldExp,
+BidirectionalSearch *SymPH::addHeuristicExploration(BidirectionalSearch *oldExp,
                                          HNode *hnode,
-                                         unique_ptr<BDAstar> newExp) const {
+                                         unique_ptr<BidirectionalSearch> newExp) const {
     assert(newExp);
     if (newExp) {
         // Needed so that the abstract heuristic starts informing as
         // soon as possible (and to know whether it is useful)
         oldExp->setHeuristic(*newExp);
-        BDAstar *ptr = newExp.get();
+        BidirectionalSearch *ptr = newExp.get();
         hnode->add_exploration(std::move(newExp));
         return ptr;
     } else {

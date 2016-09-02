@@ -5,11 +5,11 @@
 #include <iostream>
 
 #include "sym_bucket.h"
-#include "sym_exploration.h"
+#include "unidirectional_search.h"
 
 namespace symbolic {
 
-class BreadthFirstSearch : public SymExploration  {  
+class BreadthFirstSearch : public UnidirectionalSearch  {  
     Bucket open;   // States in open 
     //Bucket closed; // States in closed
     BDD closedTotal;

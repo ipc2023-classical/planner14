@@ -1,6 +1,6 @@
 #include "sym_astar.h"
 
-#include "bd_astar.h"
+#include "bidirectional_search.h"
 #include "../utils/debug_macros.h"
 #include "sym_util.h"
 #include "../utils/timer.h"
@@ -21,14 +21,14 @@ using utils::Timer;
 
 namespace symbolic {
 SymAstar::SymAstar(SymController *eng,
-                   const SymParamsSearch &params) : SymExploration(params),
+                   const SymParamsSearch &params) : UnidirectionalSearch(params),
                                                     parent(nullptr), bdExp(nullptr), closed(new SymAstarClosed()),
                                                     f(0), g(0), perfectHeuristic(nullptr),
                                                     estimationCost(params), estimationZero(params),
                                                     //estimationDisjCost(params), estimationDisjZero(params),
                                                     lastStepCost(true), engine(eng) {}
 
-    bool SymAstar::init(BDAstar *exp, shared_ptr<SymStateSpaceManager> manager, bool forward) {
+    bool SymAstar::init(BidirectionalSearch *exp, shared_ptr<SymStateSpaceManager> manager, bool forward) {
     bdExp = exp;
     mgr = manager;
     fw = forward;
@@ -67,7 +67,7 @@ SymAstar::SymAstar(SymController *eng,
 
     prepareBucket();
 
-    if (!isAbstracted())
+    if (!mgr->isAbstracted())
         engine->setLowerBound(f);
 
     return true;
@@ -82,7 +82,7 @@ SymAstar::SymAstar(SymController *eng,
  * By keeping the new closed list empty, we can put everything,
  * frontier, open and reopen on the open list.
  */
-void SymAstar::init(BDAstar *exp, SymAstar *other) {
+void SymAstar::init(BidirectionalSearch *exp, SymAstar *other) {
     bdExp = exp;
     fw = other->isFW();
     parent = other;
@@ -150,7 +150,7 @@ void SymAstar::init2(SymAstar * /*opposite*/) {
 
 
 void SymAstar::setPerfectHeuristic(SymAstarClosed *h) {
-    if (!parent || !parent->isAbstracted()) {
+    if (!parent || !parent->mgr->isAbstracted()) {
         perfectHeuristic = h; //Do not use any heuristic for
                               //abstractions
 
@@ -238,7 +238,7 @@ void SymAstar::relaxClosed() {
 }
 
 void SymAstar::closeStates(Bucket &bucket, int g_val) {
-    if (!isAbstracted() && lastStepCost && g_val == 0) {
+    if (!mgr->isAbstracted() && lastStepCost && g_val == 0) {
         return; //Avoid closing init twice
     }
     DEBUG_MSG(cout << "Insert g=" << g_val << " states into closed: " << nodeCount(bucket) << " (" << bucket.size() << " bdds)" << endl;
@@ -252,7 +252,7 @@ void SymAstar::closeStates(Bucket &bucket, int g_val) {
     }
 
     // Check cut with other frontier in the abstract search to set fMainDiagonal
-    if (isAbstracted() && perfectHeuristic && bdExp->getFMainDiagonal() == -1) {
+    if (mgr->isAbstracted() && perfectHeuristic && bdExp->getFMainDiagonal() == -1) {
         for (const BDD &bdd : bucket) {
             BDD cut = perfectHeuristic->getClosed() * bdd;
             if (!cut.IsZero()) {
@@ -301,7 +301,7 @@ void SymAstar::pop() {
         f = nextFG.first;
         g = nextFG.second;
         if (perfectHeuristic) {
-            perfectHeuristic->cleanEvals(isOriginal());
+            perfectHeuristic->cleanEvals(mgr->isOriginal());
         }
         open_list.extract_states(f, g, Sfilter);
     }
@@ -313,7 +313,7 @@ void SymAstar::pop() {
 
     if (f > prevF) {
         //States closed, update the f value if is the original state space
-        if (isOriginal())
+        if (mgr->isOriginal())
             engine->setLowerBound(f);
 
         closed->setFNotClosed(f);
@@ -1087,7 +1087,7 @@ bool SymAstar::isBetter(const SymAstar &other) const {
 // }
 
 
-// void SymAstar::init(BDAstar * exp, SymStateSpaceManager * manager, const string & dir){
+// void SymAstar::init(BidirectionalSearch * exp, SymStateSpaceManager * manager, const string & dir){
 //     bdExp = exp;
 //     mgr = manager;
 //     cout << "   Open file: " << dir << "data.txt" << endl;

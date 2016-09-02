@@ -3,7 +3,7 @@
 #include "hnode.h"
 #include "original_state_space.h"
 #include "sym_engine.h"
-#include "bd_astar.h"
+#include "bidirectional_search.h"
 
 
 using namespace std;

@@ -8,12 +8,12 @@
 
 namespace symbolic {
 class HTree;
-class BDAstar;
+class BidirectionalSearch;
 class SymParamsSearch;
 
 class SymPH;
 class SymController;
-class SymExploration;
+class UnidirectionalSearch;
 class SymParamsMgr;
 
 class HNode {
@@ -23,17 +23,17 @@ private:
 
     std::shared_ptr<SymStateSpaceManager> state_space;
 
-    std::unique_ptr<BDAstar> exp;
+    std::unique_ptr<BidirectionalSearch> exp;
 
     //If should abstract is activated, we store a list with perimeters
     //of the original exploration to initialize our abstractions.
-    std::vector<std::unique_ptr<BDAstar>> expPerimeters;
+    std::vector<std::unique_ptr<BidirectionalSearch>> expPerimeters;
 
     std::vector <HNode *> children;     //Nodes more abstracted
     std::vector <HNode *> parents;     //Nodes less abstracted
 
-    std::set <BDAstar *> failedForExps;     //Set of exps we failed to abstract
-    std::set <BDAstar *> notUsefulForExps;     //Set of exps we are not useful for
+    std::set <BidirectionalSearch *> failedForExps;     //Set of exps we failed to abstract
+    std::set <BidirectionalSearch *> notUsefulForExps;     //Set of exps we are not useful for
 
 public:
     // Constructor for the original state space
@@ -48,7 +48,7 @@ public:
     HNode &operator=(HNode &&) = default;
     ~HNode() = default;
 
-    BDAstar *initSearch(const SymParamsSearch &searchParams, Dir dir);
+    BidirectionalSearch *initSearch(const SymParamsSearch &searchParams, Dir dir);
 
     void getAllParents(std::set<HNode *> &setParents);
 
@@ -56,9 +56,9 @@ public:
         return parents[0];
     }
 
-    void add_exploration(std::unique_ptr<BDAstar> newExp);
-    void failed_exploration(BDAstar *newExp);
-    void notuseful_exploration(BDAstar *newExp);
+    void add_exploration(std::unique_ptr<BidirectionalSearch> newExp);
+    void failed_exploration(BidirectionalSearch *newExp);
+    void notuseful_exploration(BidirectionalSearch *newExp);
 
     void addChildren(HNode *newNode);
     void addParent(HNode *newNode);
@@ -66,8 +66,8 @@ public:
     bool empty() const {
         return !exp && failedForExps.empty() && notUsefulForExps.empty();
     }
-    bool hasExpFor(BDAstar *bdExp) const;
-    bool isUsefulFor(BDAstar *bdExp) const;
+    bool hasExpFor(BidirectionalSearch *bdExp) const;
+    bool isUsefulFor(BidirectionalSearch *bdExp) const;
 
     inline int numVariablesToAbstract() const {
         return state_space->numVariablesToAbstract();
@@ -94,9 +94,9 @@ public:
         return res;
     }
 
-    /* BDAstar * relax(BDAstar * _exp) const; */
+    /* BidirectionalSearch * relax(BidirectionalSearch * _exp) const; */
 
-    BDAstar *getPerimeter() const;
+    BidirectionalSearch *getPerimeter() const;
 
     SymStateSpaceManager *getStateSpace() const {
         return state_space.get();
@@ -106,7 +106,7 @@ public:
         return state_space;
     }
 
-    inline BDAstar *getExp() const {
+    inline BidirectionalSearch *getExp() const {
         return exp.get();
     }
 
@@ -114,7 +114,7 @@ public:
         return !expPerimeters.empty();
     }
 
-    void addPerimeter(std::unique_ptr<BDAstar> perimeter) {
+    void addPerimeter(std::unique_ptr<BidirectionalSearch> perimeter) {
         expPerimeters.push_back(std::move(perimeter));
     }
 

@@ -511,36 +511,38 @@ fast_downward_plugin(
         symbolic/sym_bucket.cc
         symbolic/sym_controller.cc
         symbolic/sym_solution.cc
-        symbolic/sym_exploration.cc
-        symbolic/sym_astar.cc
         symbolic/sym_state_space_manager.cc
         symbolic/original_state_space.cc
-        symbolic/sym_astar_open.cc
-        symbolic/sym_astar_closed.cc
+        symbolic/sym_pdb.cc
 	symbolic/closed_list.cc
         symbolic/sym_heuristic.cc
         symbolic/sym_estimate.cc
-        symbolic/bd_astar.cc
         symbolic/sym_params_search.cc
         symbolic/sym_state_space_manager.cc
-        symbolic/sym_pdb.cc
-	symbolic/breadth_first_search.cc
+	symbolic/sym_search.cc
+	symbolic/unidirectional_search.cc
+
     DEPENDENCY_ONLY 
 )
 
-fast_downward_plugin(
-    NAME SYMBOLIC_PERIMETER_ABSTRACTIONS
-    HELP "Plugin containing the base for symbolic search"
-    SOURCES
-        symbolic/hnode.cc
-        symbolic/htree.cc
-        symbolic/ph.cc
-	symbolic/ph_pdbs.cc
-	symbolic/spmas_heuristic.cc
-	symbolic/variable_order_finder.cc
+#symbolic/bidirectional_search.cc
+
+
+# fast_downward_plugin(
+#     NAME SYMBOLIC_PERIMETER_ABSTRACTIONS
+#     HELP "Plugin containing the base for symbolic search"
+#     SOURCES
+#         symbolic/hnode.cc
+#         symbolic/htree.cc
+#         symbolic/ph.cc
+# 	symbolic/ph_pdbs.cc
+# 	symbolic/spmas_heuristic.cc
+# 	symbolic/variable_order_finder.cc
     
-    DEPENDS SYMBOLIC
-)
+#     DEPENDS SYMBOLIC
+# )
+
+
 
 fast_downward_add_plugin_sources(PLANNER_SOURCES)
 

@@ -1,13 +1,14 @@
 #ifndef SYMBOLIC_BD_ASTAR_H
 #define SYMBOLIC_BD_ASTAR_H
 
+#include "sym_search.h"
 #include "sym_astar.h"
 
 namespace symbolic {
-class BDAstar {
+class BidirectionalSearch : public SymSearch {
 private:
     std::shared_ptr<SymStateSpaceManager> state_space_manager;
-    BDAstar *parent;
+    BidirectionalSearch *parent;
 
     // In order to initialize a bd_exp, we keep the states that have
     // been closed by the exploration meant to use this exploration as
@@ -29,8 +30,8 @@ private:
     int fMainDiagonal;
 
 public:
-    BDAstar(SymController *engine, const SymParamsSearch &params, Dir dir);        // Create with initial states
-    BDAstar(BDAstar *other, const SymParamsSearch &params, Dir dir);          // Create with other frontiers
+    BidirectionalSearch(SymController *engine, const SymParamsSearch &params, Dir dir);        // Create with initial states
+    BidirectionalSearch(BidirectionalSearch *other, const SymParamsSearch &params, Dir dir);          // Create with other frontiers
 
     //Initialization is performed in two steps
     //initFrontier: sets the abstract state space and relax the frontier
@@ -38,21 +39,51 @@ public:
     //initAll: relax the rest of the search (should have called initFrontier first
     bool initAll(int maxTime, int maxNodes);
 
-    void setHeuristic(BDAstar &other);
+    void setHeuristic(BidirectionalSearch &other);
 
 
     //Returns the best direction to search the bd exp
-    SymAstar *selectBestDirection(bool skipUseful = false) const;
+    SymAstar * selectBestDirection(bool skipUseful = false) const;
 
-    bool finished() const;
+    virtual bool finished() const override;
+
     bool finishedMainDiagonal() const;
 
-    inline BDAstar *getParent() const {
+    inline BidirectionalSearch *getParent() const {
         return parent;
     }
 
+   virtual bool stepImage(int maxTime, int maxNodes) override;
+
+
     //Prints useful statistics at the end of the search
-    void statistics() const;
+    virtual void statistics() const override;
+
+    virtual int getF() const override {
+        return std::max<int>(fw->getF(), bw->getF());
+    }
+
+    virtual bool isSearchableWithNodes(int maxNodes) const override {
+        return (searchDir != Dir::BW && fw->isSearchableWithNodes(maxNodes)) ||
+               (searchDir != Dir::FW && bw->isSearchableWithNodes(maxNodes));
+    }
+
+    virtual bool isUseful(double ratio) const override {
+         return fw->isUseful(ratio) || bw->isUseful(ratio);
+    }
+
+    virtual long nextStepTime() const override {
+	return std::min<int>(fw->nextStepTime(), bw->nextStepTime());
+    }
+    
+    virtual long nextStepNodes() const override {
+	return std::min<int>(fw->nextStepNodes(), bw->nextStepNodes());
+    }
+    
+    virtual long nextStepNodesResult() const override {
+	return std::min<int>(fw->nextStepNodesResult(), bw->nextStepNodesResult());
+    }
+    
     inline const BDD &getClosedByParent(bool fw) const {
         if (fw || (parent && !parent->isAbstracted())) {
             return closedByParent;
@@ -69,15 +100,13 @@ public:
         return state_space_manager->isAbstracted();
     }
 
-    bool isExpFor(BDAstar *bdExp) const;
+    bool isExpFor(BidirectionalSearch *bdExp) const;
 
-    inline bool isUseful() const {
-        return fw->isUseful() || bw->isUseful();
-    }
 
     inline bool isUsefulAndSearchable() const {
-        return (fw->isUseful() && fw->isSearchable()) ||
-               (bw->isUseful() && bw->isSearchable());
+        /* return (fw->isUseful() && fw->isSearchable()) || */
+        /*        (bw->isUseful() && bw->isSearchable()); */
+        return fw->isSearchable() || bw->isSearchable();
     }
 
     bool isUsefulAfterRelax(double ratio) const;
@@ -90,17 +119,8 @@ public:
                (searchDir != Dir::FW && bw->isSearchableAfterRelax(num_relaxations));
     }
 
-    inline bool isSearchableWithNodes(int maxNodes) const {
-        return (searchDir != Dir::BW && fw->isSearchableWithNodes(maxNodes)) ||
-               (searchDir != Dir::FW && bw->isSearchableWithNodes(maxNodes));
-    }
-
     inline bool isRelaxable() const {
         return mayRelax;
-    }
-
-    inline int getF() const {
-        return std::max<int>(fw->getF(), bw->getF());
     }
 
     inline int getFMainDiagonal() const {
@@ -113,8 +133,8 @@ public:
         mayRelax = false;
     }
 
-    /* inline BDAstar * relax() { */
-    /*     BDAstar * res = nullptr; */
+    /* inline BidirectionalSearch * relax() { */
+    /*     BidirectionalSearch * res = nullptr; */
     /*     if(mayRelax){ */
     /*  res = hnode->relax(this); */
     /*  if(!res){ */
@@ -150,14 +170,9 @@ public:
         bw->desactivate();
     }
 
-    friend std::ostream &operator<<(std::ostream &os, const BDAstar &other);
+    friend std::ostream &operator<<(std::ostream &os, const BidirectionalSearch &other);
 
     void getPlan(const BDD &cut, int g, int h, std::vector <const GlobalOperator *> &path) const;
-
-    //Two methods useful for debugging: store/load into/from a file
-    /* void write(const std::string & filename) const; */
-    /* BDAstar(SymController * engine, const SymParamsSearch & params,  */
-    /*     Dir dir, const std::string & filename, HNode * node); */
 };
 }
 #endif

@@ -40,5 +40,6 @@ public:
     HNode *createHNode(HNode *parent, SymPH *ph,
                        std::unique_ptr <SymStateSpaceManager> state_space);
 };
+
 }
 #endif

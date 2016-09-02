@@ -3,7 +3,7 @@
 #include "opt_order.h"
 
 #include "sym_state_space_manager.h"
-#include "bd_astar.h"
+#include "bidirectional_search.h"
 #include "hnode.h"
 #include "../utils/debug_macros.h"
 #include "../globals.h"
