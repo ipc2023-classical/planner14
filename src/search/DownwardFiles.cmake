@@ -536,8 +536,8 @@ fast_downward_plugin(
 	symbolic/sym_search.cc
 	symbolic/unidirectional_search.cc
 	symbolic/uniform_cost_search.cc
-
-    DEPENDENCY_ONLY 
+	symbolic/breadth_first_search.cc
+ 
 )
 
 #symbolic/bidirectional_search.cc
