@@ -160,7 +160,7 @@ void SymStateSpaceManager::init_mutex(const std::vector<MutexGroup> &mutex_group
     for (auto &mg : mutex_groups) {
         if (mg.pruneFW() != fw)
             continue;
-        const vector<Fact> &invariant_group = mg.getFacts();
+        const vector<FactPair> &invariant_group = mg.getFacts();
         DEBUG_MSG(cout << mg << endl;);
         if (mg.isExactlyOne()) {
             BDD bddInvariant = zeroBDD();
@@ -510,7 +510,7 @@ void SymStateSpaceManager::init_transitions() {
 		
                 for (const auto &trParent : indTRsCost.second) {
                     TransitionRelation absTransition = TransitionRelation(trParent);
-		    assert (absTransition.getOps().size == 1);
+		    assert (absTransition.getOps().size() == 1);
 		    int cost = cost_type->get_adjusted_cost(*(absTransition.getOps().begin()));
 		    if(cost != absTransition.getCost()) absTransition.set_cost(cost);
                     try{
