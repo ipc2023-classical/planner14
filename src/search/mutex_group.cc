@@ -1,7 +1,7 @@
 #include "mutex_group.h"
 
 #include "globals.h"
-#include "abstract_task.h" //For Fact
+#include "abstract_task.h" //For FactPair
 
 using namespace std;
 
@@ -16,7 +16,7 @@ MutexGroup::MutexGroup(istream &in) {
   for (int j = 0; j < num_facts; ++j) {
     int var, val;
     in >> var >> val;
-    facts.push_back(Fact(var, val));
+    facts.push_back(FactPair(var, val));
   }
   check_magic(in, "end_mutex_group");
   exactly_one = (exactly_one_str == "exactly_one");

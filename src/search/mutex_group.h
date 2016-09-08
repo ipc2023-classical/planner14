@@ -4,13 +4,13 @@
 #include <iostream>
 #include <vector>
 
-struct Fact;
+struct FactPair;
 
 class MutexGroup {
   bool detected_fw;
   bool exactly_one; 
 
-  std::vector<Fact> facts;
+  std::vector<FactPair> facts;
  public:
   MutexGroup(std::istream &in);
 
@@ -20,7 +20,7 @@ class MutexGroup {
 
   bool hasPair(int var, int val) const;
 
-  inline const std::vector<Fact> & getFacts() const{
+  inline const std::vector<FactPair> & getFacts() const{
     return facts;
   }
 
