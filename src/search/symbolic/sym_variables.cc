@@ -110,7 +110,8 @@ void SymVariables::init(const vector <int> &v_order) {
     BDD TEST = getCubePre(testsetaaa);
     TEST.print(2, 2);
     */
-    cout << "Generating predicate BDDs" << endl;
+    cout << "Generating predicate BDDs: " << num_fd_vars << endl;
+    cout << var_order.size() << endl;
     preconditionBDDs.resize(num_fd_vars);
     effectBDDs.resize(num_fd_vars);
     biimpBDDs.resize(num_fd_vars);
@@ -279,8 +280,6 @@ void SymVariables::print() {
             file << fact << endl;
     }
 }
-
-
 
 void SymVariables::print_options() const {
     cout << "CUDD Init: nodes=" << cudd_init_nodes <<

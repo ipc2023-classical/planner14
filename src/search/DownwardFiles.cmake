@@ -507,7 +507,7 @@ fast_downward_plugin(
         symbolic/opt_order.cc
         symbolic/sym_util.cc
         symbolic/sym_enums.cc
-        symbolic/sym_transition.cc
+        symbolic/transition_relation.cc
         symbolic/sym_bucket.cc
         symbolic/sym_controller.cc
         symbolic/sym_solution.cc
@@ -515,12 +515,15 @@ fast_downward_plugin(
         symbolic/original_state_space.cc
         symbolic/sym_pdb.cc
 	symbolic/closed_list.cc
+	symbolic/open_list.cc
+	symbolic/frontier.cc
         symbolic/sym_heuristic.cc
         symbolic/sym_estimate.cc
         symbolic/sym_params_search.cc
         symbolic/sym_state_space_manager.cc
 	symbolic/sym_search.cc
 	symbolic/unidirectional_search.cc
+	symbolic/uniform_cost_search.cc
 
     DEPENDENCY_ONLY 
 )

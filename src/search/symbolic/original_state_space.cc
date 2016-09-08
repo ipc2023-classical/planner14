@@ -6,7 +6,7 @@ using namespace std;
 namespace symbolic {
 OriginalStateSpace::OriginalStateSpace(SymVariables *v,
                                        const SymParamsMgr &params,
-                                       OperatorCost cost_type_) :
+                                       shared_ptr<OperatorCostFunction> cost_type_) :
     SymStateSpaceManager(v, params, cost_type_) {
     for (size_t i = 0; i < g_variable_domain.size(); ++i) {
         fullVars.insert(i);
@@ -33,10 +33,10 @@ void OriginalStateSpace::init_individual_trs() {
         /*if (op->is_dead()){
           continue;
           }*/
-        int cost = get_adjusted_action_cost(*op, cost_type);
+        int cost = cost_type->get_adjusted_cost(i);
         DEBUG_MSG(cout << "Creating TR of op " << i << " of cost " << cost << endl;
                   );
-        indTRs[cost].push_back(move(SymTransition(vars, op, cost)));
+        indTRs[cost].push_back(move(TransitionRelation(vars, op, cost)));
         if (p.mutex_type == MutexType::MUTEX_EDELETION) {
             indTRs[cost].back().edeletion(*this);
         }

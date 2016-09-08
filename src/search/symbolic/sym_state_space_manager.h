@@ -1,7 +1,7 @@
 #ifndef SYMBOLIC_SYM_STATE_SPACE_MANAGER_H
 #define SYMBOLIC_SYM_STATE_SPACE_MANAGER_H
 
-#include "../operator_cost.h"
+#include "../operator_cost_function.h"
 #include "sym_enums.h"
 #include "sym_bucket.h"
 #include "sym_variables.h"
@@ -20,7 +20,7 @@ class Options;
 
 namespace symbolic {
 class SymVariables;
-class SymTransition;
+class TransitionRelation;
 
 /*
  * All the methods may throw exceptions in case the time or nodes are exceeded.
@@ -48,7 +48,7 @@ class SymStateSpaceManager {
 protected:
     SymVariables *vars;
     const SymParamsMgr p;
-    const OperatorCost cost_type;
+    const std::shared_ptr<OperatorCostFunction> cost_type;
 
     // Hold a reference to the parent manager that can be used during
     // initialization. Uses weak_ptr in order to allow releasing the
@@ -63,12 +63,13 @@ protected:
     BDD initialState; // initial state
     BDD goal; // bdd representing the true (i.e. not simplified) goal-state
 
-    std::map<int, std::vector <SymTransition>> transitions; //TRs
+    std::map<int, std::vector <TransitionRelation>> transitions; //TRs
     int min_transition_cost; //minimum cost of non-zero cost transitions
     bool hasTR0; //If there is transitions with cost 0
 
     //Individual TRs: Useful for shrink and plan construction
-    std::map<int, std::vector <SymTransition>> indTRs;
+    std::map<int, std::vector <TransitionRelation>> indTRs;
+    //std::vector<TransitionRelation> indTRs;
 
     bool mutexInitialized, mutexByFluentInitialized;
 
@@ -94,15 +95,15 @@ protected:
     virtual ADD getExplicitHeuristicADD(bool fw) = 0;
     virtual void getExplicitHeuristicBDD(bool fw, std::map<int, BDD> &res) = 0;
 
-    virtual void getTransitions(const std::map<int, std::vector <SymTransition>> & /*individualTRs*/,
-                                std::map<int, std::vector <SymTransition>> & /*res*/) const {
+    virtual void getTransitions(const std::map<int, std::vector <TransitionRelation>> & /*individualTRs*/,
+                                std::map<int, std::vector <TransitionRelation>> & /*res*/) const {
         std::cerr << "REBUILD TRs not supported by " << *this << std::endl;
         utils::exit_with(utils::ExitCode::UNSUPPORTED);
     }
 
-    void shrinkTransitions(const std::map<int, std::vector <SymTransition>> &trs,
-                           const std::map<int, std::vector <SymTransition>> &indTRs,
-                           std::map<int, std::vector <SymTransition>> &res,
+    void shrinkTransitions(const std::map<int, std::vector <TransitionRelation>> &trs,
+                           const std::map<int, std::vector <TransitionRelation>> &indTRs,
+                           std::map<int, std::vector <TransitionRelation>> &res,
                            int maxTime, int maxNodes) const;
 
     BDD getRelVarsCubePre() const {
@@ -133,11 +134,16 @@ protected:
 public:
     SymStateSpaceManager(SymVariables *v,
                          const SymParamsMgr &params,
-                         OperatorCost cost_type_); //Original state space: All vars are relevant
+                         std::shared_ptr<OperatorCostFunction> cost_type_); //Original state space: All vars are relevant
 
-    SymStateSpaceManager(std::shared_ptr<SymStateSpaceManager> &parent,
+    SymStateSpaceManager(std::shared_ptr<SymStateSpaceManager> parent,
                          AbsTRsStrategy abs_trs_strategy_,
                          const std::set<int> &relevantVars); //Abstract state space (PDBs)
+    
+    SymStateSpaceManager(std::shared_ptr<SymStateSpaceManager> parent,
+                         AbsTRsStrategy abs_trs_strategy_,
+                         const std::set<int> &relevantVars, 
+			 std::shared_ptr<OperatorCostFunction> cost_type); //Abstract state space (PDBs)
 
     virtual void init_mutex(const std::vector<MutexGroup> &mutex_groups);
 
@@ -235,7 +241,7 @@ public:
         return goal;
     }
 
-    const std::map<int, std::vector <SymTransition>> &getIndividualTRs() {
+    const std::map<int, std::vector <TransitionRelation>> &getIndividualTRs() {
         if (indTRs.empty())
             init_individual_trs();
         return indTRs;
@@ -310,12 +316,19 @@ public:
     void dumpMutexBDDs(bool fw) const;
 
     //Methods that require of TRs initialized
-    inline int getMinTransitionCost() {
+    inline int getMinTransitionCost() const {
         assert(!transitions.empty());
         return min_transition_cost;
     }
 
-    inline bool hasTransitions0() {
+    inline int getAbsoluteMinTransitionCost() const {
+        assert(!transitions.empty());
+	if(hasTR0) return 0;
+        return min_transition_cost;
+    }
+
+
+    inline bool hasTransitions0() const {
         assert(!transitions.empty());
         return hasTR0;
     }

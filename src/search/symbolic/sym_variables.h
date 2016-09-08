@@ -15,6 +15,7 @@
 #include <set>
 #include <string>
 #include <map>
+#include <cassert>
 
 namespace options {
 class Options;
@@ -47,7 +48,7 @@ class SymVariables {
     //The variable order must be complete.
     std::vector <int> var_order; //Variable(FD) order in the BDD
     std::vector <std::vector <int>> bdd_index_pre, bdd_index_eff, bdd_index_abs; //vars(BDD) for each var(FD)
-
+    
     std::vector <std::vector <BDD>> preconditionBDDs; // BDDs associated with the precondition of a predicate
     std::vector <std::vector <BDD>> effectBDDs;      // BDDs associated with the effect of a predicate
     std::vector<BDD> biimpBDDs;  //BDDs associated with the biimplication of one variable(FD)
@@ -154,11 +155,16 @@ public:
         return _manager->ReadMemoryInUse();
     }
 
+    inline double totalMemoryGB() const {
+        return _manager->ReadMemoryInUse()/(1024*1024*1024);
+    }
+
     inline BDD zeroBDD() const {
         return _manager->bddZero();
     }
 
     inline BDD oneBDD() const {
+	assert(_manager);
         return _manager->bddOne();
     }
 
@@ -188,8 +194,9 @@ public:
     }
 
     void print();
-
-    inline int *getBinaryDescription(const GlobalState &state) {
+    
+    template <class T> 
+    int *getBinaryDescription(const T &state) {
         int pos = 0;
         //  cout << "State " << endl;
         for (int v : var_order) {
@@ -209,6 +216,7 @@ public:
 
         return &(binState[0]);
     }
+
 
     inline ADD getADD(int value) {
         return _manager->constant(value);
