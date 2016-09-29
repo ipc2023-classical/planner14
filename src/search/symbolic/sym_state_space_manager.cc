@@ -455,11 +455,11 @@ void SymStateSpaceManager::init_transitions() {
         init_transitions_from_individual_trs();
     } else {
         auto parent = parent_mgr.lock();
-        assert(!parent->transitions.empty());
 
         map<int, vector <TransitionRelation>> failedToShrink;
         switch (abs_trs_strategy) {
         case AbsTRsStrategy::TR_SHRINK:
+	    assert(!parent->transitions.empty());
             for (const auto &trsParent : parent->transitions) {
                 int cost = trsParent.first;     //For all the TRs of cost cost
                 DEBUG_MSG(cout << "Init trs: " << cost << endl;);
@@ -506,7 +506,7 @@ void SymStateSpaceManager::init_transitions() {
             }
             break;
         case AbsTRsStrategy::IND_TR_SHRINK:
-            for (const auto &indTRsCost : parent->indTRs) {
+            for (const auto &indTRsCost : parent->getIndividualTRsFromParent()) {
 		
                 for (const auto &trParent : indTRsCost.second) {
                     TransitionRelation absTransition = TransitionRelation(trParent);
