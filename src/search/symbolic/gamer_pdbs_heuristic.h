@@ -30,7 +30,7 @@ public:
 	       std::shared_ptr<SymStateSpaceManager> originalStateSpace);
     
 
-    void search(const SymParamsSearch & searchParams, int generationTime = 0, int generationMemory = 0);
+    void search(const SymParamsSearch & searchParams, int generationTime = 0, double generationMemory = 0);
 
     ADD getHeuristic() const;
     double average_value();
@@ -71,9 +71,10 @@ class GamerPDBsHeuristic : public Heuristic, public SymController {
 
     bool influences(int var, const std::set<int> & pattern);
 
+    void initialize();
 protected:
-    virtual void initialize();
-    virtual int compute_heuristic(const GlobalState &state);
+
+    virtual int compute_heuristic(const GlobalState &state) override;
 
 public:
     GamerPDBsHeuristic(const options::Options &opts);

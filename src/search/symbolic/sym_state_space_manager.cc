@@ -108,7 +108,7 @@ void SymStateSpaceManager::init_transitions_from_individual_trs() {
             min_transition_cost = it->first;
         }
 
-        cout << "TRs cost=" << it->first << " (" << it->second.size() << ")" << endl;
+        DEBUG_MSG(cout << "TRs cost=" << it->first << " (" << it->second.size() << ")" << endl;);
     }
 }
 
@@ -509,7 +509,7 @@ void SymStateSpaceManager::init_transitions() {
                 }
 
                 if (!failed_ops.empty()) {   //Add all the TRs related with it.
-                    cout << "Failed ops" << endl;
+                    DEBUG_MSG(cout << "Failed ops" << endl;);
                     for (const auto &trParent : indTRs.at(cost)) {
                         if (trParent.hasOp(failed_ops)) {
                             TransitionRelation absTransition = TransitionRelation(trParent);

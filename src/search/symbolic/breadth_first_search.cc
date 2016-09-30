@@ -127,10 +127,12 @@ bool BreadthFirstSearch::stepImage(int maxTime, int maxNodes){
 
     BDD S = pop();
 
-     DEBUG_MSG(cout << ">> Step: " << *mgr << (fw ? " fw " : " bw ")
-     << " frontierNodes: " << S.nodeCount() << " [" << nodeCount(open) << "]"  << " total time: " << g_timer 
-     << " total nodes: " << mgr->totalNodes() << " total memory: " << mgr->totalMemory()/1000000 << "M " 
-     << utils::get_peak_memory_in_kb() << "k" << endl;);
+    if (p.debug) {
+	cout << ">> Step: " << *mgr << (fw ? " fw " : " bw ")
+	     << " frontierNodes: " << S.nodeCount() << " [" << nodeCount(open) << "]"  << " total time: " << g_timer 
+	     << " total nodes: " << mgr->totalNodes() << " total memory: " << mgr->totalMemory()/1000000 << "M " 
+	     << utils::get_peak_memory_in_kb() << "k" << endl;
+    }
 
 
     int nodesStep = S.nodeCount();
