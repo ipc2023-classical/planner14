@@ -25,6 +25,7 @@ set(CORE_SOURCES
         int_packer.cc
         mutex_group.cc
         operator_cost.cc
+        operator_cost_function.cc
         option_parser.h
         option_parser_util.h
         per_state_information.cc
@@ -537,7 +538,7 @@ fast_downward_plugin(
 	symbolic/unidirectional_search.cc
 	symbolic/uniform_cost_search.cc
 	symbolic/breadth_first_search.cc
- 
+	symbolic/gamer_pdbs_heuristic.cc
 )
 
 #symbolic/bidirectional_search.cc
