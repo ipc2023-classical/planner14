@@ -539,6 +539,7 @@ fast_downward_plugin(
 	symbolic/uniform_cost_search.cc
 	symbolic/breadth_first_search.cc
 	symbolic/gamer_pdbs_heuristic.cc
+    DEPENDENCY_ONLY 
 )
 
 #symbolic/bidirectional_search.cc

@@ -16,6 +16,7 @@ namespace symbolic {
 	if (exp_fw) {
 	    exp_fw->getPlan(cut, g, h, path);   
 	}
+	DEBUG_MSG(cout << "Extract path backward: " << h << endl; );
 	if (exp_bw) {
 	    BDD newCut;
 	    if (!path.empty()) {
@@ -64,7 +65,7 @@ namespace symbolic {
 
 	SymVariables *vars = nullptr;
 	if(exp_fw) vars = exp_fw->getStateSpace()->getVars();
-	if(exp_bw) vars = exp_bw->getStateSpace()->getVars();
+	else if(exp_bw) vars = exp_bw->getStateSpace()->getVars();
 	
 	ADD hADD = vars->getADD(-1);
 	int h_val = g + h;

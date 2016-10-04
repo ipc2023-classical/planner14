@@ -49,7 +49,7 @@ namespace symbolic {
 
 	closed->init(mgr.get(), this);
 	closed->insert(0, init_bdd);
-	closed->setHNotClosed(open_list.minNextG(frontier.g(), mgr->getAbsoluteMinTransitionCost()));
+	closed->setHNotClosed(open_list.minNextG(frontier, mgr->getAbsoluteMinTransitionCost()));
 	closed->setFNotClosed(getF());
 
 	DEBUG_MSG(cout << "Init perfect heuristic: " << endl;);
@@ -65,12 +65,13 @@ namespace symbolic {
 
 	prepareBucket();
 
-	if(!isAbstracted()) engine->setLowerBound(getF());
+	if(isOriginal()) engine->setLowerBound(getF());
 
 	return true;
     }
 
     void UniformCostSearch::checkCutOriginal(Bucket & bucket, int g_val){
+	assert(isOriginal());
 	//If it is the original space, maybe we have found a solution, set upper bound  
 	if(!perfectHeuristic || p.get_non_stop()){
 	    return;
@@ -123,8 +124,9 @@ namespace symbolic {
 		}
 	    } 
 
-	    closed->setHNotClosed(open_list.minNextG(frontier.g(), mgr->getAbsoluteMinTransitionCost()));
+	    closed->setHNotClosed(open_list.minNextG(frontier, mgr->getAbsoluteMinTransitionCost()));
 	    closed->setFNotClosed(getF());
+	    if(isOriginal()) engine->setLowerBound(getF());
    
 	    computeEstimation(true);
 	}
