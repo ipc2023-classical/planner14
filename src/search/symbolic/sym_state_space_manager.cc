@@ -276,8 +276,9 @@ void SymStateSpaceManager::addDeadEndStates(bool fw, BDD bdd) {
     //and spurious states are always removed. TODO: this could be
     //improved.
     if (fw || isAbstracted()) {
-        if (isAbstracted())
+        if (isAbstracted()) {
             bdd = shrinkForall(bdd);
+	}
         notDeadEndFw.push_back(!bdd);
         mergeBucketAnd(notDeadEndFw);
     } else {
@@ -291,14 +292,14 @@ void SymStateSpaceManager::addDeadEndStates(const std::vector<BDD> &fw_dead_ends
                                             const std::vector<BDD> &bw_dead_ends) {
     for (BDD bdd : fw_dead_ends) {
         bdd = shrinkForall(bdd);
-        if (!bdd.IsZero()) {
+        if (!(!bdd).IsZero()) {
             notDeadEndFw.push_back(!bdd);
         }
     }
 
     for (BDD bdd : bw_dead_ends) {
         bdd = shrinkForall(bdd);
-        if (!bdd.IsZero()) {
+        if (!(!bdd).IsZero()) {
             notDeadEndFw.push_back(!bdd);
         }
     }
@@ -369,6 +370,7 @@ BDD SymStateSpaceManager::filter_mutex(const BDD &bdd, bool fw,
     const vector<BDD> &notDeadEndBDDs = ((fw || isAbstracted()) ? notDeadEndFw : notDeadEndBw);
     for (const BDD &notDeadEnd : notDeadEndBDDs) {
         DEBUG_MSG(cout << "Filter: " << res.nodeCount() << " and dead end " << notDeadEnd.nodeCount() << flush;);
+	assert(!(notDeadEnd.IsZero()));
         res = res.And(notDeadEnd, nodeLimit);
         DEBUG_MSG(cout << ": " << res.nodeCount() << endl;);
     }

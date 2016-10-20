@@ -296,6 +296,10 @@ public:
         return fw ? notMutexBDDsFw : notMutexBDDsBw;
     }
 
+    inline const std::vector<BDD> &getNotDeadEnds(bool fw) {
+        return fw ? notDeadEndFw : notDeadEndBw;
+    }
+
     inline const std::vector<int> &vars_index_pre(int variable) const {
         return vars->vars_index_pre(variable);
     }

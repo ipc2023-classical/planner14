@@ -65,6 +65,9 @@ void PDBSearch::search(const SymParamsSearch & params,
 	if(!uc_search->step()) break;
     }
 
+    assert(!uc_search->finished() || 
+	   spdbheuristic->solved() || 
+	   uc_search->isAbstracted());
     average_hval = uc_search->getClosed()->average_hvalue();
     cout << "Finished PDB: " << *this << flush << "   Average value: "  << average_hval << " g_time: " << utils::g_timer() << endl; 
 }
@@ -142,8 +145,8 @@ void GamerPDBsHeuristic::initialize() {
 
 	if(solved()) {
 	    cout << "Problem solved during heuristic generation" << endl;
-	    heuristic = make_unique<ADD>(solution.getADD());
-	    return;
+	    //heuristic = make_unique<ADD>(solution.getADD());
+	    //return;
 	}
 
 	if(perimeter) {
@@ -199,8 +202,6 @@ void GamerPDBsHeuristic::initialize() {
     	    
 	    DEBUG_MSG(cout << "Search ended. Solution found: " << solution.solved() << endl;);
 
-	    assert(child_pattern.size () < g_variable_domain.size() || 
-		   lower_bound >= new_pdb->get_search()->getF());
 
 	    if (solved()) {
 		best_pdb = std::move(new_pdb);
@@ -210,6 +211,8 @@ void GamerPDBsHeuristic::initialize() {
 		break;
 	    }
 
+	    assert(child_pattern.size () < g_variable_domain.size() || 
+		   lower_bound >= new_pdb->get_search()->getF());
 	    if (new_pdb->average_value() > best_pdb->average_value()) {
 		DEBUG_MSG(cout << "Adding to best" << endl;);
 		new_best_value = max(new_best_value, new_pdb->average_value());

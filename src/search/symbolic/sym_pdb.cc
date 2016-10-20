@@ -49,7 +49,26 @@ SymPDB::SymPDB(SymVariables *bdd_vars, const SymParamsMgr &params,
     SymPDB::SymPDB(shared_ptr<SymStateSpaceManager> parent, 
 		   AbsTRsStrategy absTRsStrategy,
 		   const std::set<int> &relevantVars) :
-	SymPDB(parent, absTRsStrategy, relevantVars, parent->get_cost_type()) {}
+	SymPDB(parent, absTRsStrategy, relevantVars, parent->get_cost_type()) {
+
+
+	assert(isAbstracted());
+
+	//Both are put into notDeadEndFw for the case of abstract
+	//searches
+	for (const auto & bdd : parent->getNotDeadEnds(false)) {
+	    notDeadEndFw.push_back(bdd);
+	}
+
+	for (const auto & bdd : parent->getNotDeadEnds(true)) {
+	    notDeadEndFw.push_back(bdd);
+	}
+	mergeBucketAnd(notDeadEndFw);
+
+	for (auto & bdd : notDeadEndFw) {
+	    bdd = shrinkExists(bdd, p.max_mutex_size);
+	}
+    }
 
     SymPDB::SymPDB(shared_ptr<SymStateSpaceManager> parent, 
 		   AbsTRsStrategy absTRsStrategy,
@@ -58,11 +77,23 @@ SymPDB::SymPDB(SymVariables *bdd_vars, const SymParamsMgr &params,
 	SymStateSpaceManager(parent, absTRsStrategy, relevantVars, cost_type_) {
 	nonRelVarsCube = vars->getCubePre(nonRelVars);    // * vars->getCubep(nonRelVars);
 	nonRelVarsCubeWithPrimes = nonRelVarsCube * vars->getCubeEff(nonRelVars);
-	if (!nonRelVarsCube.IsCube()) {
-	    cout << "Error in sym_pdb: nonRelVars should be a cube";
-	    nonRelVarsCube.print(0, 1);
-	    cout << endl;
-	    utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
+	assert(nonRelVarsCube.IsCube()) ;
+	assert(isAbstracted());
+	
+	//Both are put into notDeadEndFw for the case of abstract
+	//searches
+	for (const auto & bdd : parent->getNotDeadEnds(false)) {
+	    notDeadEndFw.push_back(bdd);
+	}
+
+	for (const auto & bdd : parent->getNotDeadEnds(true)) {
+	    notDeadEndFw.push_back(bdd);
+	}
+
+	mergeBucketAnd(notDeadEndFw);
+
+	for (auto & bdd : notDeadEndFw) {
+	    bdd = shrinkExists(bdd, p.max_mutex_size);
 	}
     }
 
