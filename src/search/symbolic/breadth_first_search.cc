@@ -21,10 +21,7 @@ BreadthFirstSearch::BreadthFirstSearch(const SymParamsSearch & params):
 bool BreadthFirstSearch::init(std::shared_ptr<SymStateSpaceManager> manager, bool forward){
     mgr = manager;
     fw = forward;
-    //Ensure that the mgr of the original state space is initialized
-    //(only to get the planner output cleaner)
-    mgr->init();
-  
+   
     if(fw){
 	open.push_back(mgr->getInitialState());
     }else{
@@ -121,8 +118,6 @@ BDD BreadthFirstSearch::pop (){
 }
 
 bool BreadthFirstSearch::stepImage(int maxTime, int maxNodes){
-    mgr->init_transitions(); // Ensure that transitions have been initialized
-
     Timer step_time;
 
     BDD S = pop();

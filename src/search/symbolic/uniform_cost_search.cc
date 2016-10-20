@@ -36,9 +36,7 @@ namespace symbolic {
 	fw = forward;
 	lastStepCost = true;
 	assert(mgr);
-	//Ensure that the mgr of the original state space is initialized (only to get the planner output cleaner) 
-	mgr->init();
-  
+	
 	DEBUG_MSG(cout << "Init exploration: " << dirname(forward) << *this/* << " with mgr: " << manager */<< endl;);
 
 	BDD init_bdd = fw ? mgr->getInitialState() : mgr->getGoal();
@@ -137,9 +135,7 @@ namespace symbolic {
 	    return; //If it has been solved, return 
 	}
 
-	if(initialization()){
-	    mgr->init_mutex(g_mutex_groups);
-	}
+	initialization();
 
 	int maxTime = p.getAllotedTime(nextStepTime());
 	int maxNodes = p.getAllotedNodes(nextStepNodesResult());
@@ -182,8 +178,6 @@ namespace symbolic {
 	DEBUG_MSG(cout << "... bucket prepared. " << endl;);
 	if(engine->solved()) return true; //Skip image if we are done
 
-
-	mgr->init_transitions(); // Ensure that transitions have been initialized
 	int stepNodes = frontier.nodes();
 	ResultExpansion res_expansion = frontier.expand(maxTime, maxNodes, fw);
 

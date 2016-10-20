@@ -25,7 +25,7 @@ namespace symbolic {
 
 PDBSearch::PDBSearch (GamerPDBsHeuristic * spdbheuristic_,
 		      shared_ptr<SymStateSpaceManager> originalStateSpace) :
-    spdbheuristic(spdbheuristic_),    state_space(originalStateSpace), 
+    spdbheuristic(spdbheuristic_), state_space(originalStateSpace), 
     average_hval(-1) {
     for(size_t i = 0; i < g_variable_domain.size(); ++i) {
 	pattern.insert(i);
@@ -35,11 +35,11 @@ PDBSearch::PDBSearch (GamerPDBsHeuristic * spdbheuristic_,
 
 PDBSearch::PDBSearch (const set<int> & pattern_, 
 		      GamerPDBsHeuristic * spdbheuristic_,
-		      shared_ptr<SymStateSpaceManager> originalStateSpace) :
+		      const shared_ptr<OriginalStateSpace> & originalStateSpace) :
     spdbheuristic(spdbheuristic_), pattern(pattern_),
     average_hval(-1) {
     if (pattern.size() != g_variable_domain.size ()) {
-	state_space = make_shared<SymPDB>(originalStateSpace, AbsTRsStrategy::IND_TR_SHRINK, pattern_);
+	state_space = make_shared<SymPDB>(*originalStateSpace, pattern_);
     } else {
 	state_space = originalStateSpace;
     }    
