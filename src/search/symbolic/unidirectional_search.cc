@@ -23,8 +23,8 @@ namespace symbolic {
 	    return SymSolution(nullptr, search, 0, g, cut);
 
     }
-    UnidirectionalSearch::UnidirectionalSearch(const SymParamsSearch &params) : 
-	SymSearch(params), fw(true) {}
+    UnidirectionalSearch::UnidirectionalSearch(SymController * eng, const SymParamsSearch &params) : 
+	SymSearch(eng, params), fw(true) {}
 
 
     void UnidirectionalSearch::statistics() const {

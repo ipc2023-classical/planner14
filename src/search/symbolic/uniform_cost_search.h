@@ -51,8 +51,6 @@ namespace symbolic {
 	//SymStepCostEstimation estimationDisjCost, estimationDisjZero;
 	bool lastStepCost; //If the last step was a cost step (to know if we are in estimationDisjCost or Zero)
 
-	SymController * engine; //Access to the bound and notification of new solutions
-
 	SymExpStatistics stats;
 
 	virtual bool initialization() const {
@@ -115,12 +113,12 @@ namespace symbolic {
 	}
 
 
-	inline SymController * getEngine() const {
-	    return engine;
-	}
-
 	virtual int getF() const override {
 	    return open_list.minNextG(frontier, mgr->getAbsoluteMinTransitionCost());
+	}
+
+	virtual int getG() const override {
+	    return frontier.empty() ? open_list.minG() : frontier.g();
 	}
 
 	int getHNotClosed() const {

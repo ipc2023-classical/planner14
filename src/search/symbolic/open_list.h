@@ -53,7 +53,6 @@ public:
     int minG() const;
 
     int minNextG(const Frontier & frontier, int min_action_cost) const;
-
     void pop (Frontier & frontier);
 
     friend std::ostream & operator<<(std::ostream &os, const OpenList & open);

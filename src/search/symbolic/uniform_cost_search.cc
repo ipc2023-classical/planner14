@@ -24,10 +24,10 @@ namespace symbolic {
 
     UniformCostSearch::UniformCostSearch(SymController * eng,
 					 const SymParamsSearch & params): 
-	UnidirectionalSearch(params), 
+	UnidirectionalSearch(eng, params), 
 	parent(nullptr), closed(make_shared<ClosedList>()),  
 	estimationCost(params), estimationZero(params),
-	lastStepCost(true), engine(eng) {}
+	lastStepCost(true) {}
 
     bool UniformCostSearch::init(std::shared_ptr<SymStateSpaceManager>  manager, 
 				 bool forward, 

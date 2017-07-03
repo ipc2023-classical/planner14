@@ -12,7 +12,7 @@
 namespace symbolic {
     class SymSolution;
     class UnidirectionalSearch;
-    
+    class SymController; 
     class SymExpStatistics {
     public:
 	double image_time, image_time_failed;
@@ -69,6 +69,8 @@ namespace symbolic {
 	virtual int getHNotClosed() const {
 	    return hNotGoal;
 	}
+
+    
     };
 
 
@@ -80,7 +82,8 @@ namespace symbolic {
 
 	std::shared_ptr<OppositeFrontier> perfectHeuristic;
     public:
-	UnidirectionalSearch (const SymParamsSearch &params);
+
+	UnidirectionalSearch(SymController * eng, const SymParamsSearch &params);
 
 	inline bool isFW() const {
 	    return fw;
@@ -89,6 +92,8 @@ namespace symbolic {
 	void statistics() const;
 
 	virtual void getPlan(const BDD &cut, int g, std::vector <const GlobalOperator *> &path) const = 0;
+
+	virtual int getG() const = 0;
 
     };
 }

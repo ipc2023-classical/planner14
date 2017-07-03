@@ -38,7 +38,7 @@ namespace symbolic_search {
 	fw_search->init(mgr, true, bw_search->getClosedShared());
 	bw_search->init(mgr, false, fw_search->getClosedShared());
 	
-	search = make_unique<BidirectionalSearch> (searchParams, move(fw_search), move(bw_search));
+	search = make_unique<BidirectionalSearch> (this, searchParams, move(fw_search), move(bw_search));
     }
 
 
@@ -75,7 +75,7 @@ namespace symbolic_search {
     }
 
     void SymbolicSearch::new_solution(const SymSolution &sol) {
-	if (sol.getCost() < bound) {
+	if (sol.getCost() < getUpperBound()) {
 	    vector <const GlobalOperator *> plan;
 	    sol.getPlan(plan);
 	    set_plan(plan);

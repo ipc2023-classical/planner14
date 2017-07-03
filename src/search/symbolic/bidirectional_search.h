@@ -14,7 +14,8 @@ private:
 
 public:
 
-    BidirectionalSearch(const SymParamsSearch &params, std::unique_ptr<UnidirectionalSearch> fw,
+    BidirectionalSearch(SymController * eng,
+			const SymParamsSearch &params, std::unique_ptr<UnidirectionalSearch> fw,
 			std::unique_ptr<UnidirectionalSearch> bw); 
 
 
@@ -26,7 +27,8 @@ public:
     virtual void statistics() const override;
 
     virtual int getF() const override {
-        return std::max<int>(fw->getF(), bw->getF());
+	return std::max<int>(std::max<int>(fw->getF(), bw->getF()),
+			     fw->getG() + bw->getG() + mgr->getAbsoluteMinTransitionCost());
     }
 
     virtual bool isSearchableWithNodes(int maxNodes) const override {

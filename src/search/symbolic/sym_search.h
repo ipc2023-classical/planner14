@@ -11,7 +11,7 @@
 #include <memory>
 
 namespace symbolic {
-class SymStateSpaceManager;
+    class SymController;
 
 //We use this enumerate to know why the current operation was truncated
 enum class TruncatedReason {
@@ -24,11 +24,18 @@ protected:
     //Attributes that characterize the search:
     std::shared_ptr<SymStateSpaceManager> mgr;           //Symbolic manager to perform bdd operations
     SymParamsSearch p;
+
+    SymController * engine; //Access to the bound and notification of new solutions
+
 public:
-    SymSearch (const SymParamsSearch &params);
+    SymSearch (SymController * eng, const SymParamsSearch &params);
 
     SymStateSpaceManager * getStateSpace() {
 	return mgr.get();
+    }
+    
+    inline std::shared_ptr<SymStateSpaceManager> getStateSpaceShared() const {
+	return mgr;
     }
 
     bool isAbstracted() const {

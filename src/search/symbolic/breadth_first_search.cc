@@ -14,8 +14,8 @@ using utils::g_timer;
 
 namespace symbolic {
 
-BreadthFirstSearch::BreadthFirstSearch(const SymParamsSearch & params): 
-    UnidirectionalSearch(params), estimation(params), parent(nullptr) {}
+    BreadthFirstSearch::BreadthFirstSearch(SymController * eng, const SymParamsSearch & params): 
+	UnidirectionalSearch(eng, params), estimation(params), parent(nullptr) {}
 
 
 bool BreadthFirstSearch::init(std::shared_ptr<SymStateSpaceManager> manager, bool forward){

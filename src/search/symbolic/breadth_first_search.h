@@ -34,7 +34,7 @@ class BreadthFirstSearch : public UnidirectionalSearch  {
 	//mgr->mergeBucket(closed);
     }
  public:
-  BreadthFirstSearch(const SymParamsSearch & params);
+  BreadthFirstSearch(SymController * eng, const SymParamsSearch & params);
   BreadthFirstSearch(const BreadthFirstSearch & ) = delete;
   BreadthFirstSearch(BreadthFirstSearch &&) = default;
   BreadthFirstSearch& operator=(const BreadthFirstSearch& ) = delete;

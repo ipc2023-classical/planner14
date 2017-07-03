@@ -26,6 +26,8 @@ int OpenList::minNextG(const  Frontier & frontier, int min_action_cost) const {
     return next_g;
 }
 
+    
+
     void OpenList::pop(Frontier & frontier) {
 	assert(frontier.empty());
 	int g = open.begin()->first;

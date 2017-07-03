@@ -12,12 +12,17 @@ using utils::g_timer;
 
 namespace symbolic {
 
-    BidirectionalSearch::BidirectionalSearch(const SymParamsSearch &params, std::unique_ptr<UnidirectionalSearch> _fw,
-					     unique_ptr<UnidirectionalSearch> _bw) : SymSearch(params),
-											  fw(std::move(_fw)),
-											  bw(std::move(_bw)){
+    BidirectionalSearch::BidirectionalSearch(SymController * eng,
+					     const SymParamsSearch &params,
+					     std::unique_ptr<UnidirectionalSearch> _fw,
+					     unique_ptr<UnidirectionalSearch> _bw) :
+	SymSearch(eng, params),
+	fw(std::move(_fw)),
+	bw(std::move(_bw)){
+	assert(fw->getStateSpace() == bw->getStateSpace());
+	mgr = fw->getStateSpaceShared();
     }
-
+    
    
 
     UnidirectionalSearch *BidirectionalSearch::selectBestDirection() const {
@@ -49,7 +54,12 @@ namespace symbolic {
 
 
     bool BidirectionalSearch::stepImage(int maxTime, int maxNodes)  {
-	return selectBestDirection()->stepImage(maxTime, maxNodes);
-    }
+	bool res = selectBestDirection()->stepImage(maxTime, maxNodes);
 
+	if(isOriginal()) {
+	    engine->setLowerBound(getF());
+	}
+
+	return res;
+    }
 }

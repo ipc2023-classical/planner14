@@ -3,8 +3,8 @@
 using namespace std;
 
 namespace symbolic {
-SymSearch::SymSearch(const SymParamsSearch &params) :
-    mgr(nullptr), p(params) {}
+    SymSearch::SymSearch(SymController * eng, const SymParamsSearch &params) :
+    mgr(nullptr), p(params), engine(eng) {}
 
 
 
