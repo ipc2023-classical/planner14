@@ -25,11 +25,12 @@ OriginalStateSpace::OriginalStateSpace(SymVariables *v,
         int cost = cost_type->get_adjusted_cost(i);
         DEBUG_MSG(cout << "Creating TR of op " << i << " of cost " << cost << endl;
 	    );
-        indTRs[cost].push_back(move(TransitionRelation(vars, op, cost)));
+        indTRs[cost].push_back(TransitionRelation(vars, op, cost));
         if (p.mutex_type == MutexType::MUTEX_EDELETION) {
-            indTRs[cost].back().edeletion(*this);
+            indTRs[cost].back().edeletion(notMutexBDDsByFluentFw, notMutexBDDsByFluentBw, exactlyOneBDDsByFluent);
         }
     }
+
 
     init_transitions(indTRs);
 }
@@ -42,10 +43,20 @@ void OriginalStateSpace::init_mutex(const std::vector<MutexGroup> &mutex_groups)
     bool genMutexBDD = true;
     bool genMutexBDDByFluent = (p.mutex_type == MutexType::MUTEX_EDELETION);
 
+    if(genMutexBDDByFluent){
+	//Initialize structure for exactlyOneBDDsByFluent (common to both init_mutex calls) 
+	exactlyOneBDDsByFluent.resize(g_variable_domain.size());
+	for (size_t i = 0; i < g_variable_domain.size(); ++i){
+	    exactlyOneBDDsByFluent[i].resize(g_variable_domain[i]); 
+	    for(int j = 0; j < g_variable_domain[i]; ++j){
+		exactlyOneBDDsByFluent[i][j] = oneBDD();
+	    }
+	}
+    }
     init_mutex(mutex_groups, genMutexBDD, genMutexBDDByFluent, false);
     init_mutex(mutex_groups, genMutexBDD, genMutexBDDByFluent, true);
-}
 
+}
 void OriginalStateSpace::init_mutex(const std::vector<MutexGroup> &mutex_groups,
                                       bool genMutexBDD, bool genMutexBDDByFluent, bool fw) {
     DEBUG_MSG(cout << "Init mutex BDDs " << (fw ? "fw" : "bw") << ": "

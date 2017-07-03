@@ -3,7 +3,6 @@
 
 #include "sym_state_space_manager.h"
 #include "sym_variables.h"
-#include "sym_abstraction.h"
 #include <set>
 
 namespace symbolic {

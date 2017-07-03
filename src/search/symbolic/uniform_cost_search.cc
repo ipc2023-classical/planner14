@@ -368,12 +368,11 @@ namespace symbolic {
 	}
     }
 
-    void UniformCostSearch::getPlan(const BDD &cut, int g, int h, std::vector <const GlobalOperator *> &path) const {
-    	if (fw) {
-    	    closed->extract_path(cut, g, true, path);
+    void UniformCostSearch::getPlan(const BDD &cut, int g, std::vector <const GlobalOperator *> &path) const {
+
+	closed->extract_path(cut, g, fw, path);
+    	if (fw) {  
     	    std::reverse(path.begin(), path.end());
-    	} else {
-    	    closed->extract_path(cut, h, false, path);	    
     	} 
     }
 }

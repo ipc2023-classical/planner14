@@ -58,10 +58,10 @@ void SymStateSpaceManager::addDeadEndStates(bool fw, BDD bdd) {
             bdd = shrinkForall(bdd);
 	}
         notDeadEndFw.push_back(!bdd);
-        mergeBucketAnd(notDeadEndFw);
+        //mergeBucketAnd(notDeadEndFw);
     } else {
         notDeadEndBw.push_back(!bdd);
-        mergeBucketAnd(notDeadEndBw);
+        //mergeBucketAnd(notDeadEndBw);
     }
 }
 
@@ -70,14 +70,14 @@ void SymStateSpaceManager::addDeadEndStates(const std::vector<BDD> &fw_dead_ends
                                             const std::vector<BDD> &bw_dead_ends) {
     for (BDD bdd : fw_dead_ends) {
         bdd = shrinkForall(bdd);
-        if (!(!bdd).IsZero()) {
+        if (!(bdd.IsZero())) {
             notDeadEndFw.push_back(!bdd);
         }
     }
 
     for (BDD bdd : bw_dead_ends) {
         bdd = shrinkForall(bdd);
-        if (!(!bdd).IsZero()) {
+        if (!(bdd.IsZero())) {
             notDeadEndFw.push_back(!bdd);
         }
     }
@@ -238,6 +238,11 @@ void SymStateSpaceManager::shrinkBucket(Bucket &bucket, int maxNodes) {
 
 void SymStateSpaceManager::init_transitions(const map<int, vector <TransitionRelation>> & (indTRs)) {
     transitions = indTRs; //Copy
+    if(transitions.empty()) {
+	hasTR0 = false; 
+	min_transition_cost = 1;
+	return;
+    }
 
     for (map<int, vector<TransitionRelation>>::iterator it = transitions.begin();
          it != transitions.end(); ++it) {

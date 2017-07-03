@@ -269,7 +269,7 @@ namespace symbolic {
 	    );
     }
 
-    SymSolution ClosedList::checkCut(SymSearch * search, const BDD &states, int g, bool fw) const {
+    SymSolution ClosedList::checkCut(UnidirectionalSearch * search, const BDD &states, int g, bool fw) const {
 	BDD cut_candidate = states * closedTotal;
 	if (cut_candidate.IsZero()) {
 	    return SymSolution(); //No solution yet :(

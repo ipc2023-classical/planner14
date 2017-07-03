@@ -48,7 +48,7 @@ public:
 
     //Check if any of the states is closed.
     //In case positive, return a solution pair <f_value, S>
-    virtual SymSolution checkCut(SymSearch * search, const BDD &states, int g, bool fw) const override;
+    virtual SymSolution checkCut(UnidirectionalSearch * search, const BDD &states, int g, bool fw) const override;
 
     void extract_path(const BDD &cut, int h, bool fw,
 		      std::vector <const GlobalOperator *> &path) const;

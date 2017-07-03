@@ -4,7 +4,7 @@
 #include "../state_registry.h"
 #include "../utils/debug_macros.h"
 
-#include "sym_search.h"
+#include "unidirectional_search.h"
 
 
 using namespace std;
@@ -14,7 +14,7 @@ namespace symbolic {
 	assert (path.empty()); //This code should be modified to allow appending things to paths
 	DEBUG_MSG(cout << "Extract path forward: " << g << endl; );
 	if (exp_fw) {
-	    exp_fw->getPlan(cut, g, h, path);   
+	    exp_fw->getPlan(cut, g, path);   
 	}
 	DEBUG_MSG(cout << "Extract path backward: " << h << endl; );
 	if (exp_bw) {
@@ -35,7 +35,7 @@ namespace symbolic {
 		newCut = cut;
 	    }
     
-	    exp_bw->getPlan(newCut, g, h, path);
+	    exp_bw->getPlan(newCut, h, path);
 	}
 	/*DEBUG_MSG(cout << "Path extracted" << endl;
 	  State s2 (*g_initial_state);

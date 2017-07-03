@@ -22,7 +22,7 @@ namespace options {
 namespace symbolic {
 class SymVariables;
 class TransitionRelation;
-class SymAbstraction;
+
 /*
  * All the methods may throw exceptions in case the time or nodes are exceeded.
  *

@@ -539,10 +539,21 @@ fast_downward_plugin(
 	symbolic/uniform_cost_search.cc
 	symbolic/breadth_first_search.cc
 	symbolic/gamer_pdbs_heuristic.cc
+	symbolic/bidirectional_search.cc
     DEPENDENCY_ONLY 
 )
 
-#symbolic/bidirectional_search.cc
+
+fast_downward_plugin(
+    NAME SYMBOLIC_SEARCH_ENGINE
+    HELP "Symbolic search engine"
+    SOURCES
+        search_engines/symbolic_search.cc
+    DEPENDS SYMBOLIC 
+)
+
+
+
 
 
 # fast_downward_plugin(

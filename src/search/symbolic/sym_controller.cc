@@ -39,23 +39,34 @@ SymController::SymController(const Options &opts)
 }
 
 
-void SymController::add_options_to_parser(OptionParser &parser, int maxStepTime, int maxStepNodes) {
-    SymVariables::add_options_to_parser(parser);
-    SymParamsMgr::add_options_to_parser(parser);
-    SymParamsSearch::add_options_to_parser(parser, maxStepTime, maxStepNodes);
-}
+    void SymController::add_options_to_parser(OptionParser &parser, int maxStepTime, int maxStepNodes) {
+	SymVariables::add_options_to_parser(parser);
+	SymParamsMgr::add_options_to_parser(parser);
+	SymParamsSearch::add_options_to_parser(parser, maxStepTime, maxStepNodes);
+    }
     void SymController::new_solution(const SymSolution & sol) { 
 	if(!solution.solved() || 
 	   sol.getCost() < solution.getCost()){
 	    solution = sol;
+	    std::cout << "BOUND: " << lower_bound << " < " << getUpperBound()
+		      << ", total time: " << utils::g_timer << std::endl;
+
 	}
     }   
 
     void SymController::setLowerBound(int lower) {
-       //Never set a lower bound greater than the current upper bound
+	//Never set a lower bound greater than the current upper bound
 	if(solution.solved()) {
-	    lower = min(lower,  solution.getCost()); 
-    }
-	lower_bound = max(lower, lower_bound);
+	    lower = min(lower,  solution.getCost());
+	}
+
+	if(lower > lower_bound) {
+	    lower_bound = lower;
+	    
+	    std::cout << "BOUND: " << lower_bound << " < " << getUpperBound()
+		  << ", total time: " << utils::g_timer << std::endl;
+
+	}
+	
     }
 }

@@ -52,7 +52,9 @@ public:
     BDD image(const BDD &from, int maxNodes) const;
     BDD preimage(const BDD &from, int maxNodes) const;
 
-    void edeletion(const OriginalStateSpace & mgr); //Includes mutex into the transition
+    void edeletion(const std::vector<std::vector<BDD>> & notMutexBDDsByFluentFw, 
+		   const std::vector<std::vector<BDD>> & notMutexBDDsByFluentBw, 
+		   const std::vector<std::vector<BDD>> & exactlyOneBDDsByFluent);
 
     void merge(const TransitionRelation &t2,
                int maxNodes);

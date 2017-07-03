@@ -235,13 +235,18 @@ void TransitionRelation::merge(const TransitionRelation &t2,
     ops.insert(t2.ops.begin(), t2.ops.end());
 }
 
-
-void TransitionRelation::edeletion(const OriginalStateSpace &mgr) {
-    assert(ops.size() == 1);
     
     //For each op, include relevant mutexes
-    for (const GlobalOperator *op : ops) {
-        for (const GlobalEffect &pp : op->get_effects()) {
+    void TransitionRelation::edeletion(const std::vector<std::vector<BDD>> & notMutexBDDsByFluentFw, 
+				       const std::vector<std::vector<BDD>> & notMutexBDDsByFluentBw, 
+				       const std::vector<std::vector<BDD>> & exactlyOneBDDsByFluent) {
+    assert(ops.size() == 1);
+    assert(notMutexBDDsByFluentFw.size() == g_variable_domain.size());
+    assert(notMutexBDDsByFluentBw.size() == g_variable_domain.size());
+    assert(exactlyOneBDDsByFluent.size() == g_variable_domain.size());
+    //For each op, include relevant mutexes
+    for (const auto *op : ops) {
+        for (const auto &pp : op->get_effects()) {
             auto pre =
                 std::find_if(std::begin(op->get_preconditions()),
                              std::end(op->get_preconditions()),
@@ -256,18 +261,18 @@ void TransitionRelation::edeletion(const OriginalStateSpace &mgr) {
                 //That means that every previous value is possible
                 //for each value of the variable
                 for (int val = 0; val < g_variable_domain[pp.var]; val++) {
-                    tBDD *= mgr.getNotMutexBDDBw(pp.var, val);
+                    tBDD *= notMutexBDDsByFluentBw[pp.var][val];
                 }
             } else {
                 //In regression, we are making true pp.pre
                 //So we must negate everything of these.
-                tBDD *= mgr.getNotMutexBDDBw(pp.var, pre->val);
+                tBDD *= notMutexBDDsByFluentBw[pp.var] [pre->val];
             }
             //edeletion fw
-            tBDD *= mgr.getNotMutexBDDFw(pp.var, pp.val).SwapVariables(swapVarsS, swapVarsSp);
+            tBDD *= notMutexBDDsByFluentFw[pp.var][pp.val].SwapVariables(swapVarsS, swapVarsSp);
 
             //edeletion invariants
-            tBDD *= mgr.getExactlyOneBDD(pp.var, pp.val);
+            tBDD *= exactlyOneBDDsByFluent[pp.var][pp.val];
         }
     }
 }

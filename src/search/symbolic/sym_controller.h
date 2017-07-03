@@ -36,7 +36,7 @@ public:
     SymController(const options::Options &opts);
     virtual ~SymController() {}
 
-    void new_solution(const SymSolution & sol);
+    virtual void new_solution(const SymSolution & sol);
     void setLowerBound(int lower);
 
     int getUpperBound() const {

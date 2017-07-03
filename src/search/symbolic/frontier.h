@@ -73,8 +73,18 @@ namespace symbolic {
 	    return g_value;
 	}
 
+	Bucket & prepared_bucket() {
+	    assert(Sfilter.empty()); 
+	    assert(Smerge.empty());
+	    //assert(Szero.empty() || S.empty());
+	    //assert(!Szero.empty() || !S.empty());
+
+	    return Szero.empty() ? S : Szero;
+	}
 	Bucket & bucket() {
-	    assert(Smerge.empty() &&  Szero.empty() && S.empty());
+	    assert(Smerge.empty());
+	    assert(Szero.empty());
+	    assert(S.empty());
 	    return Sfilter;
 	}
 

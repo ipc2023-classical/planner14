@@ -11,7 +11,7 @@ namespace symbolic {
 										     hNotGoal(mgr.getAbsoluteMinTransitionCost()) {
     }
 
-    SymSolution OppositeFrontierFixed::checkCut(SymSearch * search, const BDD &states, int g, bool fw) const {
+    SymSolution OppositeFrontierFixed::checkCut(UnidirectionalSearch * search, const BDD &states, int g, bool fw) const {
 	BDD cut = states * goal;
 	if (cut.IsZero()) {
 	    return SymSolution(); //No solution yet :(

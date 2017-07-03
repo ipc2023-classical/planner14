@@ -69,7 +69,6 @@ public:
 
     virtual bool isSearchableWithNodes(int maxNodes) const = 0;
 
-    virtual void getPlan(const BDD &cut, int g, int h, std::vector <const GlobalOperator *> &path) const = 0;
 };
 }
 #endif // SYMBOLIC_SEARCH

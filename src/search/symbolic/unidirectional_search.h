@@ -11,6 +11,8 @@
 
 namespace symbolic {
     class SymSolution;
+    class UnidirectionalSearch;
+    
     class SymExpStatistics {
     public:
 	double image_time, image_time_failed;
@@ -39,7 +41,7 @@ namespace symbolic {
 
     class OppositeFrontier {
     public: 
-	virtual SymSolution checkCut(SymSearch * search, const BDD &states, int g, bool fw) const = 0;
+	virtual SymSolution checkCut(UnidirectionalSearch * search, const BDD &states, int g, bool fw) const = 0;
 
 	virtual BDD notClosed () const = 0;
 
@@ -54,7 +56,7 @@ namespace symbolic {
 	int hNotGoal;
     public:
 	OppositeFrontierFixed (BDD g, const SymStateSpaceManager & mgr); 
-	virtual SymSolution checkCut(SymSearch * search, const BDD &states, int g, bool fw) const override;
+	virtual SymSolution checkCut(UnidirectionalSearch * search, const BDD &states, int g, bool fw) const override;
 
 	virtual BDD notClosed () const override {
 	    return !goal;
@@ -85,6 +87,9 @@ namespace symbolic {
 	}
 
 	void statistics() const;
+
+	virtual void getPlan(const BDD &cut, int g, std::vector <const GlobalOperator *> &path) const = 0;
+
     };
 }
 #endif // SYMBOLIC_EXPLORATION

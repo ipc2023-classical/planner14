@@ -66,14 +66,9 @@ public:
     void dump_search_space();
     virtual void new_solution(const SymSolution &sol);
 
-    virtual void setLowerBound(int lower) {
-        if (lower > lower_bound) {
-            lower_bound = lower;
-            std::cout << "BOUND: " << lower_bound << " < " << bound
-                      << ", total time: " << utils::g_timer << std::endl;
-        }
-    }
 
+    
+    virtual void setLowerBound(int lower);
     virtual int getUpperBound() const {
         return bound;
     }
