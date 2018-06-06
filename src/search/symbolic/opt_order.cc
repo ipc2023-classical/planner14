@@ -99,8 +99,8 @@ double InfluenceGraph::optimize_variable_ordering_gamer(vector <int> &order,
             continue;
 
         //Compute the new value of the optimization function
-        for (int i = 0; i < (int)order.size(); i++) {
-            if (i == swapIndex1 || i == swapIndex2)
+        for (int i = 0; i < int(order.size()); i++) {
+            if ((int)i == swapIndex1 || (int)i == swapIndex2)
                 continue;
 
             if (influence(order[i], order[swapIndex1]))
@@ -176,8 +176,8 @@ void InfluenceGraph::optimize_variable_ordering_gamer(vector <int> &order,
             continue;
 
         //Compute the new value of the optimization function
-        for (int i = 0; i < (int)order.size(); i++) {
-            if (i == swapIndex1 || i == swapIndex2)
+        for (int i = 0; i < int(order.size()); i++) {
+            if ((int)i == swapIndex1 || (int)i == swapIndex2)
                 continue;
 
             if (influence(order[i], order[swapIndex1]))

@@ -88,8 +88,9 @@ bool compute_h2_mutexes(const vector <Variable *> &variables,
 
 
             int res_unreachable = h2.detect_unreachable_fluents(variables, initial_state, goals);
-            if (res_unreachable == UNSOLVABLE)
+            if (res_unreachable == UNSOLVABLE) {
                 return false;
+	    }
             bool unreachable_detected = res_unreachable != 0;
 
             bool spurious_detected = h2.remove_spurious_operators(operators);
