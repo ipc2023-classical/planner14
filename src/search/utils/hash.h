@@ -4,6 +4,7 @@
 #include <functional>
 #include <utility>
 #include <vector>
+#include <stddef.h>
 
 namespace utils {
 /*

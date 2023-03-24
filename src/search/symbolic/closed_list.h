@@ -7,6 +7,7 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <limits>
 
 namespace symbolic {
 
@@ -33,7 +34,7 @@ private:
     std::map<int, BDD> closedUpTo;  // Disjunction of BDDs in closed  (auxiliar useful to take the maximum between several BDDs)
     std::set<int> h_values; //Set of h_values of the heuristic
 
-    void newHValue(int h_value); 
+    void newHValue(int h_value);
 
 public:
     ClosedList();
@@ -43,7 +44,7 @@ public:
     void insert(int h, const BDD &S);
     void setHNotClosed(int h);
     void setFNotClosed(int f);
-    
+
     const std::set<int> &getHValues();
 
     //Check if any of the states is closed.

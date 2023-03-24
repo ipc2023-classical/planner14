@@ -264,14 +264,14 @@ fast_downward_plugin(
     DEPENDS SEARCH_COMMON
 )
 
-fast_downward_plugin(
-    NAME LP_SOLVER
-    HELP "Interface to an LP solver"
-    SOURCES
-        lp/lp_internals.cc
-        lp/lp_solver.cc
-    DEPENDENCY_ONLY
-)
+# fast_downward_plugin(
+#     NAME LP_SOLVER
+#     HELP "Interface to an LP solver"
+#     SOURCES
+#         lp/lp_internals.cc
+#         lp/lp_solver.cc
+#     DEPENDENCY_ONLY
+# )
 
 fast_downward_plugin(
     NAME RELAXATION_HEURISTIC
@@ -379,138 +379,138 @@ fast_downward_plugin(
     DEPENDENCY_ONLY
 )
 
-fast_downward_plugin(
-    NAME CEGAR
-    HELP "Plugin containing the code for CEGAR heuristics"
-    SOURCES
-        cegar/abstraction.cc
-        cegar/abstract_search.cc
-        cegar/abstract_state.cc
-        cegar/additive_cartesian_heuristic.cc
-        cegar/arc.cc
-        cegar/cartesian_heuristic_function.cc
-        cegar/cost_saturation.cc
-        cegar/domains.cc
-        cegar/refinement_hierarchy.cc
-        cegar/split_selector.cc
-        cegar/subtask_generators.cc
-        cegar/utils.cc
-        cegar/utils_landmarks.cc
-    DEPENDS ADDITIVE_HEURISTIC EXTRA_TASKS LANDMARKS
-)
+# fast_downward_plugin(
+#     NAME CEGAR
+#     HELP "Plugin containing the code for CEGAR heuristics"
+#     SOURCES
+#         cegar/abstraction.cc
+#         cegar/abstract_search.cc
+#         cegar/abstract_state.cc
+#         cegar/additive_cartesian_heuristic.cc
+#         cegar/arc.cc
+#         cegar/cartesian_heuristic_function.cc
+#         cegar/cost_saturation.cc
+#         cegar/domains.cc
+#         cegar/refinement_hierarchy.cc
+#         cegar/split_selector.cc
+#         cegar/subtask_generators.cc
+#         cegar/utils.cc
+#         cegar/utils_landmarks.cc
+#     DEPENDS ADDITIVE_HEURISTIC EXTRA_TASKS LANDMARKS
+# )
 
-fast_downward_plugin(
-    NAME MAS_HEURISTIC
-    HELP "The Merge-and-Shrink heuristic"
-    SOURCES
-        merge_and_shrink/distances.cc
-        merge_and_shrink/factored_transition_system.cc
-        merge_and_shrink/fts_factory.cc
-        merge_and_shrink/heuristic_representation.cc
-        merge_and_shrink/label_equivalence_relation.cc
-        merge_and_shrink/label_reduction.cc
-        merge_and_shrink/labels.cc
-        merge_and_shrink/merge_and_shrink_heuristic.cc
-        merge_and_shrink/merge_scoring_function.cc
-        merge_and_shrink/merge_scoring_function_dfp.cc
-        merge_and_shrink/merge_scoring_function_goal_relevance.cc
-        merge_and_shrink/merge_scoring_function_single_random.cc
-        merge_and_shrink/merge_scoring_function_total_order.cc
-        merge_and_shrink/merge_selector.cc
-        merge_and_shrink/merge_selector_score_based_filtering.cc
-        merge_and_shrink/merge_strategy.cc
-        merge_and_shrink/merge_strategy_aliases.cc
-        merge_and_shrink/merge_strategy_factory.cc
-        merge_and_shrink/merge_strategy_factory_precomputed.cc
-        merge_and_shrink/merge_strategy_factory_stateless.cc
-        merge_and_shrink/merge_strategy_precomputed.cc
-        merge_and_shrink/merge_strategy_stateless.cc
-        merge_and_shrink/merge_tree.cc
-        merge_and_shrink/merge_tree_factory.cc
-        merge_and_shrink/merge_tree_factory_linear.cc
-        merge_and_shrink/shrink_bisimulation.cc
-        merge_and_shrink/shrink_bucket_based.cc
-        merge_and_shrink/shrink_fh.cc
-        merge_and_shrink/shrink_random.cc
-        merge_and_shrink/shrink_strategy.cc
-        merge_and_shrink/transition_system.cc
-        merge_and_shrink/types.cc
-)
+# fast_downward_plugin(
+#     NAME MAS_HEURISTIC
+#     HELP "The Merge-and-Shrink heuristic"
+#     SOURCES
+#         merge_and_shrink/distances.cc
+#         merge_and_shrink/factored_transition_system.cc
+#         merge_and_shrink/fts_factory.cc
+#         merge_and_shrink/heuristic_representation.cc
+#         merge_and_shrink/label_equivalence_relation.cc
+#         merge_and_shrink/label_reduction.cc
+#         merge_and_shrink/labels.cc
+#         merge_and_shrink/merge_and_shrink_heuristic.cc
+#         merge_and_shrink/merge_scoring_function.cc
+#         merge_and_shrink/merge_scoring_function_dfp.cc
+#         merge_and_shrink/merge_scoring_function_goal_relevance.cc
+#         merge_and_shrink/merge_scoring_function_single_random.cc
+#         merge_and_shrink/merge_scoring_function_total_order.cc
+#         merge_and_shrink/merge_selector.cc
+#         merge_and_shrink/merge_selector_score_based_filtering.cc
+#         merge_and_shrink/merge_strategy.cc
+#         merge_and_shrink/merge_strategy_aliases.cc
+#         merge_and_shrink/merge_strategy_factory.cc
+#         merge_and_shrink/merge_strategy_factory_precomputed.cc
+#         merge_and_shrink/merge_strategy_factory_stateless.cc
+#         merge_and_shrink/merge_strategy_precomputed.cc
+#         merge_and_shrink/merge_strategy_stateless.cc
+#         merge_and_shrink/merge_tree.cc
+#         merge_and_shrink/merge_tree_factory.cc
+#         merge_and_shrink/merge_tree_factory_linear.cc
+#         merge_and_shrink/shrink_bisimulation.cc
+#         merge_and_shrink/shrink_bucket_based.cc
+#         merge_and_shrink/shrink_fh.cc
+#         merge_and_shrink/shrink_random.cc
+#         merge_and_shrink/shrink_strategy.cc
+#         merge_and_shrink/transition_system.cc
+#         merge_and_shrink/types.cc
+# )
 
-fast_downward_plugin(
-    NAME LANDMARKS
-    HELP "Plugin containing the code to reason with landmarks"
-    SOURCES
-        landmarks/exploration.cc
-        landmarks/h_m_landmarks.cc
-        landmarks/lama_ff_synergy.cc
-        landmarks/landmark_cost_assignment.cc
-        landmarks/landmark_count_heuristic.cc
-        landmarks/landmark_factory.cc
-        landmarks/landmark_factory_rpg_exhaust.cc
-        landmarks/landmark_factory_rpg_sasp.cc
-        landmarks/landmark_factory_zhu_givan.cc
-        landmarks/landmark_graph.cc
-        landmarks/landmark_graph_merged.cc
-        landmarks/landmark_status_manager.cc
-        landmarks/util.cc
-    DEPENDS LP_SOLVER
-)
+# fast_downward_plugin(
+#     NAME LANDMARKS
+#     HELP "Plugin containing the code to reason with landmarks"
+#     SOURCES
+#         landmarks/exploration.cc
+#         landmarks/h_m_landmarks.cc
+#         landmarks/lama_ff_synergy.cc
+#         landmarks/landmark_cost_assignment.cc
+#         landmarks/landmark_count_heuristic.cc
+#         landmarks/landmark_factory.cc
+#         landmarks/landmark_factory_rpg_exhaust.cc
+#         landmarks/landmark_factory_rpg_sasp.cc
+#         landmarks/landmark_factory_zhu_givan.cc
+#         landmarks/landmark_graph.cc
+#         landmarks/landmark_graph_merged.cc
+#         landmarks/landmark_status_manager.cc
+#         landmarks/util.cc
+#     DEPENDS LP_SOLVER
+# )
 
-fast_downward_plugin(
-    NAME OPERATOR_COUNTING
-    HELP "Plugin containing the code for operator counting heuristics"
-    SOURCES
-        operator_counting/constraint_generator.cc
-        operator_counting/lm_cut_constraints.cc
-        operator_counting/operator_counting_heuristic.cc
-        operator_counting/pho_constraints.cc
-        operator_counting/state_equation_constraints.cc
-    DEPENDS LP_SOLVER LANDMARK_CUT_HEURISTIC PDBS
-)
+# fast_downward_plugin(
+#     NAME OPERATOR_COUNTING
+#     HELP "Plugin containing the code for operator counting heuristics"
+#     SOURCES
+#         operator_counting/constraint_generator.cc
+#         operator_counting/lm_cut_constraints.cc
+#         operator_counting/operator_counting_heuristic.cc
+#         operator_counting/pho_constraints.cc
+#         operator_counting/state_equation_constraints.cc
+#     DEPENDS LP_SOLVER LANDMARK_CUT_HEURISTIC PDBS
+# )
 
-fast_downward_plugin(
-    NAME PDBS
-    HELP "Plugin containing the code for PDBs"
-    SOURCES
-        pdbs/canonical_pdbs.cc
-        pdbs/canonical_pdbs_heuristic.cc
-        pdbs/dominance_pruning.cc
-        pdbs/incremental_canonical_pdbs.cc
-        pdbs/match_tree.cc
-        pdbs/max_additive_pdb_sets.cc
-        pdbs/max_cliques.cc
-        pdbs/pattern_collection_information.cc
-        pdbs/pattern_database.cc
-        pdbs/pattern_collection_generator_combo.cc
-        pdbs/pattern_collection_generator_genetic.cc
-        pdbs/pattern_collection_generator_hillclimbing.cc
-        pdbs/pattern_collection_generator_manual.cc
-        pdbs/pattern_collection_generator_systematic.cc
-        pdbs/pattern_generator_greedy.cc
-        pdbs/pattern_generator_manual.cc
-        pdbs/pattern_generator.cc
-        pdbs/pdb_heuristic.cc
-        pdbs/types.cc
-        pdbs/validation.cc
-        pdbs/zero_one_pdbs.cc
-        pdbs/zero_one_pdbs_heuristic.cc
-)
+# fast_downward_plugin(
+#     NAME PDBS
+#     HELP "Plugin containing the code for PDBs"
+#     SOURCES
+#         pdbs/canonical_pdbs.cc
+#         pdbs/canonical_pdbs_heuristic.cc
+#         pdbs/dominance_pruning.cc
+#         pdbs/incremental_canonical_pdbs.cc
+#         pdbs/match_tree.cc
+#         pdbs/max_additive_pdb_sets.cc
+#         pdbs/max_cliques.cc
+#         pdbs/pattern_collection_information.cc
+#         pdbs/pattern_database.cc
+#         pdbs/pattern_collection_generator_combo.cc
+#         pdbs/pattern_collection_generator_genetic.cc
+#         pdbs/pattern_collection_generator_hillclimbing.cc
+#         pdbs/pattern_collection_generator_manual.cc
+#         pdbs/pattern_collection_generator_systematic.cc
+#         pdbs/pattern_generator_greedy.cc
+#         pdbs/pattern_generator_manual.cc
+#         pdbs/pattern_generator.cc
+#         pdbs/pdb_heuristic.cc
+#         pdbs/types.cc
+#         pdbs/validation.cc
+#         pdbs/zero_one_pdbs.cc
+#         pdbs/zero_one_pdbs_heuristic.cc
+# )
 
-fast_downward_plugin(
-    NAME POTENTIALS
-    HELP "Plugin containing the code for potential heuristics"
-    SOURCES
-        potentials/diverse_potential_heuristics.cc
-        potentials/potential_function.cc
-        potentials/potential_heuristic.cc
-        potentials/potential_max_heuristic.cc
-        potentials/potential_optimizer.cc
-        potentials/sample_based_potential_heuristics.cc
-        potentials/single_potential_heuristics.cc
-        potentials/util.cc
-    DEPENDS LP_SOLVER
-)
+# fast_downward_plugin(
+#     NAME POTENTIALS
+#     HELP "Plugin containing the code for potential heuristics"
+#     SOURCES
+#         potentials/diverse_potential_heuristics.cc
+#         potentials/potential_function.cc
+#         potentials/potential_heuristic.cc
+#         potentials/potential_max_heuristic.cc
+#         potentials/potential_optimizer.cc
+#         potentials/sample_based_potential_heuristics.cc
+#         potentials/single_potential_heuristics.cc
+#         potentials/util.cc
+#     DEPENDS LP_SOLVER
+# )
 
 fast_downward_plugin(
     NAME SYMBOLIC
@@ -540,7 +540,7 @@ fast_downward_plugin(
 	symbolic/breadth_first_search.cc
 	symbolic/gamer_pdbs_heuristic.cc
 	symbolic/bidirectional_search.cc
-    DEPENDENCY_ONLY 
+    DEPENDENCY_ONLY
 )
 
 
@@ -549,27 +549,8 @@ fast_downward_plugin(
     HELP "Symbolic search engine"
     SOURCES
         search_engines/symbolic_search.cc
-    DEPENDS SYMBOLIC 
+    DEPENDS SYMBOLIC
 )
-
-
-
-
-
-# fast_downward_plugin(
-#     NAME SYMBOLIC_PERIMETER_ABSTRACTIONS
-#     HELP "Plugin containing the base for symbolic search"
-#     SOURCES
-#         symbolic/hnode.cc
-#         symbolic/htree.cc
-#         symbolic/ph.cc
-# 	symbolic/ph_pdbs.cc
-# 	symbolic/spmas_heuristic.cc
-# 	symbolic/variable_order_finder.cc
-    
-#     DEPENDS SYMBOLIC
-# )
-
 
 
 fast_downward_add_plugin_sources(PLANNER_SOURCES)

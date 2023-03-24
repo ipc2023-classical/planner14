@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <limits>
 #include "../utils/debug_macros.h"
 
 #include "sym_state_space_manager.h"
@@ -235,10 +236,10 @@ void TransitionRelation::merge(const TransitionRelation &t2,
     ops.insert(t2.ops.begin(), t2.ops.end());
 }
 
-    
+
     //For each op, include relevant mutexes
-    void TransitionRelation::edeletion(const std::vector<std::vector<BDD>> & notMutexBDDsByFluentFw, 
-				       const std::vector<std::vector<BDD>> & notMutexBDDsByFluentBw, 
+    void TransitionRelation::edeletion(const std::vector<std::vector<BDD>> & notMutexBDDsByFluentFw,
+				       const std::vector<std::vector<BDD>> & notMutexBDDsByFluentBw,
 				       const std::vector<std::vector<BDD>> & exactlyOneBDDsByFluent) {
     assert(ops.size() == 1);
     assert(notMutexBDDsByFluentFw.size() == g_variable_domain.size());
